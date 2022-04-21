@@ -1,0 +1,24 @@
+{
+  "applications": "*",
+  "changelogDate": "20220412200818",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "mindmap",
+  "fields": [
+    {
+      "fieldName": "text",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "modified",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Mindmap",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

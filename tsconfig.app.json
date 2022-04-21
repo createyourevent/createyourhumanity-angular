@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./target/classes/static/app",
+    "types": ["node", "bootstrap"]
+  },
+  "files": ["src/main/webapp/main.ts", "src/main/webapp/polyfills.ts", "src/main/webapp/declarations.d.ts",
+    "node_modules/@wisemapping/mindplot/src/index.ts", "src/main/webapp/index.d.ts"],
+}

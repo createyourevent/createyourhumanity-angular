@@ -1,0 +1,23 @@
+entity Mindmap {
+    text String
+    modified ZonedDateTime
+}
+
+entity FormulaData {
+    map String
+    created ZonedDateTime
+    modified ZonedDateTime
+}
+
+entity UserMindmap {
+    text String
+    modified ZonedDateTime
+}
+
+/**
+ * Many to one relationship.
+ */
+relationship ManyToOne {
+    FormulaData{user} to User
+    UserMindmap{user} to User
+}

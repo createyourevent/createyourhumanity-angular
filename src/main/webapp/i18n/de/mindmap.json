@@ -1,0 +1,25 @@
+{
+  "createyourhumanityAngularApp": {
+    "mindmap": {
+      "home": {
+        "title": "Mindmaps",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Mindmap erstellen",
+        "createOrEditLabel": "Mindmap erstellen oder bearbeiten",
+        "notFound": "Keine Mindmaps gefunden"
+      },
+      "created": "Mindmap erstellt mit ID {{ param }}",
+      "updated": "Mindmap aktualisiert mit ID {{ param }}",
+      "deleted": "Mindmap gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Mindmap {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Mindmap"
+      },
+      "id": "ID",
+      "text": "Text",
+      "modified": "Modified"
+    }
+  }
+}

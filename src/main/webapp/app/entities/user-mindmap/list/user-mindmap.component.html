@@ -1,0 +1,84 @@
+<div>
+  <h2 id="page-heading" data-cy="UserMindmapHeading">
+    <span jhiTranslate="createyourhumanityAngularApp.userMindmap.home.title">User Mindmaps</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="createyourhumanityAngularApp.userMindmap.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-user-mindmap"
+        [routerLink]="['/user-mindmap/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="createyourhumanityAngularApp.userMindmap.home.createLabel"> Create a new User Mindmap </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="userMindmaps?.length === 0">
+    <span jhiTranslate="createyourhumanityAngularApp.userMindmap.home.notFound">No userMindmaps found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="userMindmaps && userMindmaps.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.userMindmap.text">Text</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.userMindmap.modified">Modified</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.userMindmap.user">User</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let userMindmap of userMindmaps; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/user-mindmap', userMindmap.id, 'view']">{{ userMindmap.id }}</a>
+          </td>
+          <td>{{ userMindmap.text }}</td>
+          <td>{{ userMindmap.modified | formatMediumDatetime }}</td>
+          <td>
+            {{ userMindmap.user?.id }}
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/user-mindmap', userMindmap.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/user-mindmap', userMindmap.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(userMindmap)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
