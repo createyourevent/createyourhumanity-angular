@@ -2987,13 +2987,13 @@
   resolved "http://localhost:4873/@wisemapping%2fcore-js/-/core-js-0.4.0.tgz#8e376b161dc552a63f94cb748e9a335a41d55ee3"
   integrity sha512-tgLYon54u0UScgIwW+M0EYUn2yuqhQDhGtN2k4B/3mv+2EKALjB7w5qDypJ7XtjPXd9/N90b1r+uCHipv5ZDRg==
 
-"@wisemapping/editor@5.3.1":
-  version "5.3.1"
-  resolved "http://localhost:4873/@wisemapping%2feditor/-/editor-5.3.1.tgz#29053984389f1e165fd04e71cb3e0c7d63ae66b4"
-  integrity sha512-lgQdx/I6WU+hGUxj6UuPew4riWwCVU4SJdjJg1PQG7De/tvivyD1d7NbKd58ZeAU2POy1S7sSgIem6iwGyVtuA==
+"@wisemapping/editor@5.3.3":
+  version "5.3.3"
+  resolved "http://localhost:4873/@wisemapping%2feditor/-/editor-5.3.3.tgz#97d283c6b3299c2300eb54a37d1d9c3570d74f1c"
+  integrity sha512-yP5B+ilHQTd1aI6ynR5RVXjEBArHzo4kxvMDxkK7pTkEGZx9O0HgLtrt32lFfgf7InApmHfqNVtrezbMticVDQ==
   dependencies:
     "@types/styled-components" "^5.1.4"
-    "@wisemapping/mindplot" "10.2.3"
+    "@wisemapping/mindplot" "10.2.4"
     bootstrap "4.6.1"
     popper.js "^1.16.1"
     react "17.0.2"
@@ -3001,10 +3001,10 @@
     react-intl "^5.24.8"
     styled-components "^5.3.5"
 
-"@wisemapping/mindplot@10.2.3":
-  version "10.2.3"
-  resolved "http://localhost:4873/@wisemapping%2fmindplot/-/mindplot-10.2.3.tgz#4df3f513d4e746dc254732d7477c1ebe002e691f"
-  integrity sha512-Xigksog00o7W5pZ1Mhe+HCvo5BZVB1HQTr0Kj1WBE/r2pWXSTurNMgQ17OqrHlqYTc9JzFOv/HL3HAOkfyhBLw==
+"@wisemapping/mindplot@10.2.4":
+  version "10.2.4"
+  resolved "http://localhost:4873/@wisemapping%2fmindplot/-/mindplot-10.2.4.tgz#92a4e14f32a946e0971af34eb9fffcde69428c6b"
+  integrity sha512-nTtRydoInmM2MYC/CtGeG+xRs6/fkR8XcdY+liPv1fAZcUgWuw6EcxkcZNIjJySDZQkB42s49mlOdxX5N2WBAQ==
   dependencies:
     "@wisemapping/core-js" "^0.4.0"
     "@wisemapping/web2d" "^0.4.0"
