@@ -1,6 +1,7 @@
 {
   "navbar": {
     "mindmap": "Mindmap",
-    "form-generator": "Formgenerator"
+    "form-generator": "Formgenerator",
+    "webform": "Create Your Humanity Webform"
   }
 }

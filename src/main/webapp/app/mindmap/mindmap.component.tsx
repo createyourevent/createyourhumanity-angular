@@ -2,11 +2,12 @@ import {
   Component,
   OnChanges,
   AfterViewInit,
-  OnInit
+  Input,
+  SimpleChanges
 } from '@angular/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Designer, LocalStorageManager, PersistenceManager, CreateYourHumanityPersistenceManager } from '@wisemapping/mindplot';
+import { Designer, PersistenceManager, CreateYourHumanityPersistenceManager } from '@wisemapping/mindplot';
 import {Editor, EditorOptions, EditorProps } from '@wisemapping/editor';
 import { SessionStorageService } from 'ngx-webstorage';
 import { TranslateService } from '@ngx-translate/core';
@@ -21,12 +22,13 @@ import { MaincontrollerService } from 'app/maincontroller.service';
 })
 export class MindmapComponent implements OnChanges, AfterViewInit{
 
+  @Input() mapId: any;
   public rootId = 'rootId';
   private hasViewLoaded = false;
+  private hasDataLoaded = false;
   private location = 'en';
   private pm: PersistenceManager;
   private account: Account;
-  private mapId: string;
 
   constructor(private translateService: TranslateService,
                       sessionStorageService: SessionStorageService,
@@ -35,29 +37,21 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
   }
 
-  public ngOnChanges() {
-    this.renderComponent();
+  public ngOnChanges(changes: SimpleChanges) {
+    if(changes['mapId'].currentValue !== undefined) {
+      this.hasDataLoaded = true;
+      this.mapId = changes['mapId'].currentValue;
+      this.renderComponent();
+    }
   }
 
   public ngAfterViewInit() {
-    this.accountService.identity().subscribe(res =>{
-      this.account = res;
-      if(!this.account) {
-        this.mapId = "625631aa67a303687227eb94";
-        this.hasViewLoaded = true;
-        this.renderComponent();
-      } else {
-        this.maincontrollerService.findUserMindmapByUserId(this.account.id).subscribe(res => {
-          this.mapId = res.body.id;
-          this.hasViewLoaded = true;
-          this.renderComponent();
-        });
-      }
-    });
+    this.hasViewLoaded = true;
+    this.renderComponent();
   }
 
   private renderComponent() {
-    if (!this.hasViewLoaded) {
+    if (!this.hasViewLoaded || !this.hasDataLoaded) {
       return;
     }
 

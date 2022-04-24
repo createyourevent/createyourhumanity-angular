@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { NavigationEvent } from '@ng-bootstrap/ng-bootstrap/datepicker/datepicker-view-model';
-import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AccountService } from 'app/core/auth/account.service';
 import { Mindmap } from 'app/entities/mindmap/mindmap.model';
 import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
 import { filter } from 'rxjs';
 import format from 'xml-formatter';
 import { Account } from 'app/core/auth/account.model';
-import { UserMindmapService } from 'app/entities/user-mindmap/service/user-mindmap.service';
 import { UserMindmap } from 'app/entities/user-mindmap/user-mindmap.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { UserService } from 'app/entities/user/user.service';
@@ -28,6 +25,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
   account: Account | null = null;
   userMindmap: UserMindmap;
   user: IUser;
+  xmlId: any;
 
   constructor(private router:Router,
               private mindmapService: MindmapService,
@@ -49,13 +47,17 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
             this.maincontrollerService.findUserMindmapByUserId(this.account.id).subscribe(res => {
               this.userMindmap = res.body;
               this.formatedXml = format(this.userMindmap.text);
+              this.xmlId = this.userMindmap.id;
             });
           }
         });
       } else {
-        this.mindmapService.find("625631aa67a303687227eb94").subscribe(res => {
-          this.mindmap = res.body;
-          this.formatedXml = format(this.mindmap.text);
+        this.mindmapService.query().subscribe(res => {
+          if(res.body.length === 1) {
+            this.mindmap = res.body[0];
+            this.formatedXml = format(this.mindmap.text);
+            this.xmlId = this.mindmap.id;
+          }
         });
       }
     });

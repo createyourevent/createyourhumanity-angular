@@ -34,6 +34,10 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'form-generator',
           loadChildren: () => import(`./form-generator/form-generator.module`).then(m => m.FormGeneratorModule),
         },
+        {
+          path: 'form',
+          loadChildren: () => import(`./form/form.module`).then(m => m.FormModule),
+        },
         navbarRoute,
         ...errorRoute,
       ],
