@@ -21,7 +21,7 @@
   },
   "rules": {
     "@angular-eslint/component-selector": [
-      "error",
+      "off",
       {
         "type": "element",
         "prefix": "jhi",
@@ -29,7 +29,7 @@
       }
     ],
     "@angular-eslint/directive-selector": [
-      "error",
+      "off",
       {
         "type": "attribute",
         "prefix": "jhi",

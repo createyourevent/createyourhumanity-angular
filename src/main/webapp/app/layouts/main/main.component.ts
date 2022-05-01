@@ -46,7 +46,6 @@ export class MainComponent implements OnInit {
       }
     },
     error => {
-      console.log(error);
       if(error.status === 404) {
         const mindmap = new Mindmap();
         // mindmap.id = '625631aa67a303687227eb94';

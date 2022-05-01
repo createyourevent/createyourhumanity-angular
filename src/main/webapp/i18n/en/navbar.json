@@ -2,6 +2,7 @@
   "navbar": {
     "mindmap": "Mindmap",
     "form-generator": "Formgenerator",
-    "webform": "Create Your Humanity Webform"
+    "webform": "Create Your Humanity Webform",
+    "profile": "Profile"
   }
 }

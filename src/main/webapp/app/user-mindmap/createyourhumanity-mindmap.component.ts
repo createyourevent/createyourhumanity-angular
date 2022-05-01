@@ -38,20 +38,6 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
       window.location.reload();
     });
 
-    this.accountService.identity().subscribe(res =>{
-      this.account = res;
-      if(this.account) {
-        this.userService.query().subscribe(res => {
-          this.user = res.body.find(x => x.id === this.account.id);
-          if(this.account) {
-            this.maincontrollerService.findUserMindmapByUserId(this.account.id).subscribe(res => {
-              this.userMindmap = res.body;
-              this.formatedXml = format(this.userMindmap.text);
-              this.xmlId = this.userMindmap.id;
-            });
-          }
-        });
-      } else {
         this.mindmapService.query().subscribe(res => {
           if(res.body.length === 1) {
             this.mindmap = res.body[0];
@@ -59,8 +45,6 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
             this.xmlId = this.mindmap.id;
           }
         });
-      }
-    });
   }
 
 }

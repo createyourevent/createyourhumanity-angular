@@ -23,6 +23,12 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { FormlyFieldTabsComponent } from 'app/formly/tabs.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ColumnComponent } from 'app/formly/column.component';
+import { RowComponent } from 'app/formly/row.component';
+import { ContainerWrapperComponent } from 'app/formly/container-wrapper.component';
+import { ContainerComponent } from 'app/formly/container.component';
+import { ColumnWrapperComponent } from 'app/formly/column-wrapper.component';
+import { RowWrapperComponent } from 'app/formly/row-wrapper.component';
 
 @NgModule({
   imports: [SharedLibsModule,
@@ -31,16 +37,22 @@ import { MatTabsModule } from '@angular/material/tabs';
             MatStepperModule,
             MatIconModule,
             MatTabsModule,
+            FormlyBootstrapModule,
             FormlyModule.forRoot({
               wrappers: [
                 { name: 'panel', component: PanelWrapperComponent },
+                { name: 'containerwrapper', component: ContainerWrapperComponent },
+                { name: 'rowwrapper', component: RowWrapperComponent },
+                { name: 'columnwrapper', component: ColumnWrapperComponent },
               ],
               types: [
                 { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
-                { name: 'tabs', component: FormlyFieldTabsComponent, wrappers: []  },
+                { name: 'tabs', component: FormlyFieldTabsComponent, wrappers: [] },
+                { name: 'container', component: ContainerComponent },
+                { name: 'row', component: RowComponent },
+                { name: 'column', component: ColumnComponent },
               ],
             }),
-            FormlyBootstrapModule,
   ],
   declarations: [
     FindLanguageFromKeyPipe,
@@ -56,7 +68,10 @@ import { MatTabsModule } from '@angular/material/tabs';
     ItemCountComponent,
     XmlPipe,
     FormlyFieldStepperComponent,
-    FormlyFieldTabsComponent
+    FormlyFieldTabsComponent,
+    ContainerComponent,
+    RowComponent,
+    ColumnComponent
   ],
   exports: [
     SharedLibsModule,
