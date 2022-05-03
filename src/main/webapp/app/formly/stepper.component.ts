@@ -5,8 +5,7 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
   selector: 'jhi-formly-field-stepper',
   template: `
   <mat-horizontal-stepper>
-    <mat-step
-      *ngFor="let step of field.fieldGroup; let index = index; let last = last;">
+    <mat-step *ngFor="let step of field.fieldGroup; let index = index; let last = last;">
       <ng-template matStepLabel>{{ step.templateOptions.label }}</ng-template>
       <formly-field [field]="step"></formly-field>
 
@@ -28,6 +27,9 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
 `,
 })
 export class FormlyFieldStepperComponent extends FieldType {
+
+
+
   isValid(field: FormlyFieldConfig) {
     if (field.key) {
       return field.formControl.valid;

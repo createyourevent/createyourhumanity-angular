@@ -70,18 +70,13 @@ export class ProfileComponent implements OnInit, AfterViewInit  {
   }
 
   ngAfterViewInit(): void {
-    this.convert();
-  }
-
-
-  convert() {
     this.profileHosts.changes.subscribe(res => {
       this.pages.forEach(page => {
         this.forms.push(page.parentElement);
       });
       const pha = res.toArray();
       for(let i = 0; i < this.items.length; i++) {
-        this.formService.loadComponent(pha[i].viewContainerRef, this.forms[i].innerHTML, this.account.id, this.mindmap.id, `${i}`).then(res => {
+        this.formService.loadComponent(pha[i].viewContainerRef, this.forms[i].outerHTML, this.account.id, this.mindmap.id, `${i}`).then(res => {
           const af = res;
           this.components.push(af);
         });

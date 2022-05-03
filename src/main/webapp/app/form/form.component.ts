@@ -1,15 +1,14 @@
-import { UserMindmap } from 'app/entities/user-mindmap/user-mindmap.model';
+/* eslint-disable no-eval */
 import { UserService } from 'app/entities/user/user.service'
 import { IUser } from 'app/entities/user/user.model'
 import { FormulaDataService } from './../entities/formula-data/service/formula-data.service'
 import { FormulaData } from './../entities/formula-data/formula-data.model'
 import dayjs from 'dayjs/esm'
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core'
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core'
 import { FormGroup } from '@angular/forms'
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core'
 import { Account } from 'app/core/auth/account.model'
 import { AccountService } from 'app/core/auth/account.service'
-import { Mindmap } from 'app/entities/mindmap/mindmap.model'
 import { MindmapService } from 'app/entities/mindmap/service/mindmap.service'
 import { MaincontrollerService } from 'app/maincontroller.service'
 import { LoginService } from 'app/login/login.service'
@@ -29,19 +28,31 @@ export class FormComponent implements OnInit, AfterViewInit{
   user: IUser;
   formId: string;
 
-  fieldGroup: FormlyFieldConfig[] = [];
-  fieldId: number[] = [];
+  fields: FormlyFieldConfig[] = [];
+  fieldIds: string[] = [];
   formatedXml: any;
   level = 0;
   levels: Map<string, number> = new Map();
   breadth = 0;
   topics: any;
+  index = 0;
 
   @Input() userId: string;
   @Input() mapId: string;
   @Input() xml: string;
   @Input() id: string;
 
+  txtarr = [
+    'this.fields',
+    'this.fields[this.fields.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup',
+    'this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup[this.fields[this.fields.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup.length - 1].fieldGroup',
+  ];
 
   constructor(private accountService: AccountService,
               private formulaDataService: FormulaDataService,
@@ -49,42 +60,56 @@ export class FormComponent implements OnInit, AfterViewInit{
               private userService: UserService,
               private mindmapService: MindmapService,
               private loginService: LoginService) {}
+
+
   ngAfterViewInit(): void {
     this.convert();
   }
 
   ngOnInit(): void {
     const parser = new DOMParser();
-    this.xml = this.xml.substring('<htmlForm id="form"/>"'.length -1, this.xml.length);
     const xmlDoc = parser.parseFromString(this.xml,"text/xml");
     this.topics = xmlDoc.getElementsByTagName("topic");
   }
 
   convert() {
+    this.walkTheDOM(this.topics[0]);
     this.domWalker(this.topics[0]);
-    this.fieldGroup = this.fieldGroup.splice(0);
+    this.fields = this.fields.splice(0);
     }
 
     domWalker (node) {
-      const found = this.fieldId.findIndex(x => x === Number(node.getAttribute("id")));
-      if(found < 0) {
-        this.levels.set(node.getAttribute('id'), this.level);
-        this.fieldId.push(Number(node.getAttribute("id")));
-        this.parseJSON(node);
-        this.level++;
-      } else {
-        this.level = this.levels.get(node.getAttribute('id'));
-      }
-      node = node.firstElementChild;
-      while(node) {
-        this.domWalker(node);
-        node = node.nextElementSibling;
-      }
+      const walker = document.createTreeWalker(node, NodeFilter.SHOW_ELEMENT);
+      do {
+        const e: HTMLElement = walker.currentNode as HTMLElement;
+        if(e.tagName !== 'topic') {
+          continue;
+        } else {
+          this.parseJSON(e);
+        }
+      } while (walker.nextNode());
     }
+
+    walkTheDOM(node) {
+          const found = this.fieldIds.findIndex(x => x === node.id);
+          if(found < 0 ) {
+            if(Number(node.id)) {
+              this.levels.set(node.id, this.level);
+              this.fieldIds.push(node.id);
+              this.level++;
+            }
+          }
+      node = node.firstChild;
+      while (node) {
+          this.walkTheDOM(node);
+          this.level = this.levels.get(node.id);
+          node = node.nextSibling;
+      }
+  }
 
   parseJSON(node) {
       const n = node;
-      if(node.firstElementChild){
+      if(n.firstElementChild) {
         if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
           this.addDynamicFormlyPage(n);
         } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'multi_step_form') {
@@ -93,6 +118,7 @@ export class FormComponent implements OnInit, AfterViewInit{
           this.convertTabsForm(n);
         } else if (n.firstElementChild.tagName === 'htmlFormStep') {
           this.convertStep(n);
+          this.index = 0;
         } else if (n.firstElementChild.tagName === 'htmlFormTab') {
           this.convertTab(n);
         } else if (n.firstElementChild.tagName === 'container') {
@@ -119,23 +145,25 @@ export class FormComponent implements OnInit, AfterViewInit{
       }
   }
 
+
   addDynamicFormlyPage(node: any): void {
     console.log('add_formly');
   }
 
   convertMultistepForm(node: any) {
-      this.fieldGroup.push(
-        {
-          type: 'stepper',
-          wrappers: ['panel'],
-          templateOptions: { label: node.getAttribute('text') },
-          fieldGroup: []
-        }
-      );
+    // eslint-disable-next-line no-eval
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+          {
+            type: 'stepper',
+            wrappers: ['panel'],
+            templateOptions: { label: node.getAttribute('text') },
+            fieldGroup: []
+         }
+    );
   }
 
   convertStep(node: any) {
-    this.fieldGroup[this.level -1].fieldGroup.push(
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
       {
         templateOptions: { label: node.getAttribute('text') },
         fieldGroup: []
@@ -144,18 +172,18 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTabsForm(node: any) {
-      this.fieldGroup.push(
-        {
-          type: 'tabs',
-          wrappers: ['panel'],
-          templateOptions: { label: node.getAttribute('text') },
-          fieldGroup: []
-        }
-      );
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+      {
+        type: 'tabs',
+        wrappers: ['panel'],
+        templateOptions: { label: node.getAttribute('text') },
+        fieldGroup: []
+      }
+    );
   }
 
   convertTab(node: any) {
-    this.fieldGroup[this.fieldGroup.length -1].fieldGroup.push(
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
       {
         templateOptions: { label: node.getAttribute('text') },
         fieldGroup: []
@@ -164,17 +192,28 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertContainer(node: any) {
-    this.fieldGroup.push(
-      {
-        type: 'container',
-        wrappers: ['conainerwrapper'],
-        fieldGroup: [],
-      }
-    );
+    if(this.level === 1) {
+      this.fields.push(
+        {
+          type: 'container',
+          wrappers: ['conainerwrapper'],
+          fieldGroup: [],
+        }
+      );
+    } else {
+      this.fields[this.fields.length - 1].fieldGroup.push(
+        {
+          type: 'container',
+          wrappers: ['conainerwrapper'],
+          fieldGroup: [],
+        }
+      );
+
+    }
   }
 
   convertRow(node: any) {
-    this.fieldGroup.push(
+    this.fields.push(
       {
         type: 'row',
         wrappers: ['rowwrapper'],
@@ -184,7 +223,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertColumn(node: any) {
-    this.fieldGroup.push(
+    this.fields.push(
       {
         type: 'column',
         wrappers: ['columnwrapper'],
@@ -194,14 +233,14 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTextfield(node: any) {
-      this.fieldGroup[this.fieldGroup.length -1].fieldGroup[this.fieldGroup[this.fieldGroup.length -1].fieldGroup.length - 1].fieldGroup.push(
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
         {
           key: node.firstChild.getAttribute('key'),
           type: 'input',
           templateOptions: {
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
-            label: node.parentElement.getAttribute('text'),
+            label: node.getAttribute('text'),
             required: node.firstChild.getAttribute('required')
           },
         }
@@ -209,7 +248,8 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTextarea(node: any) {
-    this.fieldGroup[this.fieldGroup.length -1].fieldGroup[this.fieldGroup[this.fieldGroup.length -1].fieldGroup.length - 1].fieldGroup.push(
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+
       {
         key: node.firstChild.getAttribute('key'),
         type: 'textarea',
@@ -231,7 +271,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       const o = {value: i, label: os[i].getAttribute('text')};
       options.push(o);
     }
-    this.fieldGroup[this.fieldGroup.length -1].fieldGroup[this.fieldGroup[this.fieldGroup.length -1].fieldGroup.length - 1].fieldGroup.push(
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
       {
         key: node.getAttribute('key'),
         type: 'select',
@@ -253,7 +293,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       const o = {value: i, label: os[i].getAttribute('text')};
       options.push(o);
     }
-    this.fieldGroup[this.fieldGroup.length -1].fieldGroup[this.fieldGroup[this.fieldGroup.length -1].fieldGroup.length - 1].fieldGroup.push(
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
       {
         key: node.getAttribute('key'),
         type: 'radio',
@@ -269,7 +309,8 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertCheckbox(node: any) {
-    this.fieldGroup[this.fieldGroup.length -1].fieldGroup[this.fieldGroup[this.fieldGroup.length -1].fieldGroup.length - 1].fieldGroup.push(
+
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
       {
         key: node.firstChild.getAttribute('key'),
         type: 'checkbox',
@@ -286,6 +327,7 @@ export class FormComponent implements OnInit, AfterViewInit{
 
 
   submit() {
+    console.log(this.model);
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
