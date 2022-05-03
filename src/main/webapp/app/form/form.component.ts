@@ -70,10 +70,22 @@ export class FormComponent implements OnInit, AfterViewInit{
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(this.xml,"text/xml");
     this.topics = xmlDoc.getElementsByTagName("topic");
+    for(let i = 0; i < this.topics.length; i++) {
+      if (this.topics[i].hasChildNodes()) {
+        this.topics[i].childNodes.forEach(child => {
+          if(child.tagName !== 'topic') {
+            this.topics[i].removeChild(child)
+          }
+        });
+      }
+    }
   }
 
   convert() {
     this.walkTheDOM(this.topics[0]);
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(this.xml,"text/xml");
+    this.topics = xmlDoc.getElementsByTagName("topic");
     this.domWalker(this.topics[0]);
     this.fields = this.fields.splice(0);
     }
@@ -91,14 +103,12 @@ export class FormComponent implements OnInit, AfterViewInit{
     }
 
     walkTheDOM(node) {
-          const found = this.fieldIds.findIndex(x => x === node.id);
-          if(found < 0 ) {
-            if(Number(node.id)) {
-              this.levels.set(node.id, this.level);
-              this.fieldIds.push(node.id);
-              this.level++;
-            }
-          }
+      const found = this.fieldIds.findIndex(x => x === node.id);
+      if(found < 0 ) {
+          this.levels.set(node.id, this.level);
+          this.fieldIds.push(node.id);
+          this.level++;
+      }
       node = node.firstChild;
       while (node) {
           this.walkTheDOM(node);
