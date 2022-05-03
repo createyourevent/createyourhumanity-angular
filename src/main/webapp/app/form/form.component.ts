@@ -151,6 +151,8 @@ export class FormComponent implements OnInit, AfterViewInit{
           console.log('radio');
         } else if (n.firstElementChild.tagName === 'checkbox') {
           this.convertCheckbox(n);
+        }  else if (n.firstElementChild.tagName === 'hr') {
+          this.convertHr(n);
         }
       }
   }
@@ -158,6 +160,15 @@ export class FormComponent implements OnInit, AfterViewInit{
 
   addDynamicFormlyPage(node: any): void {
     console.log('add_formly');
+  }
+
+  convertHr(node: any): void {
+    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+      {
+        template: '<hr/>',
+        fieldGroup: []
+     }
+    );
   }
 
   convertMultistepForm(node: any) {
