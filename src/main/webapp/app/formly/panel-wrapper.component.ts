@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 
 @Component({
   selector: 'jhi-formly-wrapper-panel',
   template: `
-    <div class="panel card">
-      <div class="card-header">
+    <div class="panel card" [style] = "margin">
+      <div class="card-header" style="background-color:{{ bgColor }}">
         <h3 class="title" [style]="margin">{{ to.label }}</h3>
         <div class="expandable">
           <a (click)="setExpanded()">+Expand+</a>
@@ -17,16 +17,22 @@ import { FieldWrapper } from '@ngx-formly/core';
     </div>
   `,
 })
-export class PanelWrapperComponent extends FieldWrapper {
+export class PanelWrapperComponent extends FieldWrapper implements OnInit {
 
   expanded = true;
   style = "display: none";
-  margin = "margin-left: 0px";
+  margin = "margin-top: 4px; margin-bottom: 4px;";
+  bgColor: string;
 
   constructor() {
     super();
-
+    // this.bgColor = this.field.templateOptions;
   }
+  ngOnInit(): void {
+    this.bgColor = this.field.templateOptions.bgColor;
+  }
+
+
 
   setExpanded(): void {
     if(this.expanded) {

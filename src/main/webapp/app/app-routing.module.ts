@@ -29,15 +29,11 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'createyourhumanity-mindmap',
           loadChildren: () => import(`./createyourhumanity-mindmap/createyourhumanity-mindmap.module`).then(m => m.CreateyourhumanityMindmapModule),
         },
-        */
         {
           path: 'form-generator',
           loadChildren: () => import(`./form-generator/form-generator.module`).then(m => m.FormGeneratorModule),
         },
-        {
-          path: 'form',
-          loadChildren: () => import(`./form/form.module`).then(m => m.FormModule),
-        },
+        */
         navbarRoute,
         ...errorRoute,
       ],

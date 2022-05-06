@@ -177,7 +177,10 @@ export class FormComponent implements OnInit, AfterViewInit{
           {
             type: 'stepper',
             wrappers: ['panel'],
-            templateOptions: { label: node.getAttribute('text') },
+            templateOptions: {
+              label: node.getAttribute('text'),
+              bgColor: node.getAttribute('bgColor')
+            },
             fieldGroup: []
          }
     );
@@ -197,7 +200,10 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         type: 'tabs',
         wrappers: ['panel'],
-        templateOptions: { label: node.getAttribute('text') },
+        templateOptions: {
+          label: node.getAttribute('text'),
+          bgColor: node.getAttribute('bgColor')
+        },
         fieldGroup: []
       }
     );

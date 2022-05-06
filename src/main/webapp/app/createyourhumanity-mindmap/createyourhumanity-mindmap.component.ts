@@ -34,9 +34,11 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
               private userService: UserService,) { }
 
   ngOnInit(): void {
+    /*
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       window.location.reload();
     });
+    */
 
         this.mindmapService.query().subscribe(res => {
           if(res.body.length === 1) {
