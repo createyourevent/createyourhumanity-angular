@@ -25,7 +25,7 @@ interface Item {
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit{
+export class ProfileComponent implements OnInit, AfterViewInit{
 
   items: Item[] = [];
   components: any[] = []
@@ -34,8 +34,7 @@ export class ProfileComponent implements OnInit{
   forms: any[] = [];
   pages: any;
 
-  // @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
-  @ViewChild(TabView) tabView: TabView;
+  @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @Input() userId: string;
   @Input() mapId: string;
 
@@ -51,8 +50,7 @@ export class ProfileComponent implements OnInit{
               private router: Router,
               private viewContainerRef: ViewContainerRef ) { }
 
-    ngOnInit(): void {
-
+  ngOnInit() {
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -65,9 +63,11 @@ export class ProfileComponent implements OnInit{
               const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
               this.pages = xml.querySelectorAll('[id="form"]');
 
+              let index = 0;
               this.pages.forEach(page => {
                 this.forms.push(page.parentElement);
-                this.addTab(page.parentElement.getAttribute('text'));
+                this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+                index++;
               });
             });
           });
@@ -75,16 +75,18 @@ export class ProfileComponent implements OnInit{
       })
   }
 
-  addTab(title: string) {
-    const nTabs = this.tabView.tabs.length;
-    const tab: TabPanel = new TabPanel(this.tabView, this.viewContainerRef, this.cd);
-    tab.header = title;
-    const component: typeof FormComponent = FormComponent;
-    const r = tab.viewContainer.createComponent(component);
-    r.instance.xml = this.forms[nTabs].outerHTML;
-    r.instance.userId = this.userId;
-    r.instance.mapId = this.mindmap.id;
-    this.tabView.tabs.push(tab);
+  ngAfterViewInit(): any {
+    this.profileHosts.changes.subscribe(ph => {
+      let index = 0;
+      ph.forEach(p => {
+        const component: typeof FormComponent = FormComponent;
+        const r = p.viewContainerRef.createComponent(component);
+        r.instance.xml = this.forms[index].outerHTML;
+        r.instance.userId = this.userId;
+        r.instance.mapId = this.mindmap.id;
+        index++;
+      });
+    });
   }
 }
 

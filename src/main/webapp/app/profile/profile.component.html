@@ -1,2 +1,5 @@
 <p-tabView>
+  <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">
+    <ng-container appProfileHost></ng-container>
+  </p-tabPanel>
 </p-tabView>

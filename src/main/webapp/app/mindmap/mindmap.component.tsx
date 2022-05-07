@@ -14,6 +14,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 
 
 @Component({
@@ -29,12 +31,19 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   private location = 'en';
   private pm: PersistenceManager;
   private account: Account;
+  _routerSub = Subscription.EMPTY;
 
   constructor(private translateService: TranslateService,
                       sessionStorageService: SessionStorageService,
               private accountService: AccountService,
-              private maincontrollerService: MaincontrollerService) {
+              private maincontrollerService: MaincontrollerService,
+              private router: Router) {
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
+    this._routerSub = this.router.events
+        .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
+        .subscribe(() => {
+            //this.reloadCurrentRoute();
+         });
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -48,6 +57,15 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   public ngAfterViewInit() {
     this.hasViewLoaded = true;
     this.renderComponent();
+  }
+
+  reloadCurrentRoute() {
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+        console.log(currentUrl);
+        this._routerSub.unsubscribe();
+    });
   }
 
   private renderComponent() {
