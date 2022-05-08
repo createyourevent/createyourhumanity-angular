@@ -14,6 +14,11 @@ entity UserMindmap {
     modified ZonedDateTime
 }
 
+entity KeyTable {
+    key String
+    created ZonedDateTime
+    modified ZonedDateTime
+}
 /**
  * Many to one relationship.
  */

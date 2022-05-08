@@ -109,6 +109,18 @@
                 <span jhiTranslate="global.menu.entities.userMindmap">User Mindmap</span>
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="key-table"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.keyTable">Key Table</span>
+              </a>
+            </li>
             <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
           </ul>
         </li>

@@ -1,0 +1,82 @@
+<div>
+  <h2 id="page-heading" data-cy="KeyTableHeading">
+    <span jhiTranslate="createyourhumanityAngularApp.keyTable.home.title">Key Tables</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="createyourhumanityAngularApp.keyTable.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-key-table"
+        [routerLink]="['/key-table/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="createyourhumanityAngularApp.keyTable.home.createLabel"> Create a new Key Table </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="keyTables?.length === 0">
+    <span jhiTranslate="createyourhumanityAngularApp.keyTable.home.notFound">No keyTables found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="keyTables && keyTables.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.keyTable.key">Key</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.keyTable.created">Created</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.keyTable.modified">Modified</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let keyTable of keyTables; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/key-table', keyTable.id, 'view']">{{ keyTable.id }}</a>
+          </td>
+          <td>{{ keyTable.key }}</td>
+          <td>{{ keyTable.created | formatMediumDatetime }}</td>
+          <td>{{ keyTable.modified | formatMediumDatetime }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/key-table', keyTable.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/key-table', keyTable.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(keyTable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

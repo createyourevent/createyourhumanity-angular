@@ -10,6 +10,7 @@
         "mindmap": "Mindmap",
         "formulaData": "Formula Data",
         "userMindmap": "User Mindmap",
+        "keyTable": "Key Table",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

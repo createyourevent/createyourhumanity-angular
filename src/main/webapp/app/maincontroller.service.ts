@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ApplicationConfigService } from './core/config/application-config.service';
 import dayjs from 'dayjs/esm';
 import { map } from 'rxjs';
+import { KeyTableService } from './entities/key-table/service/key-table.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,9 @@ export class MaincontrollerService {
 
   public resourceUrl_user_mindmaps = this.applicationConfigService.getEndpointFor('api/user-mindmaps');
   public resourceUrl_formula_datas = this.applicationConfigService.getEndpointFor('api/formula-data');
+  public resourceUrl_key_tables = this.applicationConfigService.getEndpointFor('api/key-tables');
 
-  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) { }
+  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
   findUserMindmapByUserId(userId: string): Observable<HttpResponse<IUserMindmap>> {
     return this.http.get<IUserMindmap>(`${this.resourceUrl_user_mindmaps}/${userId}/findByUserId`, { observe: 'response' })
@@ -26,6 +28,12 @@ export class MaincontrollerService {
     return this.http
     .get<IFormulaData>(`${this.resourceUrl_formula_datas}/${userId}/findByUserId`, { observe: 'response' })
     .pipe(map((res: HttpResponse<IFormulaData>) => this.convertDateFromServer(res)));
+  }
+
+  findKeyTableByKey(key: string): Observable<HttpResponse<IFormulaData>> {
+    return this.http
+    .get<IFormulaData>(`${this.resourceUrl_key_tables}/${key}/findByKey`, { observe: 'response' })
+    .pipe(map((res: HttpResponse<IFormulaData>) => this.keyTableService.convertDateFromServer(res)));
   }
 
   protected convertDateFromClient(formulaData: IFormulaData): IFormulaData {

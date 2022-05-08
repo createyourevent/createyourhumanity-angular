@@ -19,6 +19,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'createyourhumanityAngularApp.userMindmap.home.title' },
         loadChildren: () => import('./user-mindmap/user-mindmap.module').then(m => m.UserMindmapModule),
       },
+      {
+        path: 'key-table',
+        data: { pageTitle: 'createyourhumanityAngularApp.keyTable.home.title' },
+        loadChildren: () => import('./key-table/key-table.module').then(m => m.KeyTableModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

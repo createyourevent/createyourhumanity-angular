@@ -12,6 +12,8 @@ import { AccountService } from 'app/core/auth/account.service'
 import { MindmapService } from 'app/entities/mindmap/service/mindmap.service'
 import { MaincontrollerService } from 'app/maincontroller.service'
 import { LoginService } from 'app/login/login.service'
+import { KeyTableService } from 'app/entities/key-table/service/key-table.service'
+import { KeyTable } from 'app/entities/key-table/key-table.model'
 
 @Component({
   selector: 'jhi-form',
@@ -59,7 +61,8 @@ export class FormComponent implements OnInit, AfterViewInit{
               private maincontrollerService: MaincontrollerService,
               private userService: UserService,
               private mindmapService: MindmapService,
-              private loginService: LoginService) {}
+              private loginService: LoginService,
+              private keyTableService: KeyTableService) {}
 
   getFieldGroup(level: number): string {
     const arr: string[] = [];
@@ -148,39 +151,56 @@ export class FormComponent implements OnInit, AfterViewInit{
 
   parseJSON(node) {
       const n = node;
-      const req = JSON.parse(node.firstChild.getAttribute('required'));
-      if(n.firstElementChild) {
-        if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
-          this.addDynamicFormlyPage(n);
-        } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'multi_step_form') {
-          this.convertMultistepForm(n);
-        } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'tabs_form') {
-          this.convertTabsForm(n);
-        } else if (n.firstElementChild.tagName === 'htmlFormStep') {
-          this.convertStep(n);
-          this.index = 0;
-        } else if (n.firstElementChild.tagName === 'htmlFormTab') {
-          this.convertTab(n);
-        } else if (n.firstElementChild.tagName === 'textfield') {
-          this.convertTextfield(n, req);
-        } else if (n.firstElementChild.tagName === 'textarea') {
-          this.convertTextarea(n, req);
-        } else if (n.firstElementChild.tagName === 'select') {
-          this.convertSelect(n, req);
-        } else if (n.firstElementChild.tagName === 'option') {
-          console.log('option');
-        } else if (n.firstElementChild.tagName === 'radiogroup') {
-          this.convertRadiogroup(n, req);
-        } else if (n.firstElementChild.tagName === 'radio') {
-          console.log('radio');
-        } else if (n.firstElementChild.tagName === 'checkbox') {
-          this.convertCheckbox(n, req);
-        } else if (n.firstElementChild.tagName === 'hr') {
-          this.convertHr(n);
-        } else if (n.firstElementChild.tagName === 'title') {
-          this.convertTitle(n);
-        }
+      let req = false;
+      if(JSON.parse(node.firstChild.getAttribute('required')) !== null) {
+        req = JSON.parse(node.firstChild.getAttribute('required'));
       }
+      req = JSON.parse(node.firstChild.getAttribute('required'));
+      let key = node.getAttribute('text').toLowerCase();
+      this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
+        const kt = res.body;
+        if(!kt) {
+          const keyTable = new KeyTable();
+          keyTable.key = node.getAttribute('text').toLowerCase();
+          keyTable.created = dayjs();
+          keyTable.modified = dayjs();
+          this.keyTableService.create(keyTable).subscribe();
+        } else {
+          key = key + '_' + node.getAttribute('id');
+        }
+        if(n.firstElementChild) {
+          if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
+            this.addDynamicFormlyPage(n);
+          } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'multi_step_form') {
+            this.convertMultistepForm(n);
+          } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'tabs_form') {
+            this.convertTabsForm(n);
+          } else if (n.firstElementChild.tagName === 'htmlFormStep') {
+            this.convertStep(n);
+            this.index = 0;
+          } else if (n.firstElementChild.tagName === 'htmlFormTab') {
+            this.convertTab(n);
+          } else if (n.firstElementChild.tagName === 'textfield') {
+            this.convertTextfield(n, req, key);
+          } else if (n.firstElementChild.tagName === 'textarea') {
+            this.convertTextarea(n, req, key);
+          } else if (n.firstElementChild.tagName === 'select') {
+            this.convertSelect(n, req, key);
+          } else if (n.firstElementChild.tagName === 'option') {
+            console.log('option');
+          } else if (n.firstElementChild.tagName === 'radiogroup') {
+            this.convertRadiogroup(n, req, key);
+          } else if (n.firstElementChild.tagName === 'radio') {
+            console.log('radio');
+          } else if (n.firstElementChild.tagName === 'checkbox') {
+            this.convertCheckbox(n, req, key);
+          } else if (n.firstElementChild.tagName === 'hr') {
+            this.convertHr(n);
+          } else if (n.firstElementChild.tagName === 'title') {
+            this.convertTitle(n);
+          }
+        }
+    });
   }
 
 
@@ -255,10 +275,10 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertTextfield(node: any, req: boolean) {
+  convertTextfield(node: any, req: boolean, key: string) {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
-          key: node.firstChild.getAttribute('key'),
+          key: key,
           type: 'input',
           templateOptions: {
             placeholder: node.getAttribute('text'),
@@ -270,11 +290,11 @@ export class FormComponent implements OnInit, AfterViewInit{
       );
   }
 
-  convertTextarea(node: any, req: boolean) {
+  convertTextarea(node: any, req: boolean, key: string) {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
 
       {
-        key: node.firstChild.getAttribute('key'),
+        key: key,
         type: 'textarea',
         templateOptions: {
           placeholder: node.getAttribute('text'),
@@ -287,7 +307,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertSelect(node: any, req: boolean) {
+  convertSelect(node: any, req: boolean, key: string) {
     const os = node.children;
     const options = [];
     for(let i = 1; i < os.length; i++) {
@@ -296,7 +316,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: node.getAttribute('key'),
+        key: key,
         type: 'select',
         templateOptions: {
           placeholder: node.getAttribute('text'),
@@ -309,7 +329,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertRadiogroup(node: any, req: boolean) {
+  convertRadiogroup(node: any, req: boolean, key: string) {
     const os = node.children;
     const options: { label: string; value: string; }[] = [];
     for(let i = 1; i < os.length; i++) {
@@ -330,11 +350,11 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertCheckbox(node: any, req: boolean) {
+  convertCheckbox(node: any, req: boolean,  key: string) {
 
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: node.firstChild.getAttribute('key'),
+        key: key,
         type: 'checkbox',
         templateOptions: {
           placeholder: node.getAttribute('text'),
