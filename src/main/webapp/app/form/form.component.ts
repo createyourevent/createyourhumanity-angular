@@ -61,12 +61,41 @@ export class FormComponent implements OnInit, AfterViewInit{
               private mindmapService: MindmapService,
               private loginService: LoginService) {}
 
+  getFieldGroup(level: number): string {
+    const arr: string[] = [];
+    const group = 'this.fields';
+    arr[0] = group;
+    for(let i = 0; i < level; i++) {
+      arr[i + 1] = arr[i] + '[' + arr[i] + '.length -1].fieldGroup'
+    }
+    return arr[arr.length - 1];
+  }
 
   ngAfterViewInit(): void {
     this.convert();
   }
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account
+      if(this.account) {
+        this.userService.query().subscribe(users => {
+          this.user = users.body.find(x => x.id === this.account.id)
+          this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
+            const fd = res.body;
+            this.model = JSON.parse(fd.map);
+          })
+        })
+      } else {
+        this.loginService.login()
+      }
+    },
+    error => {
+      if(error.status === 401) {
+        this.loginService.login()
+      }
+    })
+
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(this.xml,"text/xml");
     this.topics = xmlDoc.getElementsByTagName("topic");
@@ -119,6 +148,7 @@ export class FormComponent implements OnInit, AfterViewInit{
 
   parseJSON(node) {
       const n = node;
+      const req = JSON.parse(node.firstChild.getAttribute('required'));
       if(n.firstElementChild) {
         if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
           this.addDynamicFormlyPage(n);
@@ -131,28 +161,24 @@ export class FormComponent implements OnInit, AfterViewInit{
           this.index = 0;
         } else if (n.firstElementChild.tagName === 'htmlFormTab') {
           this.convertTab(n);
-        } else if (n.firstElementChild.tagName === 'container') {
-          this.convertContainer(n);
-        } else if (n.firstElementChild.tagName === 'row') {
-          this.convertRow(n);
-        } else if (n.firstElementChild.tagName === 'column') {
-          this.convertColumn(n);
         } else if (n.firstElementChild.tagName === 'textfield') {
-          this.convertTextfield(n);
+          this.convertTextfield(n, req);
         } else if (n.firstElementChild.tagName === 'textarea') {
-          this.convertTextarea(n);
+          this.convertTextarea(n, req);
         } else if (n.firstElementChild.tagName === 'select') {
-          this.convertSelect(n);
+          this.convertSelect(n, req);
         } else if (n.firstElementChild.tagName === 'option') {
           console.log('option');
         } else if (n.firstElementChild.tagName === 'radiogroup') {
-          this.convertRadiogroup(n);
+          this.convertRadiogroup(n, req);
         } else if (n.firstElementChild.tagName === 'radio') {
           console.log('radio');
         } else if (n.firstElementChild.tagName === 'checkbox') {
-          this.convertCheckbox(n);
-        }  else if (n.firstElementChild.tagName === 'hr') {
+          this.convertCheckbox(n, req);
+        } else if (n.firstElementChild.tagName === 'hr') {
           this.convertHr(n);
+        } else if (n.firstElementChild.tagName === 'title') {
+          this.convertTitle(n);
         }
       }
   }
@@ -163,7 +189,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertHr(node: any): void {
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         template: '<hr/>',
         fieldGroup: []
@@ -171,9 +197,18 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
+  convertTitle(node: any): void {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        template: `<h2>${node.getAttribute('text') as string}</h2>`,
+        fieldGroup: []
+     }
+    );
+  }
+
   convertMultistepForm(node: any) {
     // eslint-disable-next-line no-eval
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
           {
             type: 'stepper',
             wrappers: ['panel'],
@@ -187,7 +222,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertStep(node: any) {
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         templateOptions: { label: node.getAttribute('text') },
         fieldGroup: []
@@ -196,13 +231,15 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTabsForm(node: any) {
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    const font = node.getAttribute('fontStyle').split(';;');
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         type: 'tabs',
         wrappers: ['panel'],
         templateOptions: {
           label: node.getAttribute('text'),
-          bgColor: node.getAttribute('bgColor')
+          bgColor: node.getAttribute('bgColor'),
+          color: font[1]
         },
         fieldGroup: []
       }
@@ -210,7 +247,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTab(node: any) {
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         templateOptions: { label: node.getAttribute('text') },
         fieldGroup: []
@@ -218,49 +255,8 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertContainer(node: any) {
-    if(this.level === 1) {
-      this.fields.push(
-        {
-          type: 'container',
-          wrappers: ['conainerwrapper'],
-          fieldGroup: [],
-        }
-      );
-    } else {
-      this.fields[this.fields.length - 1].fieldGroup.push(
-        {
-          type: 'container',
-          wrappers: ['conainerwrapper'],
-          fieldGroup: [],
-        }
-      );
-
-    }
-  }
-
-  convertRow(node: any) {
-    this.fields.push(
-      {
-        type: 'row',
-        wrappers: ['rowwrapper'],
-        fieldGroup: [],
-      }
-    );
-  }
-
-  convertColumn(node: any) {
-    this.fields.push(
-      {
-        type: 'column',
-        wrappers: ['columnwrapper'],
-        fieldGroup: [],
-      }
-    );
-  }
-
-  convertTextfield(node: any) {
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+  convertTextfield(node: any, req: boolean) {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
           key: node.firstChild.getAttribute('key'),
           type: 'input',
@@ -268,14 +264,14 @@ export class FormComponent implements OnInit, AfterViewInit{
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
             label: node.getAttribute('text'),
-            required: node.firstChild.getAttribute('required')
+            required: req,
           },
         }
       );
   }
 
-  convertTextarea(node: any) {
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+  convertTextarea(node: any, req: boolean) {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
 
       {
         key: node.firstChild.getAttribute('key'),
@@ -285,20 +281,20 @@ export class FormComponent implements OnInit, AfterViewInit{
           description: node.getAttribute('descriptpion'),
           rows: 10,
           label: node.getAttribute('text'),
-          required: node.firstChild.getAttribute('required')
+          required: req,
         },
       }
     );
   }
 
-  convertSelect(node: any) {
+  convertSelect(node: any, req: boolean) {
     const os = node.children;
     const options = [];
     for(let i = 1; i < os.length; i++) {
       const o = {value: i, label: os[i].getAttribute('text')};
       options.push(o);
     }
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         key: node.getAttribute('key'),
         type: 'select',
@@ -306,38 +302,37 @@ export class FormComponent implements OnInit, AfterViewInit{
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
           label: node.getAttribute('text'),
-          required: node.firstChild.getAttribute('required'),
+          required: req,
           options
         },
       }
     );
   }
 
-  convertRadiogroup(node: any) {
+  convertRadiogroup(node: any, req: boolean) {
     const os = node.children;
-    const options = [];
+    const options: { label: string; value: string; }[] = [];
     for(let i = 1; i < os.length; i++) {
-      const o = {value: i, label: os[i].getAttribute('text')};
+      const o = { label: os[i].getAttribute('text'), value: `${i}`};
       options.push(o);
     }
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: node.getAttribute('key'),
+        key: node.getAttribute('text'),
         type: 'radio',
+        className: '',
         templateOptions: {
-          placeholder: node.getAttribute('text'),
-          description: node.firstChild.getAttribute('descriptpion'),
           label: node.getAttribute('text'),
-          required: node.firstChild.getAttribute('required'),
-          options
+          required: true,
+           options: options
         },
       }
     );
   }
 
-  convertCheckbox(node: any) {
+  convertCheckbox(node: any, req: boolean) {
 
-    eval(this.txtarr[this.levels.get(node.id) - 1]).push(
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         key: node.firstChild.getAttribute('key'),
         type: 'checkbox',
@@ -345,7 +340,7 @@ export class FormComponent implements OnInit, AfterViewInit{
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
           label: node.getAttribute('text'),
-          required: node.firstChild.getAttribute('required')
+          required: req,
         },
       }
     );
@@ -354,7 +349,6 @@ export class FormComponent implements OnInit, AfterViewInit{
 
 
   submit() {
-    console.log(this.model);
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -365,12 +359,13 @@ export class FormComponent implements OnInit, AfterViewInit{
             if(fd === null) {
               const formdata: FormulaData = new FormulaData()
               formdata.created = dayjs()
-              formdata.map = this.model
+              formdata.map = JSON.stringify(this.model),
               formdata.modified = dayjs()
               formdata.user = this.user
               this.formulaDataService.create(formdata).subscribe()
             } else {
-              fd.map = this.model
+              const a = {...JSON.parse(fd.map), ...this.model}
+              fd.map = JSON.stringify(a)
               fd.modified = dayjs()
               this.formulaDataService.update(fd).subscribe()
             }
