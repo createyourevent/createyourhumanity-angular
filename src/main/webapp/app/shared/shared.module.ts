@@ -29,6 +29,8 @@ import { ContainerWrapperComponent } from 'app/formly/container-wrapper.componen
 import { ContainerComponent } from 'app/formly/container.component';
 import { ColumnWrapperComponent } from 'app/formly/column-wrapper.component';
 import { RowWrapperComponent } from 'app/formly/row-wrapper.component';
+import { DateTimeInputComponent } from 'app/formly/date-time.component';
+import { DateInputComponent } from 'app/formly/date.component';
 
 @NgModule({
   imports: [SharedLibsModule,
@@ -51,6 +53,8 @@ import { RowWrapperComponent } from 'app/formly/row-wrapper.component';
                 { name: 'container', component: ContainerComponent },
                 { name: 'row', component: RowComponent },
                 { name: 'column', component: ColumnComponent },
+                { name: 'date', component: DateInputComponent, wrappers: ['form-field'] },
+                { name: 'datetime', component: DateTimeInputComponent, wrappers: ['form-field'] },
               ],
             }),
   ],
@@ -71,7 +75,9 @@ import { RowWrapperComponent } from 'app/formly/row-wrapper.component';
     FormlyFieldTabsComponent,
     ContainerComponent,
     RowComponent,
-    ColumnComponent
+    ColumnComponent,
+    DateInputComponent,
+    DateTimeInputComponent
   ],
   exports: [
     SharedLibsModule,

@@ -203,7 +203,7 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'desc') {
             this.convertDescription(n);
           } else if (n.firstElementChild.tagName === 'calendar') {
-            this.convertCalendar(n);
+            this.convertCalendar(n, req);
           }
         }
         /*
@@ -225,13 +225,25 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertCalendar(node: any): void {
+  convertCalendar(node: any, req: boolean, key?: string): void {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-      {
-        template: '<hr/>',
-        fieldGroup: []
-     }
-    );
+        {
+          key: _key,
+          type: 'date',
+          templateOptions: {
+            placeholder: node.getAttribute('text'),
+            description: node.getAttribute('descriptpion'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
   }
 
   convertHr(node: any): void {
