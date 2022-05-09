@@ -36,6 +36,10 @@ export class MaincontrollerService {
     .pipe(map((res: HttpResponse<IFormulaData>) => this.keyTableService.convertDateFromServer(res)));
   }
 
+  deleteAllFromKeyTable() {
+    this.http.delete(`${this.resourceUrl_key_tables}/deleteAll`, {observe: 'response'});
+  }
+
   protected convertDateFromClient(formulaData: IFormulaData): IFormulaData {
     return Object.assign({}, formulaData, {
       created: formulaData.created?.isValid() ? formulaData.created.toJSON() : undefined,

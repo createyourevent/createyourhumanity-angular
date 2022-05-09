@@ -43,4 +43,10 @@ public class KeyTableExtResource {
         KeyTable fd = keyTableExtRepository.findByKey(key);
         return fd;
     }
+
+    @DeleteMapping("/key-tables/deleteAll")
+    public void deleteAllKeyTable() {
+        log.debug("REST request to delete all in KeyTable : {}");
+        keyTableExtRepository.deleteAll();
+    }
 }

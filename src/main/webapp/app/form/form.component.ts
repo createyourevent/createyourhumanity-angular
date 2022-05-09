@@ -69,7 +69,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     const group = 'this.fields';
     arr[0] = group;
     for(let i = 0; i < level; i++) {
-      arr[i + 1] = arr[i] + '[' + arr[i] + '.length -1].fieldGroup'
+      arr[i + 1] = arr[i] + '[' + arr[i] + '.length - 1].fieldGroup'
     }
     return arr[arr.length - 1];
   }
@@ -98,7 +98,7 @@ export class FormComponent implements OnInit, AfterViewInit{
         this.loginService.login()
       }
     })
-
+    this.maincontrollerService.deleteAllFromKeyTable();
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(this.xml,"text/xml");
     this.topics = xmlDoc.getElementsByTagName("topic");
@@ -156,7 +156,8 @@ export class FormComponent implements OnInit, AfterViewInit{
         req = JSON.parse(node.firstChild.getAttribute('required'));
       }
       req = JSON.parse(node.firstChild.getAttribute('required'));
-      let key = node.getAttribute('text').toLowerCase();
+      /*
+      let key: string = node.getAttribute('text').toLowerCase();
       this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
         const kt = res.body;
         if(!kt) {
@@ -166,8 +167,9 @@ export class FormComponent implements OnInit, AfterViewInit{
           keyTable.modified = dayjs();
           this.keyTableService.create(keyTable).subscribe();
         } else {
-          key = key + '_' + node.getAttribute('id');
+          key = key + '_' + node.getAttribute('id') as string;
         }
+        */
         if(n.firstElementChild) {
           if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
             this.addDynamicFormlyPage(n);
@@ -181,31 +183,55 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'htmlFormTab') {
             this.convertTab(n);
           } else if (n.firstElementChild.tagName === 'textfield') {
-            this.convertTextfield(n, req, key);
+            this.convertTextfield(n, req);
           } else if (n.firstElementChild.tagName === 'textarea') {
-            this.convertTextarea(n, req, key);
+            this.convertTextarea(n, req);
           } else if (n.firstElementChild.tagName === 'select') {
-            this.convertSelect(n, req, key);
+            this.convertSelect(n, req);
           } else if (n.firstElementChild.tagName === 'option') {
             console.log('option');
           } else if (n.firstElementChild.tagName === 'radiogroup') {
-            this.convertRadiogroup(n, req, key);
+            this.convertRadiogroup(n, req);
           } else if (n.firstElementChild.tagName === 'radio') {
             console.log('radio');
           } else if (n.firstElementChild.tagName === 'checkbox') {
-            this.convertCheckbox(n, req, key);
+            this.convertCheckbox(n, req);
           } else if (n.firstElementChild.tagName === 'hr') {
             this.convertHr(n);
           } else if (n.firstElementChild.tagName === 'title') {
             this.convertTitle(n);
+          } else if (n.firstElementChild.tagName === 'desc') {
+            this.convertDescription(n);
+          } else if (n.firstElementChild.tagName === 'calendar') {
+            this.convertCalendar(n);
           }
         }
+        /*
     });
+    */
   }
 
 
   addDynamicFormlyPage(node: any): void {
     console.log('add_formly');
+  }
+
+  convertDescription(node: any): void {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        template: `<div>${node.getAttribute('text') as string}</div>`,
+        fieldGroup: []
+     }
+    );
+  }
+
+  convertCalendar(node: any): void {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        template: '<hr/>',
+        fieldGroup: []
+     }
+    );
   }
 
   convertHr(node: any): void {
@@ -275,10 +301,16 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertTextfield(node: any, req: boolean, key: string) {
+  convertTextfield(node: any, req: boolean, key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
-          key: key,
+          key: _key,
           type: 'input',
           templateOptions: {
             placeholder: node.getAttribute('text'),
@@ -290,11 +322,16 @@ export class FormComponent implements OnInit, AfterViewInit{
       );
   }
 
-  convertTextarea(node: any, req: boolean, key: string) {
+  convertTextarea(node: any, req: boolean, key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-
       {
-        key: key,
+        key: _key,
         type: 'textarea',
         templateOptions: {
           placeholder: node.getAttribute('text'),
@@ -307,16 +344,22 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertSelect(node: any, req: boolean, key: string) {
+  convertSelect(node: any, req: boolean, key?: string) {
     const os = node.children;
     const options = [];
     for(let i = 1; i < os.length; i++) {
       const o = {value: i, label: os[i].getAttribute('text')};
       options.push(o);
     }
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: key,
+        key: _key,
         type: 'select',
         templateOptions: {
           placeholder: node.getAttribute('text'),
@@ -329,7 +372,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertRadiogroup(node: any, req: boolean, key: string) {
+  convertRadiogroup(node: any, req: boolean, key?: string) {
     const os = node.children;
     const options: { label: string; value: string; }[] = [];
     for(let i = 1; i < os.length; i++) {
@@ -350,11 +393,16 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertCheckbox(node: any, req: boolean,  key: string) {
-
+  convertCheckbox(node: any, req: boolean,  key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: key,
+        key: _key,
         type: 'checkbox',
         templateOptions: {
           placeholder: node.getAttribute('text'),
