@@ -6,6 +6,7 @@ import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
 import { LoginService } from 'app/login/login.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   selector: 'jhi-friendlist',
@@ -17,6 +18,10 @@ export class FriendlistComponent implements OnInit {
   account: Account | null = null;
   user: IUser;
   friends: IFriends[] = [];
+  sortOptions: SelectItem[];
+  sortKey: string;
+  sortField: string;
+  sortOrder: number;
 
   constructor(private accountService: AccountService,
               private userService: UserService,
@@ -24,6 +29,10 @@ export class FriendlistComponent implements OnInit {
               private maincontrollerService: MaincontrollerService) { }
 
   ngOnInit() {
+    this.sortOptions = [
+      {label: 'Name', value: 'name'},
+  ];
+
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -36,6 +45,19 @@ export class FriendlistComponent implements OnInit {
       } else {
         this.loginService.login()
       }
+    });
   }
 
+  onSortChange(event) {
+    const value = event.value;
+
+    if (value.indexOf('!') === 0) {
+        this.sortOrder = -1;
+        this.sortField = value.substring(1, value.length);
+    }
+    else {
+        this.sortOrder = 1;
+        this.sortField = value;
+    }
+}
 }

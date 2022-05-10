@@ -1,3 +1,34 @@
-<p>
-  friendlist works!
-</p>
+<p-dataView #dv [value]="friends" [paginator]="true" [rows]="9" filterBy="name"
+[sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+<ng-template pTemplate="header">
+    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="p-mb-2 p-mb-md-0"></p-dropdown>
+        <span class="p-input-icon-left p-mb-2 p-mb-md-0">
+            <i class="pi pi-search"></i>
+            <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter($event.target.value)">
+        </span>
+    </div>
+</ng-template>
+<ng-template let-friend pTemplate="gridItem">
+  <div class="p-col-12 p-md-4">
+    <div class="friend-grid-item card">
+        <div class="friend-grid-item-top">
+            <div>
+                <i class="pi pi-tag friend-category-icon"></i>
+                <span class="friend-category">{{friend.}}</span>
+            </div>
+            <span [class]="'friend-badge status-' + friend.inventoryStatus.toLowerCase()">{{friend.inventoryStatus}}</span>
+        </div>
+        <div class="friend-grid-item-content">
+            <div class="friend-name">{{friend.name}}</div>
+            <div class="friend-description">{{friend.description}}</div>
+            <p-rating [ngModel]="friend.rating" [readonly]="true" [cancel]="false"></p-rating>
+        </div>
+        <div class="friend-grid-item-bottom">
+            <span class="friend-price">${{friend.price}}</span>
+            <p-button icon="pi pi-shopping-cart" [disabled]="friend.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+        </div>
+    </div>
+</div>
+</ng-template>
+</p-dataView>

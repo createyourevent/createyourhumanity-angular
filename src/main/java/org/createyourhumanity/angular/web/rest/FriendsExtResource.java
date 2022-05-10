@@ -50,17 +50,4 @@ public class FriendsExtResource {
         List<Friends> friends = friendsExtRepository.findByUser(id);
         return friends;
     }
-
-    /**
-     * {@code DELETE  /friends/:id} : delete the "id" friends.
-     *
-     * @param id the id of the friends to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/friends/{id}")
-    public ResponseEntity<Void> deleteFriends(@PathVariable String id) {
-        log.debug("REST request to delete Friends : {}", id);
-        friendsRepository.deleteById(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
-    }
 }
