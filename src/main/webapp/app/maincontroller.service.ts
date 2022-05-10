@@ -8,6 +8,7 @@ import { ApplicationConfigService } from './core/config/application-config.servi
 import dayjs from 'dayjs/esm';
 import { map } from 'rxjs';
 import { KeyTableService } from './entities/key-table/service/key-table.service';
+import { IFriends } from './entities/friends/friends.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class MaincontrollerService {
   public resourceUrl_user_mindmaps = this.applicationConfigService.getEndpointFor('api/user-mindmaps');
   public resourceUrl_formula_datas = this.applicationConfigService.getEndpointFor('api/formula-data');
   public resourceUrl_key_tables = this.applicationConfigService.getEndpointFor('api/key-tables');
+  public resourceUrl_friends = this.applicationConfigService.getEndpointFor('api/friends');
 
   public resourceUrl = this.applicationConfigService.getEndpointFor('authenticatedUser');
 
@@ -24,6 +26,10 @@ export class MaincontrollerService {
 
   findAuthenticatedUser() {
     return this.http.get<IUser>(`${this.resourceUrl}`, { observe: 'response' });
+  }
+
+  findFriendsFromUser(userId: string): Observable<HttpResponse<IFriends[]>> {
+    return this.http.get<IFriends[]>(`${this.resourceUrl_friends}/${userId}/findByUser`, { observe: 'response' });
   }
 
   findUserMindmapByUserId(userId: string): Observable<HttpResponse<IUserMindmap>> {

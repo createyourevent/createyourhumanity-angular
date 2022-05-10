@@ -60,8 +60,8 @@ export class FormComponent implements OnInit, AfterViewInit{
               private formulaDataService: FormulaDataService,
               private maincontrollerService: MaincontrollerService,
               private userService: UserService,
-              private mindmapService: MindmapService,
               private loginService: LoginService,
+              private mindmapService: MindmapService,
               private keyTableService: KeyTableService) {}
 
   getFieldGroup(level: number): string {
