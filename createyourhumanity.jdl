@@ -19,10 +19,29 @@ entity KeyTable {
     created ZonedDateTime
     modified ZonedDateTime
 }
+
+entity UserDetails {
+    dob ZonedDateTime
+    created ZonedDateTime
+    modified ZonedDateTime
+}
+
+entity Friends {
+    connectDate ZonedDateTime
+}
+
+/**
+ * One to one relationship.
+ */
+relationship OneToOne {
+    UserDetails{user} to User
+}
+
 /**
  * Many to one relationship.
  */
 relationship ManyToOne {
     FormulaData{user} to User
     UserMindmap{user} to User
+     Friends{user} to User
 }

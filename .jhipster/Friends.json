@@ -1,0 +1,27 @@
+{
+  "applications": "*",
+  "changelogDate": "20220509221525",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "friends",
+  "fields": [
+    {
+      "fieldName": "connectDate",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Friends",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "friends",
+      "relationshipName": "user",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "no"
+}

@@ -6,13 +6,23 @@ import org.createyourhumanity.angular.security.SecurityUtils;
 import org.createyourhumanity.angular.security.oauth2.AudienceValidator;
 import org.createyourhumanity.angular.security.oauth2.CustomClaimConverter;
 import org.createyourhumanity.angular.security.oauth2.JwtGrantedAuthorityConverter;
+import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
+import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
+import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
+import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -26,31 +36,41 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import tech.jhipster.config.JHipsterProperties;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.core.session.SessionRegistryImpl;
 
+@Configuration
 @EnableWebSecurity
+@KeycloakConfiguration
+// @EnableConfigurationProperties(KeycloakSpringBootProperties.class)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
+public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 
     private final JHipsterProperties jHipsterProperties;
 
     private final CorsFilter corsFilter;
+
+    private final KeycloakClientRequestFactory keycloakClientRequestFactory;
 
     @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
     private String issuerUri;
 
     private final SecurityProblemSupport problemSupport;
 
-    public SecurityConfiguration(CorsFilter corsFilter, JHipsterProperties jHipsterProperties, SecurityProblemSupport problemSupport) {
+    public SecurityConfiguration(CorsFilter corsFilter, JHipsterProperties jHipsterProperties, SecurityProblemSupport problemSupport, KeycloakClientRequestFactory keycloakClientRequestFactory) {
         this.corsFilter = corsFilter;
         this.problemSupport = problemSupport;
         this.jHipsterProperties = jHipsterProperties;
+        this.keycloakClientRequestFactory = keycloakClientRequestFactory;
     }
 
     @Override
@@ -153,5 +173,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         );
 
         return jwtDecoder;
+    }
+
+    @Bean
+    @Scope("prototype")
+    public KeycloakRestTemplate keycloakRestTemplate() {
+        return new KeycloakRestTemplate(keycloakClientRequestFactory);
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(keycloakAuthenticationProvider());
+    }
+
+    @Bean
+    @Override
+    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 }

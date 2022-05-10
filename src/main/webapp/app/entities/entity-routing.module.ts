@@ -24,6 +24,16 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'createyourhumanityAngularApp.keyTable.home.title' },
         loadChildren: () => import('./key-table/key-table.module').then(m => m.KeyTableModule),
       },
+      {
+        path: 'user-details',
+        data: { pageTitle: 'createyourhumanityAngularApp.userDetails.home.title' },
+        loadChildren: () => import('./user-details/user-details.module').then(m => m.UserDetailsModule),
+      },
+      {
+        path: 'friends',
+        data: { pageTitle: 'createyourhumanityAngularApp.friends.home.title' },
+        loadChildren: () => import('./friends/friends.module').then(m => m.FriendsModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

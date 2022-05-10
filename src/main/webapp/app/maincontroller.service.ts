@@ -1,3 +1,4 @@
+import { IUser } from 'app/entities/user/user.model';
 import { IFormulaData } from './entities/formula-data/formula-data.model';
 import { IUserMindmap } from './entities/user-mindmap/user-mindmap.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -17,7 +18,13 @@ export class MaincontrollerService {
   public resourceUrl_formula_datas = this.applicationConfigService.getEndpointFor('api/formula-data');
   public resourceUrl_key_tables = this.applicationConfigService.getEndpointFor('api/key-tables');
 
+  public resourceUrl = this.applicationConfigService.getEndpointFor('authenticatedUser');
+
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
+
+  findAuthenticatedUser() {
+    return this.http.get<IUser>(`${this.resourceUrl}`, { observe: 'response' });
+  }
 
   findUserMindmapByUserId(userId: string): Observable<HttpResponse<IUserMindmap>> {
     return this.http.get<IUserMindmap>(`${this.resourceUrl_user_mindmaps}/${userId}/findByUserId`, { observe: 'response' })
@@ -40,14 +47,14 @@ export class MaincontrollerService {
     this.http.delete(`${this.resourceUrl_key_tables}/deleteAll`, {observe: 'response'});
   }
 
-  protected convertDateFromClient(formulaData: IFormulaData): IFormulaData {
+  convertDateFromClient(formulaData: IFormulaData): IFormulaData {
     return Object.assign({}, formulaData, {
       created: formulaData.created?.isValid() ? formulaData.created.toJSON() : undefined,
       modified: formulaData.modified?.isValid() ? formulaData.modified.toJSON() : undefined,
     });
   }
 
-  protected convertDateFromServer(res: HttpResponse<IFormulaData>): HttpResponse<IFormulaData> {
+  convertDateFromServer(res: HttpResponse<IFormulaData>): HttpResponse<IFormulaData> {
     if (res.body) {
       res.body.created = res.body.created ? dayjs(res.body.created) : undefined;
       res.body.modified = res.body.modified ? dayjs(res.body.modified) : undefined;
@@ -55,7 +62,7 @@ export class MaincontrollerService {
     return res;
   }
 
-  protected convertDateArrayFromServer(res: HttpResponse<IFormulaData[]>): HttpResponse<IFormulaData[]> {
+  convertDateArrayFromServer(res: HttpResponse<IFormulaData[]>): HttpResponse<IFormulaData[]> {
     if (res.body) {
       res.body.forEach((formulaData: IFormulaData) => {
         formulaData.created = formulaData.created ? dayjs(formulaData.created) : undefined;

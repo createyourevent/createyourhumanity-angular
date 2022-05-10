@@ -17,5 +17,6 @@
         "rowwrapper",
         "textfield",
         "Textfield"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "disabled"
 }

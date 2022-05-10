@@ -21,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service class for managing users.
@@ -224,5 +225,18 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
+    }
+
+    public void addFriend(User friend) {
+        Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
+        if(self.get() != null) {
+            User _self = self.get();
+            _self.getFriends().add(friend);
+        }
+    }
+
+    public Optional<User> getAuthenticatedUser() {
+        Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
+        return self;
     }
 }

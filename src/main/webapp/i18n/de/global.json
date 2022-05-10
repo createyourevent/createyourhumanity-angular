@@ -11,6 +11,8 @@
         "formulaData": "Formula Data",
         "userMindmap": "User Mindmap",
         "keyTable": "Key Table",
+        "userDetails": "User Details",
+        "friends": "Friends",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

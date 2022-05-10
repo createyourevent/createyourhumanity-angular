@@ -73,7 +73,7 @@ export class KeyTableService {
     return keyTableCollection;
   }
 
-  protected convertDateFromClient(keyTable: IKeyTable): IKeyTable {
+  convertDateFromClient(keyTable: IKeyTable): IKeyTable {
     return Object.assign({}, keyTable, {
       created: keyTable.created?.isValid() ? keyTable.created.toJSON() : undefined,
       modified: keyTable.modified?.isValid() ? keyTable.modified.toJSON() : undefined,

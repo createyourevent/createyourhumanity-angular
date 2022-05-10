@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface KeyTableRepository extends MongoRepository<KeyTable, String> {
-}
+public interface KeyTableRepository extends MongoRepository<KeyTable, String> {}

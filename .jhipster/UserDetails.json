@@ -1,0 +1,36 @@
+{
+  "applications": "*",
+  "changelogDate": "20220509221524",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "user_details",
+  "fields": [
+    {
+      "fieldName": "dob",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "modified",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "UserDetails",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "userDetails",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "service": "no"
+}

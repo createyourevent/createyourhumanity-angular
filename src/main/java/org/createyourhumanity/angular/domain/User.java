@@ -2,7 +2,9 @@ package org.createyourhumanity.angular.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import javax.validation.constraints.Email;
@@ -57,6 +59,16 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
+
+    private List<User> friends = new ArrayList();
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
+    }
 
     public String getId() {
         return id;
