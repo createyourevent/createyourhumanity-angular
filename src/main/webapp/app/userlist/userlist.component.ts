@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
+import { Friendrequest } from 'app/entities/friendrequest/friendrequest.model';
+import { FriendrequestService } from 'app/entities/friendrequest/service/friendrequest.service';
 import { IFriends } from 'app/entities/friends/friends.model';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
 import { LoginService } from 'app/login/login.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { SelectItem } from 'primeng/api';
+import dayjs from 'dayjs/esm';
 
 @Component({
   selector: 'jhi-userlist',
@@ -26,7 +29,8 @@ export class UserlistComponent implements OnInit {
   constructor(private accountService: AccountService,
               private userService: UserService,
               private loginService: LoginService,
-              private maincontrollerService: MaincontrollerService,) { }
+              private maincontrollerService: MaincontrollerService,
+              private friendrequestService: FriendrequestService) { }
 
   ngOnInit() {
     this.sortOptions = [
@@ -65,4 +69,11 @@ export class UserlistComponent implements OnInit {
     return (e.target as HTMLInputElement).value;
   }
 
+  addFriendRequest(userId: string): void {
+    const req = new Friendrequest(userId);
+    req.requestDate = dayjs();
+    req.user = this.user;
+    req.info = '';
+    this.friendrequestService.create(req).subscribe();
+  }
 }

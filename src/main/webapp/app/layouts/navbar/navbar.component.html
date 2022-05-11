@@ -153,6 +153,18 @@
                 <span jhiTranslate="global.menu.entities.friends">Friends</span>
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="friendrequest"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.friendrequest">Friendrequest</span>
+              </a>
+            </li>
             <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
           </ul>
         </li>
@@ -241,7 +253,7 @@
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
             <li *ngSwitchCase="true">
-              <a class="dropdown-item"  routerLink="/friendlist"  data-cy="friendlist">
+              <a class="dropdown-item" routerLink="/friendlist" data-cy="friendlist">
                 <fa-icon icon="user" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="navbar.friendlist">Friendlist</span>
               </a>

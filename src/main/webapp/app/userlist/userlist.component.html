@@ -20,7 +20,7 @@
             <div class="user-description">{{user.description}}</div>
         </div>
         <div class="user-grid-item-bottom">
-            <p-button icon="pi pi-shopping-cart">Add as friend</p-button>
+            <p-button icon="pi pi-shopping-cart" (click)="addFriendRequest(user.id)">Add as friend</p-button>
         </div>
     </div>
 </div>

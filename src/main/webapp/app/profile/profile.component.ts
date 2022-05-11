@@ -33,6 +33,7 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   formulaData: FormulaData;
   forms: any[] = [];
   pages: any;
+  xml: any;
 
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @Input() userId: string;

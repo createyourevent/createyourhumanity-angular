@@ -34,6 +34,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'createyourhumanityAngularApp.friends.home.title' },
         loadChildren: () => import('./friends/friends.module').then(m => m.FriendsModule),
       },
+      {
+        path: 'friendrequest',
+        data: { pageTitle: 'createyourhumanityAngularApp.friendrequest.home.title' },
+        loadChildren: () => import('./friendrequest/friendrequest.module').then(m => m.FriendrequestModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

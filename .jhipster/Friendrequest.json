@@ -1,0 +1,36 @@
+{
+  "applications": "*",
+  "changelogDate": "20220511002437",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "friendrequest",
+  "fields": [
+    {
+      "fieldName": "requestDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "requestUserId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "info",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "text"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Friendrequest",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "friendrequest",
+      "relationshipName": "user",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "no"
+}

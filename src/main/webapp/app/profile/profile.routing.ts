@@ -5,12 +5,8 @@ import { ProfileComponent } from './profile.component';
 
 const routes: Routes = [
   {
-    path: 'profile',
+    path: '',
     component: ProfileComponent,
-    resolve: {
-      mindmap: MindmapRoutingResolveService,
-    },
-    canActivate: [UserRouteAccessService],
   },
 ];
 

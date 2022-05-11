@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="friendrequest">
+      <h2 data-cy="friendrequestDetailsHeading">
+        <span jhiTranslate="createyourhumanityAngularApp.friendrequest.detail.title">Friendrequest</span>
+      </h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ friendrequest.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="createyourhumanityAngularApp.friendrequest.requestDate">Request Date</span></dt>
+        <dd>
+          <span>{{ friendrequest.requestDate | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span jhiTranslate="createyourhumanityAngularApp.friendrequest.requestUserId">Request User Id</span></dt>
+        <dd>
+          <span>{{ friendrequest.requestUserId }}</span>
+        </dd>
+        <dt><span jhiTranslate="createyourhumanityAngularApp.friendrequest.info">Info</span></dt>
+        <dd>
+          <span>{{ friendrequest.info }}</span>
+        </dd>
+        <dt><span jhiTranslate="createyourhumanityAngularApp.friendrequest.user">User</span></dt>
+        <dd>
+          <span>{{ friendrequest.user?.id }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/friendrequest', friendrequest.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>
