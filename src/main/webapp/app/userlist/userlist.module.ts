@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FriendlistComponent } from './friendlist.component';
-import { DataViewModule } from 'primeng/dataview';
-import { SharedModule } from 'app/shared/shared.module';
-import { DropdownModule } from 'primeng/dropdown';
+import { UserlistComponent } from './userlist.component';
 import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { FriendlistRoutes } from './friendlist.routing';
+import { SharedModule } from 'app/shared/shared.module';
+import { UserlistRoutes } from './userlist.routing';
 
 @NgModule({
   imports: [
@@ -16,8 +16,8 @@ import { FriendlistRoutes } from './friendlist.routing';
     DropdownModule,
     ButtonModule,
     InputTextModule,
-    FriendlistRoutes
+    UserlistRoutes
   ],
-  declarations: [FriendlistComponent]
+  declarations: [UserlistComponent]
 })
-export class FriendlistModule { }
+export class UserlistModule { }

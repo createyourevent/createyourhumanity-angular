@@ -28,6 +28,14 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'friendlist',
           loadChildren: () => import(`./account/friendlist/friendlist.module`).then(m => m.FriendlistModule),
         },
+        {
+          path: 'userlist',
+          loadChildren: () => import(`./userlist/userlist.module`).then(m => m.UserlistModule),
+        },
+        {
+          path: 'profile',
+          loadChildren: () => import(`./profile/profile.module`).then(m => m.ProfileModule),
+        },
         /*
         {
           path: 'createyourhumanity-mindmap',

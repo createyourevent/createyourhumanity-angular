@@ -27,6 +27,14 @@
             </span>
           </a>
         </li>
+        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="nav-link" routerLink="/userlist" (click)="collapseNavbar()">
+            <span>
+              <fa-icon icon="user"></fa-icon>
+              <span jhiTranslate="navbar.users">Users</span>
+            </span>
+          </a>
+        </li>
         <!--
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link" routerLink="/form" (click)="collapseNavbar()">
@@ -232,12 +240,10 @@
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
-            <li  *ngSwitchCase="true" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-              <a class="nav-link" routerLink="/friendlist" (click)="collapseNavbar()">
-                <span>
-                  <fa-icon icon="home"></fa-icon>
-                  <span jhiTranslate="navbar.friendlist">Friendlist</span>
-                </span>
+            <li *ngSwitchCase="true">
+              <a class="dropdown-item"  routerLink="/friendlist"  data-cy="friendlist">
+                <fa-icon icon="user" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="navbar.friendlist">Friendlist</span>
               </a>
             </li>
             <li *ngSwitchCase="true">

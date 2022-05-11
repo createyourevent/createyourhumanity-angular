@@ -9,15 +9,15 @@ import { MaincontrollerService } from 'app/maincontroller.service';
 import { SelectItem } from 'primeng/api';
 
 @Component({
-  selector: 'jhi-friendlist',
-  templateUrl: './friendlist.component.html',
-  styleUrls: ['./friendlist.component.scss']
+  selector: 'jhi-userlist',
+  templateUrl: './userlist.component.html',
+  styleUrls: ['./userlist.component.scss']
 })
-export class FriendlistComponent implements OnInit {
+export class UserlistComponent implements OnInit {
 
   account: Account | null = null;
   user: IUser;
-  friends: IFriends[] = [];
+  users: IUser[] = [];
   sortOptions: SelectItem[];
   sortKey: string;
   sortField: string;
@@ -26,7 +26,7 @@ export class FriendlistComponent implements OnInit {
   constructor(private accountService: AccountService,
               private userService: UserService,
               private loginService: LoginService,
-              private maincontrollerService: MaincontrollerService) { }
+              private maincontrollerService: MaincontrollerService,) { }
 
   ngOnInit() {
     this.sortOptions = [
@@ -38,9 +38,9 @@ export class FriendlistComponent implements OnInit {
       if(this.account) {
         this.userService.query().subscribe(users => {
           this.user = users.body.find(x => x.id === this.account.id);
-          this.maincontrollerService.findFriendsFromUser(this.account.id).subscribe(friends => {
-            this.friends = friends.body;
-          });
+          this.userService.query().subscribe(users => {
+            this.users = users.body;
+          })
         })
       } else {
         this.loginService.login()

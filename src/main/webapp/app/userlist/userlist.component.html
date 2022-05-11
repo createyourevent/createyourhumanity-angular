@@ -1,4 +1,4 @@
-<p-dataView #dv [value]="friends" [paginator]="true" [rows]="9" filterBy="firstName"
+<p-dataView #dv [value]="users" [paginator]="true" [rows]="9" filterBy="firstName"
 [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
 <ng-template pTemplate="header">
     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
@@ -9,18 +9,18 @@
         </span>
     </div>
 </ng-template>
-<ng-template let-friend pTemplate="gridItem">
+<ng-template let-user pTemplate="gridItem">
   <div class="p-col-12 p-md-4">
-    <div class="friend-grid-item card">
-        <div class="friend-grid-item-top">
-          <div><img src="{{ friend.user.imageUrl }}"/></div>
+    <div class="user-grid-item card">
+        <div class="user-grid-item-top">
+          <div><img src="{{ user.imageUrl }}"/></div>
         </div>
-        <div class="friend-grid-item-content">
-            <div class="friend-name">{{friend.user.firstName}} {{friend.user.lastName}}</div>
-            <div class="friend-description">{{friend.description}}</div>
+        <div class="user-grid-item-content">
+            <div class="user-name">{{user.firstName}} {{user.lastName}}</div>
+            <div class="user-description">{{user.description}}</div>
         </div>
-        <div class="friend-grid-item-bottom">
-            <p-button icon="pi pi-shopping-cart"></p-button>
+        <div class="user-grid-item-bottom">
+            <p-button icon="pi pi-shopping-cart">Add as friend</p-button>
         </div>
     </div>
 </div>

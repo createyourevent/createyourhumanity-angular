@@ -6,11 +6,6 @@ import org.createyourhumanity.angular.security.SecurityUtils;
 import org.createyourhumanity.angular.security.oauth2.AudienceValidator;
 import org.createyourhumanity.angular.security.oauth2.CustomClaimConverter;
 import org.createyourhumanity.angular.security.oauth2.JwtGrantedAuthorityConverter;
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
-import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
-import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -48,29 +43,24 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 
 @Configuration
 @EnableWebSecurity
-@KeycloakConfiguration
 // @EnableConfigurationProperties(KeycloakSpringBootProperties.class)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
-@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
-public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JHipsterProperties jHipsterProperties;
 
     private final CorsFilter corsFilter;
-
-    private final KeycloakClientRequestFactory keycloakClientRequestFactory;
 
     @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
     private String issuerUri;
 
     private final SecurityProblemSupport problemSupport;
 
-    public SecurityConfiguration(CorsFilter corsFilter, JHipsterProperties jHipsterProperties, SecurityProblemSupport problemSupport, KeycloakClientRequestFactory keycloakClientRequestFactory) {
+    public SecurityConfiguration(CorsFilter corsFilter, JHipsterProperties jHipsterProperties, SecurityProblemSupport problemSupport) {
         this.corsFilter = corsFilter;
         this.problemSupport = problemSupport;
         this.jHipsterProperties = jHipsterProperties;
-        this.keycloakClientRequestFactory = keycloakClientRequestFactory;
     }
 
     @Override
@@ -175,20 +165,5 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
         return jwtDecoder;
     }
 
-    @Bean
-    @Scope("prototype")
-    public KeycloakRestTemplate keycloakRestTemplate() {
-        return new KeycloakRestTemplate(keycloakClientRequestFactory);
-    }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(keycloakAuthenticationProvider());
-    }
-
-    @Bean
-    @Override
-    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-    }
 }

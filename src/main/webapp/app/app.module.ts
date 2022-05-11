@@ -27,11 +27,9 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/createyourhumanity-mindmap.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ProfileModule } from './profile/profile.module';
 
 @NgModule({
   imports: [
-    ProfileModule,
     CreateyourhumanityMindmapModule,
     BrowserModule,
     BrowserAnimationsModule,
