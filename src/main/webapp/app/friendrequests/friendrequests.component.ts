@@ -36,12 +36,18 @@ export class FriendrequestsComponent implements OnInit {
       if(this.account) {
         this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(res => {
           this.requests = res.body;
+          let i = 0;
           this.requests.forEach(el => {
-            this.userService.find(el.requestUserId).subscribe(u => {
-              this.requestsUsers.push(u.body);
+            this.userService.query().subscribe(u => {
+              i++;
+              const users = u.body;
+              const user = users.find(x => x.id === el.requestUserId);
+              this.requestsUsers.push(user);
+              if(i === this.requests.length) {
+                this.requestsUsers = this.requestsUsers.splice(0);
+              }
             })
           });
-          this.requestsUsers = this.requestsUsers.splice(0);
         });
       }
     });

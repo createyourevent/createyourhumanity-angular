@@ -41,8 +41,6 @@ public class PublicUserResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-
-
     /**
      * Gets a list of all roles.
      * @return a string list of all roles.

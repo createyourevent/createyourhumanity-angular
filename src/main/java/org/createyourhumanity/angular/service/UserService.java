@@ -70,6 +70,10 @@ public class UserService {
             });
     }
 
+    public User getUserWithId(String id) {
+        return userRepository.findById(id).get();
+    }
+
     public Page<AdminUserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAll(pageable).map(AdminUserDTO::new);
     }
