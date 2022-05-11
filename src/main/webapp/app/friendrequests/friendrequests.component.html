@@ -21,7 +21,10 @@
             <div class="user-description">{{user.description}}</div>
         </div>
         <div class="user-grid-item-bottom">
-            <p-button icon="pi pi-shopping-cart" (click)="addUser(user.id)">Add as friend</p-button>
+            <p-button (click)="addUser(user.id)">
+              <fa-icon icon="user-plus"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="friendrequests.addUser">Add user</span>
+            </p-button>
         </div>
     </div>
 </div>

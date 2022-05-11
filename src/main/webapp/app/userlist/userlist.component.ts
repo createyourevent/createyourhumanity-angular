@@ -44,6 +44,19 @@ export class UserlistComponent implements OnInit {
           this.user = users.body.find(x => x.id === this.account.id);
           this.userService.query().subscribe(users => {
             this.users = users.body;
+            const self = this.users.findIndex(x => x.id === this.account.id);
+            this.users.splice(self, 1);
+            this.users = this.users.splice(0);
+            this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(r => {
+              const reqs = r.body;
+              reqs.forEach(el => {
+                const found = this.users.findIndex(x => x.id === el.requestUserId)
+                if(found) {
+                  this.users.splice(found, 1);
+                }
+                this.users = this.users.splice(0);
+              });
+            });
           })
         })
       } else {
