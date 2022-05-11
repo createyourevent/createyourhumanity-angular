@@ -70,8 +70,9 @@ export class UserlistComponent implements OnInit {
   }
 
   addFriendRequest(userId: string): void {
-    const req = new Friendrequest(userId);
+    const req = new Friendrequest();
     req.requestDate = dayjs();
+    req.requestUserId = userId;
     req.user = this.user;
     req.info = '';
     this.friendrequestService.create(req).subscribe();

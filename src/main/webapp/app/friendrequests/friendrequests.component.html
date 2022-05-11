@@ -1,3 +1,29 @@
-<p>
-  friendrequests works!
-</p>
+<h1><span >Friendrequests</span></h1>
+<p-dataView #dv [value]="requestsUsers" [paginator]="true" [rows]="2" filterBy="firstName"
+[sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+<ng-template pTemplate="header">
+    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="p-mb-2 p-mb-md-0"></p-dropdown>
+        <span class="p-input-icon-left p-mb-2 p-mb-md-0">
+            <i class="pi pi-search"></i>
+            <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter(getSearch($event))">
+        </span>
+    </div>
+</ng-template>
+<ng-template let-user pTemplate="gridItem">
+  <div class="p-col-12 p-md-4">
+    <div class="user-grid-item card">
+        <div class="user-grid-item-top">
+          <div><img src="{{ user.imageUrl }}"/></div>
+        </div>
+        <div class="user-grid-item-content">
+            <div class="user-name">{{user.firstName}} {{user.lastName}}</div>
+            <div class="user-description">{{user.description}}</div>
+        </div>
+        <div class="user-grid-item-bottom">
+            <p-button icon="pi pi-shopping-cart" (click)="addUser(user.id)">Add as friend</p-button>
+        </div>
+    </div>
+</div>
+</ng-template>
+</p-dataView>

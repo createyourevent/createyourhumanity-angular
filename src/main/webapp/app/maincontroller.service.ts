@@ -26,9 +26,9 @@ export class MaincontrollerService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
-  findFriendrequestByUserId(userId: string): Observable<HttpResponse<IFriendrequest>> {
+  findFriendrequestByUserId(userId: string): Observable<HttpResponse<IFriendrequest[]>> {
     return this.http
-    .get<IFriendrequest>(`${this.resourceUrl_friendrequests}/${userId}/findByRequestUserId`, { observe: 'response' });
+    .get<IFriendrequest[]>(`${this.resourceUrl_friendrequests}/${userId}/findByRequestUserId`, { observe: 'response' });
   }
 
   findAuthenticatedUser() {

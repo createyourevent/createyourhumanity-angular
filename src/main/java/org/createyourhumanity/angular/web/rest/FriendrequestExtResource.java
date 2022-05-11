@@ -48,8 +48,8 @@ public class FriendrequestExtResource {
     @GetMapping("/friendrequests/{id}/findByRequestUserId")
     public List<Friendrequest> getFriendrequestByUserId(@PathVariable String id) {
         log.debug("REST request to get Friendrequest by userid: {}", id);
-        List<Friendrequest> friendrequest = friendrequestExtRepository.findByRequestUserId(id);
-        return ResponseUtil.wrapOrNotFound(friendrequest);
+        List<Friendrequest> friendrequest = friendrequestExtRepository.findAllByRequestUserId(id);
+        return friendrequest;
     }
 
 }
