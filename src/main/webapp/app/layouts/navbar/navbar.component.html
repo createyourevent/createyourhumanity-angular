@@ -30,7 +30,7 @@
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link" routerLink="/userlist" (click)="collapseNavbar()">
             <span>
-              <fa-icon icon="user"></fa-icon>
+              <fa-icon icon="user-group"></fa-icon>
               <span jhiTranslate="navbar.users">Users</span>
             </span>
           </a>
@@ -254,13 +254,13 @@
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
             <li *ngSwitchCase="true">
               <a class="dropdown-item" routerLink="/requests" data-cy="friendrequests">
-                <fa-icon icon="user" [fixedWidth]="true"></fa-icon>
+                <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="navbar.friendrequests">Friendrequests</span>
               </a>
             </li>
             <li *ngSwitchCase="true">
               <a class="dropdown-item" routerLink="/friendlist" data-cy="friendlist">
-                <fa-icon icon="user" [fixedWidth]="true"></fa-icon>
+                <fa-icon icon="user-group" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="navbar.friendlist">Friendlist</span>
               </a>
             </li>

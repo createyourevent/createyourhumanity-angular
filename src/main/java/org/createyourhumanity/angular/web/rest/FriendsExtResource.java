@@ -37,7 +37,6 @@ public class FriendsExtResource {
         this.friendsExtRepository = friendsExtRepository;
     }
 
-
     /**
      * {@code GET  /friends/:id} : get the "id" friends by user.
      *
@@ -48,6 +47,13 @@ public class FriendsExtResource {
     public List<Friends> getFriends(@PathVariable String id) {
         log.debug("REST request to get Friendslist : {}", id);
         List<Friends> friends = friendsExtRepository.findByUser(id);
+        return friends;
+    }
+
+    @DeleteMapping("/friends/{id}/deleteByFriendId")
+    public List<Friends> deleteFriendsByFriendsId(@PathVariable String id) {
+        log.debug("REST request to delete Friend by friendid: {}", id);
+        List<Friends> friends = friendsExtRepository.deleteByFriendId(id);
         return friends;
     }
 }

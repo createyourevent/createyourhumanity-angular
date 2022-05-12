@@ -19,6 +19,7 @@
       },
       "id": "ID",
       "connectDate": "Connect Date",
+      "friendId": "Friend Id",
       "user": "User"
     }
   }

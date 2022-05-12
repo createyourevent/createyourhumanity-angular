@@ -35,6 +35,11 @@
         </div>
 
         <div class="row mb-3">
+          <label class="form-label" jhiTranslate="createyourhumanityAngularApp.friends.friendId" for="field_friendId">Friend Id</label>
+          <input type="text" class="form-control" name="friendId" id="field_friendId" data-cy="friendId" formControlName="friendId" />
+        </div>
+
+        <div class="row mb-3">
           <label class="form-label" jhiTranslate="createyourhumanityAngularApp.friends.user" for="field_user">User</label>
           <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user">
             <option [ngValue]="null"></option>

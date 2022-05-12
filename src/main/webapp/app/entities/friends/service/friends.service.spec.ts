@@ -26,6 +26,7 @@ describe('Friends Service', () => {
     elemDefault = {
       id: 'AAAAAAA',
       connectDate: currentDate,
+      friendId: 'AAAAAAA',
     };
   });
 
@@ -73,6 +74,7 @@ describe('Friends Service', () => {
         {
           id: 'BBBBBB',
           connectDate: currentDate.format(DATE_TIME_FORMAT),
+          friendId: 'BBBBBB',
         },
         elemDefault
       );
@@ -95,6 +97,7 @@ describe('Friends Service', () => {
       const patchObject = Object.assign(
         {
           connectDate: currentDate.format(DATE_TIME_FORMAT),
+          friendId: 'BBBBBB',
         },
         new Friends()
       );
@@ -120,6 +123,7 @@ describe('Friends Service', () => {
         {
           id: 'BBBBBB',
           connectDate: currentDate.format(DATE_TIME_FORMAT),
+          friendId: 'BBBBBB',
         },
         elemDefault
       );
@@ -176,7 +180,7 @@ describe('Friends Service', () => {
       });
 
       it('should add only unique Friends to an array', () => {
-        const friendsArray: IFriends[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: 'b2cf090e-58dd-453e-ae2a-4563c9810fce' }];
+        const friendsArray: IFriends[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '2cf090e5-8dd5-43ee-a2a4-563c9810fce4' }];
         const friendsCollection: IFriends[] = [{ id: 'ABC' }];
         expectedResult = service.addFriendsToCollectionIfMissing(friendsCollection, ...friendsArray);
         expect(expectedResult).toHaveLength(3);

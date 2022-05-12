@@ -21,6 +21,9 @@ public class Friends implements Serializable {
     @Field("connect_date")
     private ZonedDateTime connectDate;
 
+    @Field("friend_id")
+    private String friendId;
+
     @DBRef
     @Field("user")
     private User user;
@@ -51,6 +54,19 @@ public class Friends implements Serializable {
 
     public void setConnectDate(ZonedDateTime connectDate) {
         this.connectDate = connectDate;
+    }
+
+    public String getFriendId() {
+        return this.friendId;
+    }
+
+    public Friends friendId(String friendId) {
+        this.setFriendId(friendId);
+        return this;
+    }
+
+    public void setFriendId(String friendId) {
+        this.friendId = friendId;
     }
 
     public User getUser() {
@@ -91,6 +107,7 @@ public class Friends implements Serializable {
         return "Friends{" +
             "id=" + getId() +
             ", connectDate='" + getConnectDate() + "'" +
+            ", friendId='" + getFriendId() + "'" +
             "}";
     }
 }

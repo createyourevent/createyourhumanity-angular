@@ -14,4 +14,6 @@ import org.springframework.stereotype.Repository;
 public interface FriendsExtRepository extends MongoRepository<Friends, String> {
     @Query("{'user.$id': ?0}")
     List<Friends> findByUser(String userId);
+
+    List<Friends> deleteByFriendId(String friendId);
 }

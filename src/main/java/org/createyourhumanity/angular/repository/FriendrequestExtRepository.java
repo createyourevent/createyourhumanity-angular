@@ -15,4 +15,6 @@ public interface FriendrequestExtRepository extends MongoRepository<Friendreques
 
     @Query("{'user.$id': ?0}")
     List<Friendrequest> findAllByRequestUserId(String userId);
+
+    List<Friendrequest> deleteByRequestUserId(String userId);
 }

@@ -124,6 +124,9 @@ public class FriendsResource {
                 if (friends.getConnectDate() != null) {
                     existingFriends.setConnectDate(friends.getConnectDate());
                 }
+                if (friends.getFriendId() != null) {
+                    existingFriends.setFriendId(friends.getFriendId());
+                }
 
                 return existingFriends;
             })

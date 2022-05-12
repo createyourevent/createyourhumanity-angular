@@ -8,6 +8,10 @@
     {
       "fieldName": "connectDate",
       "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "friendId",
+      "fieldType": "String"
     }
   ],
   "fluentMethods": true,

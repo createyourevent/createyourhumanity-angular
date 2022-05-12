@@ -34,6 +34,7 @@
         <tr>
           <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
           <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.friends.connectDate">Connect Date</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.friends.friendId">Friend Id</span></th>
           <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.friends.user">User</span></th>
           <th scope="col"></th>
         </tr>
@@ -44,6 +45,7 @@
             <a [routerLink]="['/friends', friends.id, 'view']">{{ friends.id }}</a>
           </td>
           <td>{{ friends.connectDate | formatMediumDatetime }}</td>
+          <td>{{ friends.friendId }}</td>
           <td>
             {{ friends.user?.id }}
           </td>

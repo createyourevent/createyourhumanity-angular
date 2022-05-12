@@ -25,6 +25,7 @@ export class FriendsUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     connectDate: [],
+    friendId: [],
     user: [],
   });
 
@@ -89,6 +90,7 @@ export class FriendsUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: friends.id,
       connectDate: friends.connectDate ? friends.connectDate.format(DATE_TIME_FORMAT) : null,
+      friendId: friends.friendId,
       user: friends.user,
     });
 
@@ -110,6 +112,7 @@ export class FriendsUpdateComponent implements OnInit {
       connectDate: this.editForm.get(['connectDate'])!.value
         ? dayjs(this.editForm.get(['connectDate'])!.value, DATE_TIME_FORMAT)
         : undefined,
+      friendId: this.editForm.get(['friendId'])!.value,
       user: this.editForm.get(['user'])!.value,
     };
   }

@@ -30,7 +30,7 @@ export class UserlistComponent implements OnInit {
               private userService: UserService,
               private loginService: LoginService,
               private maincontrollerService: MaincontrollerService,
-              private friendrequestService: FriendrequestService) { }
+              private friendrequestService: FriendrequestService,) { }
 
   ngOnInit() {
     this.sortOptions = [
@@ -51,9 +51,20 @@ export class UserlistComponent implements OnInit {
               const reqs = r.body;
               reqs.forEach(el => {
                 const found = this.users.findIndex(x => x.id === el.requestUserId)
-                if(found) {
+                if(found >= 0) {
                   this.users.splice(found, 1);
                 }
+              });
+              this.users = this.users.splice(0);
+              this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
+                const userFriends = res.body;
+                userFriends.forEach(el => {
+                  const friend = users.body.find(x => x.id === el.friendId);
+                  const found = this.users.findIndex(x => x.id === el.friendId);
+                  if(found >= 0) {
+                    this.users.splice(found, 1);
+                  }
+                });
                 this.users = this.users.splice(0);
               });
             });
@@ -88,6 +99,26 @@ export class UserlistComponent implements OnInit {
     req.requestUserId = userId;
     req.user = this.user;
     req.info = '';
-    this.friendrequestService.create(req).subscribe();
+    this.friendrequestService.create(req).subscribe(res => {
+      this.userService.query().subscribe(users => {
+        this.user = users.body.find(x => x.id === this.account.id);
+        this.userService.query().subscribe(users => {
+          this.users = users.body;
+          const self = this.users.findIndex(x => x.id === this.account.id);
+          this.users.splice(self, 1);
+          this.users = this.users.splice(0);
+          this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(r => {
+            const reqs = r.body;
+            reqs.forEach(el => {
+              const found = this.users.findIndex(x => x.id === el.requestUserId)
+              if(found >= 0) {
+                this.users.splice(found, 1);
+              }
+            });
+            this.users = this.users.splice(0);
+          });
+        })
+      })
+    });
   }
 }

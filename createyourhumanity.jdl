@@ -28,6 +28,7 @@ entity UserDetails {
 
 entity Friends {
     connectDate ZonedDateTime
+    friendId String
 }
 
 entity Friendrequest {
@@ -48,6 +49,6 @@ relationship OneToOne {
 relationship ManyToOne {
     FormulaData{user} to User
     UserMindmap{user} to User
-     Friends{user} to User
-     Friendrequest{user} to User
+    Friends{user} to User
+    Friendrequest{user} to User
 }

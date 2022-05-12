@@ -25,6 +25,10 @@
               <fa-icon icon="user-plus"></fa-icon>
               <span class="d-none d-md-inline" jhiTranslate="friendrequests.addUser">Add user</span>
             </p-button>
+            <p-button (click)="deleteRequest(user.id)">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="friendrequests.deleteRequest">Delete request</span>
+            </p-button>
         </div>
     </div>
 </div>

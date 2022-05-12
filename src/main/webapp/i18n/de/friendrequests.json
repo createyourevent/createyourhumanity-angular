@@ -1,5 +1,6 @@
 {
   "friendrequests": {
-    "addUser": "Benutzer hinzufügen"
+    "addUser": "Benutzer hinzufügen",
+    "deleteRequest": "Anfrage löschen"
   }
 }

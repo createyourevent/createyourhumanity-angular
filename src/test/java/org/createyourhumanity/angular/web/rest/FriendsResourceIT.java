@@ -35,6 +35,9 @@ class FriendsResourceIT {
     private static final ZonedDateTime DEFAULT_CONNECT_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CONNECT_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
+    private static final String DEFAULT_FRIEND_ID = "AAAAAAAAAA";
+    private static final String UPDATED_FRIEND_ID = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/friends";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -53,7 +56,7 @@ class FriendsResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Friends createEntity() {
-        Friends friends = new Friends().connectDate(DEFAULT_CONNECT_DATE);
+        Friends friends = new Friends().connectDate(DEFAULT_CONNECT_DATE).friendId(DEFAULT_FRIEND_ID);
         return friends;
     }
 
@@ -64,7 +67,7 @@ class FriendsResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Friends createUpdatedEntity() {
-        Friends friends = new Friends().connectDate(UPDATED_CONNECT_DATE);
+        Friends friends = new Friends().connectDate(UPDATED_CONNECT_DATE).friendId(UPDATED_FRIEND_ID);
         return friends;
     }
 
@@ -92,6 +95,7 @@ class FriendsResourceIT {
         assertThat(friendsList).hasSize(databaseSizeBeforeCreate + 1);
         Friends testFriends = friendsList.get(friendsList.size() - 1);
         assertThat(testFriends.getConnectDate()).isEqualTo(DEFAULT_CONNECT_DATE);
+        assertThat(testFriends.getFriendId()).isEqualTo(DEFAULT_FRIEND_ID);
     }
 
     @Test
@@ -127,7 +131,8 @@ class FriendsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(friends.getId())))
-            .andExpect(jsonPath("$.[*].connectDate").value(hasItem(sameInstant(DEFAULT_CONNECT_DATE))));
+            .andExpect(jsonPath("$.[*].connectDate").value(hasItem(sameInstant(DEFAULT_CONNECT_DATE))))
+            .andExpect(jsonPath("$.[*].friendId").value(hasItem(DEFAULT_FRIEND_ID)));
     }
 
     @Test
@@ -141,7 +146,8 @@ class FriendsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(friends.getId()))
-            .andExpect(jsonPath("$.connectDate").value(sameInstant(DEFAULT_CONNECT_DATE)));
+            .andExpect(jsonPath("$.connectDate").value(sameInstant(DEFAULT_CONNECT_DATE)))
+            .andExpect(jsonPath("$.friendId").value(DEFAULT_FRIEND_ID));
     }
 
     @Test
@@ -159,7 +165,7 @@ class FriendsResourceIT {
 
         // Update the friends
         Friends updatedFriends = friendsRepository.findById(friends.getId()).get();
-        updatedFriends.connectDate(UPDATED_CONNECT_DATE);
+        updatedFriends.connectDate(UPDATED_CONNECT_DATE).friendId(UPDATED_FRIEND_ID);
 
         restFriendsMockMvc
             .perform(
@@ -175,6 +181,7 @@ class FriendsResourceIT {
         assertThat(friendsList).hasSize(databaseSizeBeforeUpdate);
         Friends testFriends = friendsList.get(friendsList.size() - 1);
         assertThat(testFriends.getConnectDate()).isEqualTo(UPDATED_CONNECT_DATE);
+        assertThat(testFriends.getFriendId()).isEqualTo(UPDATED_FRIEND_ID);
     }
 
     @Test
@@ -261,6 +268,7 @@ class FriendsResourceIT {
         assertThat(friendsList).hasSize(databaseSizeBeforeUpdate);
         Friends testFriends = friendsList.get(friendsList.size() - 1);
         assertThat(testFriends.getConnectDate()).isEqualTo(UPDATED_CONNECT_DATE);
+        assertThat(testFriends.getFriendId()).isEqualTo(DEFAULT_FRIEND_ID);
     }
 
     @Test
@@ -274,7 +282,7 @@ class FriendsResourceIT {
         Friends partialUpdatedFriends = new Friends();
         partialUpdatedFriends.setId(friends.getId());
 
-        partialUpdatedFriends.connectDate(UPDATED_CONNECT_DATE);
+        partialUpdatedFriends.connectDate(UPDATED_CONNECT_DATE).friendId(UPDATED_FRIEND_ID);
 
         restFriendsMockMvc
             .perform(
@@ -290,6 +298,7 @@ class FriendsResourceIT {
         assertThat(friendsList).hasSize(databaseSizeBeforeUpdate);
         Friends testFriends = friendsList.get(friendsList.size() - 1);
         assertThat(testFriends.getConnectDate()).isEqualTo(UPDATED_CONNECT_DATE);
+        assertThat(testFriends.getFriendId()).isEqualTo(UPDATED_FRIEND_ID);
     }
 
     @Test

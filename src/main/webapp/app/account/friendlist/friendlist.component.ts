@@ -38,8 +38,13 @@ export class FriendlistComponent implements OnInit {
       if(this.account) {
         this.userService.query().subscribe(users => {
           this.user = users.body.find(x => x.id === this.account.id);
-          this.maincontrollerService.findFriendsFromUser(this.account.id).subscribe(friends => {
-            this.friends = friends.body;
+          this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
+            const userFriends = res.body;
+            userFriends.forEach(el => {
+              const friend = users.body.find(x => x.id === el.friendId);
+              this.friends.push(friend);
+              this.friends = this.friends.splice(0);
+            });
           });
         })
       } else {
@@ -63,6 +68,25 @@ export class FriendlistComponent implements OnInit {
 
   getSearch(e: Event) {
     return (e.target as HTMLInputElement).value;
+  }
+
+  deleteFriend(id: string) {
+    this.maincontrollerService.deleteFriendsByFriendId(id).subscribe(res => {
+      this.userService.query().subscribe(users => {
+        this.user = users.body.find(x => x.id === this.account.id);
+        this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
+          const userFriends = res.body;
+          if(userFriends.length === 0) {
+            this.friends = [];
+          }
+          userFriends.forEach(el => {
+            const friend = users.body.find(x => x.id === el.friendId);
+            this.friends.push(friend);
+          });
+          this.friends = this.friends.splice(0);
+        });
+      })
+    });
   }
 
 }

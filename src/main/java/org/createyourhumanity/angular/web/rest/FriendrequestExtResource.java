@@ -52,4 +52,11 @@ public class FriendrequestExtResource {
         return friendrequest;
     }
 
+    @DeleteMapping("/friendrequests/{id}/deleteByRequestUserId")
+    public List<Friendrequest> deleteFriendrequestByUserId(@PathVariable String id) {
+        log.debug("REST request to delete Friendrequest by userid: {}", id);
+        List<Friendrequest> friendrequest = friendrequestExtRepository.deleteByRequestUserId(id);
+        return friendrequest;
+    }
+
 }

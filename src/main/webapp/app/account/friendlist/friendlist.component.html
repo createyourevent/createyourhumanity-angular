@@ -13,14 +13,17 @@
   <div class="p-col-12 p-md-4">
     <div class="friend-grid-item card">
         <div class="friend-grid-item-top">
-          <div><img src="{{ friend.user.imageUrl }}"/></div>
+          <div><img src="{{ friend.imageUrl }}"/></div>
         </div>
         <div class="friend-grid-item-content">
-            <div class="friend-name">{{friend.user.firstName}} {{friend.user.lastName}}</div>
+            <div class="friend-name">{{friend.firstName}} {{friend.lastName}}</div>
             <div class="friend-description">{{friend.description}}</div>
         </div>
         <div class="friend-grid-item-bottom">
-            <p-button icon="pi pi-shopping-cart"></p-button>
+            <p-button (click)="deleteFriend(friend.id)">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="friendlist.deleteFriend">Delete friend</span>
+            </p-button>
         </div>
     </div>
 </div>

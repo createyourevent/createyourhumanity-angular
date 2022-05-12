@@ -26,6 +26,14 @@ export class MaincontrollerService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
+  deleteFriendsByFriendId(id: string): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrl_friends}/${id}/deleteByFriendId`, { observe: 'response' });
+  }
+
+  deleteFriendrequestByUserId(id: string): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrl_friendrequests}/${id}/deleteByRequestUserId`, { observe: 'response' });
+  }
+
   findFriendrequestByUserId(userId: string): Observable<HttpResponse<IFriendrequest[]>> {
     return this.http
     .get<IFriendrequest[]>(`${this.resourceUrl_friendrequests}/${userId}/findByRequestUserId`, { observe: 'response' });
