@@ -25,6 +25,7 @@ export class FormulaDataUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     map: [],
+    grant: [],
     created: [],
     modified: [],
     user: [],
@@ -92,6 +93,7 @@ export class FormulaDataUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: formulaData.id,
       map: formulaData.map,
+      grant: formulaData.grant,
       created: formulaData.created ? formulaData.created.format(DATE_TIME_FORMAT) : null,
       modified: formulaData.modified ? formulaData.modified.format(DATE_TIME_FORMAT) : null,
       user: formulaData.user,
@@ -113,6 +115,7 @@ export class FormulaDataUpdateComponent implements OnInit {
       ...new FormulaData(),
       id: this.editForm.get(['id'])!.value,
       map: this.editForm.get(['map'])!.value,
+      grant: this.editForm.get(['grant'])!.value,
       created: this.editForm.get(['created'])!.value ? dayjs(this.editForm.get(['created'])!.value, DATE_TIME_FORMAT) : undefined,
       modified: this.editForm.get(['modified'])!.value ? dayjs(this.editForm.get(['modified'])!.value, DATE_TIME_FORMAT) : undefined,
       user: this.editForm.get(['user'])!.value,

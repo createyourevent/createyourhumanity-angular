@@ -76,14 +76,14 @@ export class FormulaDataService {
     return formulaDataCollection;
   }
 
-  protected convertDateFromClient(formulaData: IFormulaData): IFormulaData {
+  convertDateFromClient(formulaData: IFormulaData): IFormulaData {
     return Object.assign({}, formulaData, {
       created: formulaData.created?.isValid() ? formulaData.created.toJSON() : undefined,
       modified: formulaData.modified?.isValid() ? formulaData.modified.toJSON() : undefined,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+  convertDateFromServer(res: EntityResponseType): EntityResponseType {
     if (res.body) {
       res.body.created = res.body.created ? dayjs(res.body.created) : undefined;
       res.body.modified = res.body.modified ? dayjs(res.body.modified) : undefined;
@@ -91,7 +91,7 @@ export class FormulaDataService {
     return res;
   }
 
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+  convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((formulaData: IFormulaData) => {
         formulaData.created = formulaData.created ? dayjs(formulaData.created) : undefined;

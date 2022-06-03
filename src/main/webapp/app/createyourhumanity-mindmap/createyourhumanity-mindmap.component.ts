@@ -45,8 +45,18 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
   ngOnInit(): void {
         this.mindmapService.query().subscribe(res => {
             this.mindmap = res.body[0];
-            this.formatedXml = format(this.mindmap.text);
-            this.xmlId = this.mindmap.id;
+            if(!this.mindmap) {
+              const mm = new Mindmap();
+              mm.modified = dayjs();
+              mm.text = '<map name="625631aa67a303687227eb94" version="tango"><topic central="true" text="Create Your Humanity" id="1" fontStyle="Perpetua;;#ffffff;;;"></topic></map>';
+              this.mindmapService.create(mm).subscribe(res => {
+                this.formatedXml = format(this.mindmap.text);
+                this.xmlId = this.mindmap.id;
+              });
+            } else {
+              this.formatedXml = format(this.mindmap.text);
+              this.xmlId = this.mindmap.id;
+            }
         });
   }
 }

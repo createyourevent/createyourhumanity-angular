@@ -108,6 +108,7 @@
   },
   "defaultProject": "createyourhumanity-angular",
   "cli": {
+    "analytics": "ff134930-9936-4703-9315-269598e3613a",
     "cache": {
       "enabled": true,
       "path": "./target/angular/",

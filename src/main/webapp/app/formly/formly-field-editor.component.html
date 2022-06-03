@@ -1,0 +1,3 @@
+<quill-editor [styles]="{height: '350px'}" id="{{id}}" [placeholder]="to.placeholder" [formControl]="convertToFormControl(formControl)" [formlyAttributes]="field" [class.is-invalid]="showError" [style]="{'height':'400px'}" [modules]="modules" (onEditorCreated)="getEditorInstance($event)"></quill-editor>
+<input type="file" style="display: none" id="fileInputField"/>
+<small class="form-text text-muted">{{ to.description }}</small>

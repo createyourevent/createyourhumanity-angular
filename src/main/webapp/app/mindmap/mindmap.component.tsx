@@ -31,6 +31,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   private location = 'en';
   private pm: PersistenceManager;
   private account: Account;
+  private isAdmin = false;
   _routerSub = Subscription.EMPTY;
 
   constructor(private translateService: TranslateService,
@@ -83,52 +84,68 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
       });
     };
 
-    let persistence = null;
-    if(this.account) {
-       persistence = new CreateYourHumanityPersistenceManager({
-        documentUrl: 'http://localhost:9000/api/mindmaps/{id}/false',
-        revertUrl: '/c/restful/maps/{id}/history/latest',
-        lockUrl: '/c/restful/maps/{id}/lock',
+    this.accountService.identity().subscribe(account => {
+      this.account = account
+      this.account.authorities.forEach(el => {
+        console.log(el);
+        if(el === "ROLE_ADMIN") {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
+        }
       });
+
+      let persistence = null;
+      if(this.account) {
+        persistence = new CreateYourHumanityPersistenceManager({
+          documentUrl: 'http://localhost:9000/api/mindmaps/{id}/true',
+          revertUrl: '/c/restful/maps/{id}/history/latest',
+          lockUrl: '/c/restful/maps/{id}/lock',
+        });
+      } else {
+        persistence = new CreateYourHumanityPersistenceManager({
+          documentUrl: 'http://localhost:9000/api/mindmaps/{id}/false',
+          revertUrl: '/c/restful/maps/{id}/history/latest',
+          lockUrl: '/c/restful/maps/{id}/lock',
+        });
+      }
+
+    if(global.PersistenceManager) {
+      this.pm = global.PersistenceManager;
     } else {
-      persistence = new CreateYourHumanityPersistenceManager({
-        documentUrl: 'http://localhost:9000/api/mindmaps/{id}/true',
-        revertUrl: '/c/restful/maps/{id}/history/latest',
-        lockUrl: '/c/restful/maps/{id}/lock',
-      });
+      const pm: any = global;
+      pm.PersistenceManager = persistence;
+      this.pm = persistence;
     }
+      let m = '';
+      if(this.isAdmin) {
+        m = 'edition-owner';
+      } else {
+        m = 'editor-viewer';
+      }
 
-  if(global.PersistenceManager) {
-    this.pm = global.PersistenceManager;
-  } else {
-    const pm: any = global;
-    pm.PersistenceManager = persistence;
-    this.pm = persistence;
-  }
+      const options: EditorOptions = {
+        zoom: 0.8,
+        locked: false,
+        mapTitle: "Create Your Humanity Mindmap",
+        mode: m,
+        locale: this.location,
+        enableKeyboardEvents: true
+      };
 
-
-
-    const options: EditorOptions = {
-      zoom: 0.8,
-      locked: false,
-      mapTitle: "Create Your Humanity Mindmap",
-      mode: 'edition-owner',
-      locale: this.location,
-      enableKeyboardEvents: true
-    };
-
-    const props: EditorProps = {
-      mapId: this.mapId,
-      options: options,
-      persistenceManager: this.pm,
-      onAction: (action: any) => console.log('action called:', action),
-      onLoad: initialization
-    }
+      const props: EditorProps = {
+        mapId: this.mapId,
+        options: options,
+        persistenceManager: this.pm,
+        onAction: (action: any) => console.log('action called:', action),
+        onLoad: initialization
+      }
 
 
-    ReactDOM.render(
-      <Editor {...props} />,
-      document.getElementById(this.rootId)
-    );
+      ReactDOM.render(
+        <Editor {...props} />,
+        document.getElementById(this.rootId)
+      );
+    });
   }
 }

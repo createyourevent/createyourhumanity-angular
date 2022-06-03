@@ -1,0 +1,6 @@
+<label for="{{id}}">
+    <span>{{to.label}}</span>
+        {{to.required ? '*' : ''}}
+</label>
+<tag-input [disable]="true" id="{{id}}" [placeholder]="to.placeholder" [formControl]="convertToList(formControl)" [formlyAttributes]="field" [class.is-invalid]="showError" [maxItems]='4'></tag-input>
+<small class="form-text text-muted">{{ to.description }}</small>

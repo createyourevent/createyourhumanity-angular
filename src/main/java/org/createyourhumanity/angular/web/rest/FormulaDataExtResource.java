@@ -1,21 +1,18 @@
 package org.createyourhumanity.angular.web.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.createyourhumanity.angular.domain.FormulaData;
 import org.createyourhumanity.angular.repository.FormulaDataExtRepository;
-import org.createyourhumanity.angular.repository.FormulaDataRepository;
-import org.createyourhumanity.angular.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 
 /**
  * REST controller for managing {@link org.createyourhumanity.angular.domain.FormulaData}.
@@ -43,4 +40,25 @@ public class FormulaDataExtResource {
         FormulaData fd = formulaDataExtRepository.findByUser(userId);
         return fd;
     }
+
+    @GetMapping("/formula-data/{userId}/{key}/getGrant")
+    public String getGrant(@PathVariable String userId, @PathVariable String key) {
+        log.debug("REST request to get grant by UserId : {}", userId);
+        FormulaData fd = formulaDataExtRepository.findByUser(userId);
+        String jsonGrant = fd.getGrant();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String r = null;
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonGrant);
+            r = rootNode.path(key).asText();
+            if(r == null || r == "") {
+                r = "ALL";
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return r;
+    }
+
 }

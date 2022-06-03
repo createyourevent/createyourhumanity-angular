@@ -15,5 +15,11 @@ public interface FriendsExtRepository extends MongoRepository<Friends, String> {
     @Query("{'user.$id': ?0}")
     List<Friends> findByUser(String userId);
 
+    List<Friends> findByFriendIdAndUser(String friendId, String userId);
+
     List<Friends> deleteByFriendId(String friendId);
+
+    List<Friends> deleteByFriendIdAndUser(String friendId, String userId);
+
+
 }

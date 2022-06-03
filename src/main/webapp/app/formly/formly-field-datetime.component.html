@@ -1,0 +1,8 @@
+
+<label for="{{id}}">
+    <span>{{to.label}}</span>
+        {{to.required ? '*' : ''}}
+    </label>
+    <input id="{{id}}" type="datetime-local" [placeholder]="to.placeholder" [formControl]="formControl" class="form-control" [formlyAttributes]="field" [class.is-invalid]="showError">
+    <small class="form-text text-muted">{{ to.description }}</small>
+

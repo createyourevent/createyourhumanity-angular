@@ -40,6 +40,9 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'requests',
           loadChildren: () => import(`./friendrequests/friendrequests.module`).then(m => m.FriendrequestsModule),
         },
+        { path: 'profile-view',
+          loadChildren: () => import('./profile/profile-view/profile-view-page/profile-view-page.module').then(m => m.ProfileViewPageModule)
+        },
         /*
         {
           path: 'createyourhumanity-mindmap',

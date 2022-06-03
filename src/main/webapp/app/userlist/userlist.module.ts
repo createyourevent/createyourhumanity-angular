@@ -7,6 +7,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { SharedModule } from 'app/shared/shared.module';
 import { UserlistRoutes } from './userlist.routing';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { UserlistRoutes } from './userlist.routing';
     DropdownModule,
     ButtonModule,
     InputTextModule,
-    UserlistRoutes
+    UserlistRoutes,
+    CardModule
   ],
   declarations: [UserlistComponent]
 })

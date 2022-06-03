@@ -50,10 +50,24 @@ public class FriendsExtResource {
         return friends;
     }
 
+    @GetMapping("/friends/{friendId}/{userId}/findByFriendIdAndUserId")
+    public List<Friends> getFriendsByFriendIdAndUser(@PathVariable String friendId, @PathVariable String userId) {
+        log.debug("REST request to get Friendslist by FriendId and User : {}, {}", friendId, userId);
+        List<Friends> friends = friendsExtRepository.findByFriendIdAndUser(friendId, userId);
+        return friends;
+    }
+
     @DeleteMapping("/friends/{id}/deleteByFriendId")
     public List<Friends> deleteFriendsByFriendsId(@PathVariable String id) {
         log.debug("REST request to delete Friend by friendid: {}", id);
         List<Friends> friends = friendsExtRepository.deleteByFriendId(id);
+        return friends;
+    }
+
+    @DeleteMapping("/friends/{friendId}/{userId}/deleteByFriendIdAndUserId")
+    public List<Friends> deleteByFriendIdAndUser(@PathVariable String friendId,@PathVariable String userId) {
+        log.debug("REST request to delete Friend by friendid: {},{}", friendId, userId);
+        List<Friends> friends = friendsExtRepository.deleteByFriendIdAndUser(friendId, userId);
         return friends;
     }
 }

@@ -5,13 +5,15 @@ import {TabViewModule} from 'primeng/tabview';
 import { FormModule } from 'app/form/form.module';
 import { ProfileRoutes } from './profile.routing';
 import ProfileHostDirective from './profile-host.directive';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     TabViewModule,
     FormModule,
-    ProfileRoutes
+    ProfileRoutes,
+    SharedModule
   ],
   declarations: [ProfileComponent, ProfileHostDirective]
 })

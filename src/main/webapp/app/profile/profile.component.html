@@ -1,3 +1,5 @@
+<h1>{{ 'form.my-profile' | translate }}</h1>
+
 <p-tabView>
   <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">
     <ng-container appProfileHost></ng-container>

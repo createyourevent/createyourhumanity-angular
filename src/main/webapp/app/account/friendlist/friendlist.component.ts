@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { IFriends } from 'app/entities/friends/friends.model';
@@ -26,7 +27,8 @@ export class FriendlistComponent implements OnInit {
   constructor(private accountService: AccountService,
               private userService: UserService,
               private loginService: LoginService,
-              private maincontrollerService: MaincontrollerService) { }
+              private maincontrollerService: MaincontrollerService,
+              private router: Router) { }
 
   ngOnInit() {
     this.sortOptions = [
@@ -71,22 +73,31 @@ export class FriendlistComponent implements OnInit {
   }
 
   deleteFriend(id: string) {
+    this.friends = [];
     this.maincontrollerService.deleteFriendsByFriendId(id).subscribe(res => {
-      this.userService.query().subscribe(users => {
-        this.user = users.body.find(x => x.id === this.account.id);
-        this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
-          const userFriends = res.body;
-          if(userFriends.length === 0) {
-            this.friends = [];
-          }
-          userFriends.forEach(el => {
-            const friend = users.body.find(x => x.id === el.friendId);
-            this.friends.push(friend);
-          });
-          this.friends = this.friends.splice(0);
+      this.maincontrollerService.deleteFriendsByFriendIdAndUserId(this.account.id, id).subscribe(() => {
+        this.maincontrollerService.deleteFriendsByFriendIdAndUserId(this.account.id, id).subscribe(() => {
+          this.userService.query().subscribe(users => {
+            this.user = users.body.find(x => x.id === this.account.id);
+            this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
+              const userFriends = res.body;
+              if(userFriends.length === 0) {
+                this.friends = [];
+              }
+              userFriends.forEach(el => {
+                const friend = users.body.find(x => x.id === el.friendId);
+                this.friends.push(friend);
+              });
+              this.friends = this.friends.splice(0);
+            });
+          })
         });
-      })
+      });
     });
+  }
+
+  showProfile(userId: string): void {
+    this.router.navigate(['/profile-view'], { queryParams: { userId: userId } });
   }
 
 }

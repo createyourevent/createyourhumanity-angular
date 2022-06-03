@@ -162,11 +162,11 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: http://localhost:9080/auth/realms/jhipster
+            issuer-uri: https://keycloak.createyourevent.org/auth/realms/jhipster
         registration:
           oidc:
             client-id: web_app
-            client-secret: web_app
+            client-secret: 9f608490-949a-4d83-95b0-f77c64f374bc
             scope: openid,profile,email
 
 server:
@@ -182,6 +182,14 @@ springdoc:
 info:
   # Comma separated list of profiles that will trigger the ribbon to show
   display-ribbon-on-profiles: 'dev'
+
+keycloak:
+  realm: jhipster
+  auth-server-url: https://keycloak.createyourevent.org
+  ssl-required: external
+  resource: web_app
+  credentials.secret: 9f608490-949a-4d83-95b0-f77c64f374bc
+  use-resource-role-mappings: true
 
 # ===================================================================
 # JHipster specific properties

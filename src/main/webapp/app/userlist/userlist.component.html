@@ -1,5 +1,5 @@
 <h1><span >Userlist</span></h1>
-<p-dataView #dv [value]="users" [paginator]="true" [rows]="2" filterBy="firstName"
+<p-dataView #dv [value]="users" [paginator]="true" [rows]="4" filterBy="firstName"
 [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
 <ng-template pTemplate="header">
     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
@@ -11,22 +11,33 @@
     </div>
 </ng-template>
 <ng-template let-user pTemplate="gridItem">
-  <div class="p-col-12 p-md-4">
-    <div class="user-grid-item card">
-        <div class="user-grid-item-top">
-          <div><img src="{{ user.imageUrl }}"/></div>
+  <p-card header="" subheader="" [style]="{width: '360px', display: 'inline-block', margin: '15px'}" styleClass="p-card">
+      <ng-template pTemplate="header">
+        <div class="div-user" *ngIf="!user.imageUrl">
+          <img class="user-image" src="../../content/images/userlist/user.png">
         </div>
-        <div class="user-grid-item-content">
-            <div class="user-name">{{user.firstName}} {{user.lastName}}</div>
-            <div class="user-description">{{user.description}}</div>
+        <div class="div-user" *ngIf="user.imageUrl">
+          <img class="user-image" src="{{ user.imageUrl }}">
         </div>
-        <div class="user-grid-item-bottom">
-            <p-button (click)="addFriendRequest(user.id)">
-              <fa-icon icon="user-plus"></fa-icon>
-              <span class="d-none d-md-inline" jhiTranslate="userlist.addFriendRequest">Friendrequest</span>
-            </p-button>
+      </ng-template>
+        <p class="user-name">
+          {{user.firstName}} {{user.lastName}}
+        <p class="user-description">
+          {{user.description}}
+        </p>
+      <ng-template pTemplate="footer">
+        <div class="add-request">
+          <p-button (click)="addFriendRequest(user.id)">
+            <fa-icon icon="user-plus"></fa-icon>
+            <span class="d-none d-md-inline" jhiTranslate="userlist.addFriendRequest">Friendrequest</span>
+          </p-button>
+          <hr/>
+          <p-button (click)="showProfile(user.id)">
+            <fa-icon icon="id-card-clip"></fa-icon>
+            <span class="d-none d-md-inline" jhiTranslate="userlist.showProfile">Show Profile</span>
+          </p-button>
         </div>
-    </div>
-</div>
+      </ng-template>
+  </p-card>
 </ng-template>
 </p-dataView>

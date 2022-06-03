@@ -12,7 +12,7 @@ import { FormatMediumDatePipe } from './date/format-medium-date.pipe';
 import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { XmlPipe } from 'app/pipes/xmlpipe.pipe';
@@ -31,14 +31,32 @@ import { ColumnWrapperComponent } from 'app/formly/column-wrapper.component';
 import { RowWrapperComponent } from 'app/formly/row-wrapper.component';
 import { DateTimeInputComponent } from 'app/formly/date-time.component';
 import { DateInputComponent } from 'app/formly/date.component';
+import { FormlyFieldTimeComponent } from 'app/formly/formly-field-time.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { TagInputModule } from 'ngx-chips';
+import { FormlyFieldKeywordsComponent } from 'app/formly/formly-field-keywords.component';
+import { QuillModule } from 'ngx-quill';
+import { FormlyFieldEditorComponent } from 'app/formly/formly-field-editor.component';
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
+import { FormlyFieldAddressComponent } from 'app/formly/formly-field-address.component';
+import { FormlyFieldKeywordsListComponent } from 'app/formly/formly-field-keywords-list.component';
+import { TextfieldSummaryComponent } from 'app/formly/summary/textfield-summary/textfield-summary.component';
+import { FormlyWrapperGrantField } from 'app/formly/grant-field/src/grant-field.wrapper';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [SharedLibsModule,
+            FormsModule,
             ReactiveFormsModule,
+            NgSelectModule,
             MatSliderModule,
             MatStepperModule,
             MatIconModule,
             MatTabsModule,
+            NgxMaterialTimepickerModule,
+            TagInputModule,
+            GooglePlaceModule,
+            QuillModule.forRoot(),
             FormlyBootstrapModule,
             FormlyModule.forRoot({
               wrappers: [
@@ -46,6 +64,8 @@ import { DateInputComponent } from 'app/formly/date.component';
                 { name: 'containerwrapper', component: ContainerWrapperComponent },
                 { name: 'rowwrapper', component: RowWrapperComponent },
                 { name: 'columnwrapper', component: ColumnWrapperComponent },
+                { name: 'grant-field', component: FormlyWrapperGrantField,
+                },
               ],
               types: [
                 { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
@@ -55,6 +75,12 @@ import { DateInputComponent } from 'app/formly/date.component';
                 { name: 'column', component: ColumnComponent },
                 { name: 'date', component: DateInputComponent, wrappers: ['form-field'] },
                 { name: 'datetime', component: DateTimeInputComponent, wrappers: ['form-field'] },
+                { name: 'time', component: FormlyFieldTimeComponent, wrappers: ['form-field'] },
+                { name: 'keywords', component: FormlyFieldKeywordsComponent, wrappers: ['form-field'] },
+                { name: 'keywords-list', component: FormlyFieldKeywordsListComponent, wrappers: ['form-field'] },
+                { name: 'editor', component: FormlyFieldEditorComponent, wrappers: ['form-field'] },
+                { name: 'address', component: FormlyFieldAddressComponent, wrappers: ['form-field'] },
+                { name: 'textfield-summary', component: TextfieldSummaryComponent },
               ],
             }),
   ],
@@ -77,7 +103,14 @@ import { DateInputComponent } from 'app/formly/date.component';
     RowComponent,
     ColumnComponent,
     DateInputComponent,
-    DateTimeInputComponent
+    DateTimeInputComponent,
+    FormlyFieldTimeComponent,
+    FormlyFieldKeywordsComponent,
+    FormlyFieldAddressComponent,
+    FormlyFieldEditorComponent,
+    FormlyFieldKeywordsListComponent,
+    TextfieldSummaryComponent,
+    FormlyWrapperGrantField
   ],
   exports: [
     SharedLibsModule,
@@ -99,7 +132,13 @@ import { DateInputComponent } from 'app/formly/date.component';
     MatSliderModule,
     MatStepperModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    FormlyFieldTimeComponent,
+    FormlyFieldKeywordsComponent,
+    FormlyFieldAddressComponent,
+    FormlyFieldEditorComponent,
+    FormlyFieldKeywordsListComponent,
+    FormlyWrapperGrantField
   ],
 })
 export class SharedModule {}

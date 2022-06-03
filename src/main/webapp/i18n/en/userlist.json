@@ -1,6 +1,7 @@
 {
   "userlist": {
     "title": "Userlist",
-    "addFriendRequest": "Add friendrequest"
+    "addFriendRequest": "Add friendrequest",
+    "showProfile": "Show profile"
   }
 }

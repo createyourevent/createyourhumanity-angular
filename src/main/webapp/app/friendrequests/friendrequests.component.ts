@@ -19,6 +19,7 @@ export class FriendrequestsComponent implements OnInit {
 
   account: Account | null = null;
   user: IUser;
+  // requestingUsers: {user: IUser, own: boolean}[] = [];
   requests: IFriendrequest[] =  [];
   requestsUsers: IUser[] = [];
   sortOptions: SelectItem[];
@@ -39,26 +40,33 @@ export class FriendrequestsComponent implements OnInit {
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
+        let users: IUser[] = null;
         this.userService.query().subscribe(res => {
+          users = res.body;
           this.user = res.body.find(x => x.id === this.account.id);
         });
-        this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(res => {
+        this.maincontrollerService.findFriendrequestByRequestUserId(this.account.id).subscribe(res => {
           this.requests = res.body;
           let i = 0;
           this.requests.forEach(el => {
-            this.userService.query().subscribe(u => {
               i++;
-              const users = u.body;
-              const user = users.find(x => x.id === el.requestUserId);
+              const user = users.find(x => x.id === el.user.id);
               this.requestsUsers.push(user);
+              // this.requestingUsers.push({user: user , own: el.user.id === this.account.id });
               if(i === this.requests.length) {
                 this.requestsUsers = this.requestsUsers.splice(0);
+                // this.requestingUsers = this.requestingUsers.splice(0);
               }
-            })
           });
         });
       }
     });
+  }
+
+  requestedUser(id: string): boolean {
+    if(id !== this.account.id) {
+      return true;
+    }
   }
 
   onSortChange(event) {
@@ -79,7 +87,6 @@ export class FriendrequestsComponent implements OnInit {
   }
 
   addUser(id: string): void {
-    console.log(id);
     this.userService.query().subscribe(res => {
       const users = res.body;
       const user = users.find(x => x.id === id);
@@ -92,32 +99,35 @@ export class FriendrequestsComponent implements OnInit {
         s.connectDate = f.connectDate;
         s.user = user;
         s.friendId = this.user.id;
-        this.friendsService.create(s).subscribe();
-        this.deleteRequest(id);
+        this.friendsService.create(s).subscribe(() => {
+          this.deleteRequest(id);
+        });
       });
     });
   }
 
   deleteRequest(id: string) {
-    this.maincontrollerService.deleteFriendrequestByUserId(id).subscribe(del => {
-      this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(res => {
-        this.requests = res.body;
-        if(this.requests.length === 0) {
-          this.requests = this.requests.splice(0);
-          this.requestsUsers = [];
-        }
-        let i = 0;
-        this.requests.forEach(el => {
-          this.userService.query().subscribe(u => {
-            i++;
-            const users = u.body;
-            const user = users.find(x => x.id === el.requestUserId);
-            this.requestsUsers.push(user);
-            if(i === this.requests.length) {
-              this.requestsUsers = this.requestsUsers.splice(0);
-            }
-          })
-        });
+    this.requestsUsers = [];
+    this.maincontrollerService.deleteFriendrequestByRequestUserIdAndUserId(id, this.account.id).subscribe(del => {
+        this.maincontrollerService.deleteFriendrequestByRequestUserIdAndUserId(this.account.id, id).subscribe(del => {
+          this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(res => {
+            let users: IUser[] = null;
+            this.userService.query().subscribe(res => {
+              users = res.body;
+            });
+            this.requests = res.body;
+            let i = 0;
+            this.requests.forEach(el => {
+                i++;
+                const user = users.find(x => x.id === el.user.id);
+                this.requestsUsers.push(user);
+                // this.requestingUsers.push({user: user , own: el.user.id === this.account.id });
+                if(i === this.requests.length) {
+                  this.requestsUsers = this.requestsUsers.splice(0);
+                  // this.requestingUsers = this.requestingUsers.splice(0);
+                }
+            });
+         });
       });
     });
   }

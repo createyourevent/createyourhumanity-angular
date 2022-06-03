@@ -34,6 +34,7 @@
         <tr>
           <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
           <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.formulaData.map">Map</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.formulaData.grant">Grant</span></th>
           <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.formulaData.created">Created</span></th>
           <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.formulaData.modified">Modified</span></th>
           <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.formulaData.user">User</span></th>
@@ -46,6 +47,7 @@
             <a [routerLink]="['/formula-data', formulaData.id, 'view']">{{ formulaData.id }}</a>
           </td>
           <td>{{ formulaData.map }}</td>
+          <td>{{ formulaData.grant }}</td>
           <td>{{ formulaData.created | formatMediumDatetime }}</td>
           <td>{{ formulaData.modified | formatMediumDatetime }}</td>
           <td>

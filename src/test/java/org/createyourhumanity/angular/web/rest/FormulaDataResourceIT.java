@@ -35,6 +35,9 @@ class FormulaDataResourceIT {
     private static final String DEFAULT_MAP = "AAAAAAAAAA";
     private static final String UPDATED_MAP = "BBBBBBBBBB";
 
+    private static final String DEFAULT_GRANT = "AAAAAAAAAA";
+    private static final String UPDATED_GRANT = "BBBBBBBBBB";
+
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
@@ -59,7 +62,11 @@ class FormulaDataResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static FormulaData createEntity() {
-        FormulaData formulaData = new FormulaData().map(DEFAULT_MAP).created(DEFAULT_CREATED).modified(DEFAULT_MODIFIED);
+        FormulaData formulaData = new FormulaData()
+            .map(DEFAULT_MAP)
+            .grant(DEFAULT_GRANT)
+            .created(DEFAULT_CREATED)
+            .modified(DEFAULT_MODIFIED);
         return formulaData;
     }
 
@@ -70,7 +77,11 @@ class FormulaDataResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static FormulaData createUpdatedEntity() {
-        FormulaData formulaData = new FormulaData().map(UPDATED_MAP).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        FormulaData formulaData = new FormulaData()
+            .map(UPDATED_MAP)
+            .grant(UPDATED_GRANT)
+            .created(UPDATED_CREATED)
+            .modified(UPDATED_MODIFIED);
         return formulaData;
     }
 
@@ -98,6 +109,7 @@ class FormulaDataResourceIT {
         assertThat(formulaDataList).hasSize(databaseSizeBeforeCreate + 1);
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(DEFAULT_MAP);
+        assertThat(testFormulaData.getGrant()).isEqualTo(DEFAULT_GRANT);
         assertThat(testFormulaData.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(DEFAULT_MODIFIED);
     }
@@ -136,6 +148,7 @@ class FormulaDataResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(formulaData.getId())))
             .andExpect(jsonPath("$.[*].map").value(hasItem(DEFAULT_MAP)))
+            .andExpect(jsonPath("$.[*].grant").value(hasItem(DEFAULT_GRANT)))
             .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))))
             .andExpect(jsonPath("$.[*].modified").value(hasItem(sameInstant(DEFAULT_MODIFIED))));
     }
@@ -152,6 +165,7 @@ class FormulaDataResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(formulaData.getId()))
             .andExpect(jsonPath("$.map").value(DEFAULT_MAP))
+            .andExpect(jsonPath("$.grant").value(DEFAULT_GRANT))
             .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)))
             .andExpect(jsonPath("$.modified").value(sameInstant(DEFAULT_MODIFIED)));
     }
@@ -171,7 +185,7 @@ class FormulaDataResourceIT {
 
         // Update the formulaData
         FormulaData updatedFormulaData = formulaDataRepository.findById(formulaData.getId()).get();
-        updatedFormulaData.map(UPDATED_MAP).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        updatedFormulaData.map(UPDATED_MAP).grant(UPDATED_GRANT).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
 
         restFormulaDataMockMvc
             .perform(
@@ -187,6 +201,7 @@ class FormulaDataResourceIT {
         assertThat(formulaDataList).hasSize(databaseSizeBeforeUpdate);
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(UPDATED_MAP);
+        assertThat(testFormulaData.getGrant()).isEqualTo(UPDATED_GRANT);
         assertThat(testFormulaData.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(UPDATED_MODIFIED);
     }
@@ -262,7 +277,7 @@ class FormulaDataResourceIT {
         FormulaData partialUpdatedFormulaData = new FormulaData();
         partialUpdatedFormulaData.setId(formulaData.getId());
 
-        partialUpdatedFormulaData.modified(UPDATED_MODIFIED);
+        partialUpdatedFormulaData.created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
 
         restFormulaDataMockMvc
             .perform(
@@ -278,7 +293,8 @@ class FormulaDataResourceIT {
         assertThat(formulaDataList).hasSize(databaseSizeBeforeUpdate);
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(DEFAULT_MAP);
-        assertThat(testFormulaData.getCreated()).isEqualTo(DEFAULT_CREATED);
+        assertThat(testFormulaData.getGrant()).isEqualTo(DEFAULT_GRANT);
+        assertThat(testFormulaData.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(UPDATED_MODIFIED);
     }
 
@@ -293,7 +309,7 @@ class FormulaDataResourceIT {
         FormulaData partialUpdatedFormulaData = new FormulaData();
         partialUpdatedFormulaData.setId(formulaData.getId());
 
-        partialUpdatedFormulaData.map(UPDATED_MAP).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        partialUpdatedFormulaData.map(UPDATED_MAP).grant(UPDATED_GRANT).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
 
         restFormulaDataMockMvc
             .perform(
@@ -309,6 +325,7 @@ class FormulaDataResourceIT {
         assertThat(formulaDataList).hasSize(databaseSizeBeforeUpdate);
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(UPDATED_MAP);
+        assertThat(testFormulaData.getGrant()).isEqualTo(UPDATED_GRANT);
         assertThat(testFormulaData.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(UPDATED_MODIFIED);
     }

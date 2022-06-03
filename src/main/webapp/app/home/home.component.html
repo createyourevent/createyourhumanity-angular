@@ -1,1 +1,22 @@
 <h1>Welcome on Create Your Humanity</h1>
+
+<ng-container *ngIf="account">
+  <div class="alert alert-success" role="alert">
+    You are logged in as {{account.lastName}} {{account.firstName}}
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!account">
+  <div class="alert alert-danger" role="alert">
+    You are logged off. Do you like to register a user account on Create Your Humanity.
+    <hr>
+    <p-button (click)="login()">
+      <fa-icon icon="right-from-bracket"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="main.register-sign-up">Register / Sign up</span>
+    </p-button>
+  </div>
+</ng-container>
+<hr/>
+<div jhiTranslate="main.intro">
+  Intro_Text
+</div>

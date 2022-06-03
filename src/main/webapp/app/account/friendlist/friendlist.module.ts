@@ -7,6 +7,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FriendlistRoutes } from './friendlist.routing';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { FriendlistRoutes } from './friendlist.routing';
     DropdownModule,
     ButtonModule,
     InputTextModule,
-    FriendlistRoutes
+    FriendlistRoutes,
+    CardModule
   ],
   declarations: [FriendlistComponent]
 })

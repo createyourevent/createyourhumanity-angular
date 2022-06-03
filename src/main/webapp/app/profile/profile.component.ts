@@ -41,15 +41,9 @@ export class ProfileComponent implements OnInit, AfterViewInit{
 
   account: Account | null = null;
 
-  constructor(private formService: FormService,
-              private accountService: AccountService,
-              private formulaDataService: FormulaDataService,
+  constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
-              private userService: UserService,
-              private mindmapService: MindmapService,
-              private cd: ChangeDetectorRef,
-              private router: Router,
-              private viewContainerRef: ViewContainerRef ) { }
+              private mindmapService: MindmapService) { }
 
   ngOnInit() {
     this.accountService.identity().subscribe(account => {

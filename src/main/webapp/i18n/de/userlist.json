@@ -1,6 +1,7 @@
 {
   "userlist": {
     "title": "Benutzerliste",
-    "addFriendRequest": "Freundschaftsanfrage senden"
+    "addFriendRequest": "Freundschaftsanfrage senden",
+    "showProfile": "Zeige Profil"
   }
 }

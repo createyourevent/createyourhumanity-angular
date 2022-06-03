@@ -9,11 +9,8 @@ import { FormGroup } from '@angular/forms'
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core'
 import { Account } from 'app/core/auth/account.model'
 import { AccountService } from 'app/core/auth/account.service'
-import { MindmapService } from 'app/entities/mindmap/service/mindmap.service'
 import { MaincontrollerService } from 'app/maincontroller.service'
 import { LoginService } from 'app/login/login.service'
-import { KeyTableService } from 'app/entities/key-table/service/key-table.service'
-import { KeyTable } from 'app/entities/key-table/key-table.model'
 
 @Component({
   selector: 'jhi-form',
@@ -24,6 +21,7 @@ export class FormComponent implements OnInit, AfterViewInit{
 
   form = new FormGroup({})
   model: any = {}
+  grant: any = {}
   options: FormlyFormOptions = {}
   json: {};
   account: Account | null = null;
@@ -48,9 +46,7 @@ export class FormComponent implements OnInit, AfterViewInit{
               private formulaDataService: FormulaDataService,
               private maincontrollerService: MaincontrollerService,
               private userService: UserService,
-              private loginService: LoginService,
-              private mindmapService: MindmapService,
-              private keyTableService: KeyTableService) {}
+              private loginService: LoginService) {}
 
   getFieldGroup(level: number): string {
     const arr: string[] = [];
@@ -75,6 +71,7 @@ export class FormComponent implements OnInit, AfterViewInit{
           this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
             const fd = res.body;
             this.model = JSON.parse(fd.map);
+            this.grant = JSON.parse(fd.grant);
           })
         })
       } else {
@@ -144,20 +141,8 @@ export class FormComponent implements OnInit, AfterViewInit{
         req = JSON.parse(node.firstChild.getAttribute('required'));
       }
       req = JSON.parse(node.firstChild.getAttribute('required'));
-      /*
-      let key: string = node.getAttribute('text').toLowerCase();
-      this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
-        const kt = res.body;
-        if(!kt) {
-          const keyTable = new KeyTable();
-          keyTable.key = node.getAttribute('text').toLowerCase();
-          keyTable.created = dayjs();
-          keyTable.modified = dayjs();
-          this.keyTableService.create(keyTable).subscribe();
-        } else {
-          key = key + '_' + node.getAttribute('id') as string;
-        }
-        */
+      const key = node.getAttribute('id') as string;
+
         if(n.firstElementChild) {
           if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
             this.addDynamicFormlyPage(n);
@@ -171,19 +156,19 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'htmlFormTab') {
             this.convertTab(n);
           } else if (n.firstElementChild.tagName === 'textfield') {
-            this.convertTextfield(n, req);
+            this.convertTextfield(n, req, key);
           } else if (n.firstElementChild.tagName === 'textarea') {
-            this.convertTextarea(n, req);
+            this.convertTextarea(n, req, key);
           } else if (n.firstElementChild.tagName === 'select') {
-            this.convertSelect(n, req);
+            this.convertSelect(n, req, key);
           } else if (n.firstElementChild.tagName === 'option') {
             console.log('option');
           } else if (n.firstElementChild.tagName === 'radiogroup') {
-            this.convertRadiogroup(n, req);
+            this.convertRadiogroup(n, req, key);
           } else if (n.firstElementChild.tagName === 'radio') {
             console.log('radio');
           } else if (n.firstElementChild.tagName === 'checkbox') {
-            this.convertCheckbox(n, req);
+            this.convertCheckbox(n, req, key);
           } else if (n.firstElementChild.tagName === 'hr') {
             this.convertHr(n);
           } else if (n.firstElementChild.tagName === 'title') {
@@ -191,7 +176,15 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'desc') {
             this.convertDescription(n);
           } else if (n.firstElementChild.tagName === 'calendar') {
-            this.convertCalendar(n, req);
+            this.convertCalendar(n, req, key);
+          } else if (n.firstElementChild.tagName === 'editor') {
+            this.convertEditor(n, req, key);
+          } else if (n.firstElementChild.tagName === 'time') {
+            this.convertTime(n, req, key);
+          } else if (n.firstElementChild.tagName === 'address') {
+            this.convertAddress(n, req, key);
+          } else if (n.firstElementChild.tagName === 'keywords') {
+            this.convertKeywords(n, req, key);
           }
         }
         /*
@@ -211,27 +204,6 @@ export class FormComponent implements OnInit, AfterViewInit{
         fieldGroup: []
      }
     );
-  }
-
-  convertCalendar(node: any, req: boolean, key?: string): void {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
-    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'date',
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
-            label: node.getAttribute('text'),
-            required: req,
-          },
-        }
-      );
   }
 
   convertHr(node: any): void {
@@ -312,6 +284,7 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'input',
+          wrappers: ['form-field', 'grant-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
@@ -333,6 +306,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: _key,
         type: 'textarea',
+        wrappers: ['form-field', 'grant-field'],
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.getAttribute('descriptpion'),
@@ -361,6 +335,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: _key,
         type: 'select',
+        wrappers: ['form-field', 'grant-field'],
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
@@ -383,7 +358,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: node.getAttribute('text'),
         type: 'radio',
-        className: '',
+        wrappers: ['form-field', 'grant-field'],
         templateOptions: {
           label: node.getAttribute('text'),
           required: true,
@@ -404,6 +379,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: _key,
         type: 'checkbox',
+        wrappers: ['form-field', 'grant-field'],
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
@@ -414,7 +390,115 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
+  convertKeywords(node: any, req: boolean, key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          key: _key,
+          type: 'keywords',
+          wrappers: ['form-field', 'grant-field'],
+          templateOptions: {
+            placeholder: node.getAttribute('text'),
+            description: node.getAttribute('descriptpion'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
+  }
 
+  convertTime(node: any, req: boolean, key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          key: _key,
+          type: 'time',
+          wrappers: ['form-field', 'grant-field'],
+          templateOptions: {
+            placeholder: node.getAttribute('text'),
+            description: node.getAttribute('descriptpion'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
+  }
+
+  convertAddress(node: any, req: boolean, key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          key: _key,
+          type: 'address',
+          wrappers: ['form-field', 'grant-field'],
+          templateOptions: {
+            placeholder: node.getAttribute('text'),
+            description: node.getAttribute('descriptpion'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
+  }
+
+  convertEditor(node: any, req: boolean, key?: string) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          key: _key,
+          type: 'editor',
+          wrappers: ['form-field', 'grant-field'],
+          templateOptions: {
+            placeholder: node.getAttribute('text'),
+            description: node.getAttribute('descriptpion'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
+  }
+
+  convertCalendar(node: any, req: boolean, key?: string): void {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          key: _key,
+          type: 'date',
+          wrappers: ['form-field', 'grant-field'],
+          templateOptions: {
+            placeholder: node.getAttribute('text'),
+            description: node.getAttribute('descriptpion'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
+  }
 
   submit() {
     this.accountService.identity().subscribe(account => {
@@ -427,13 +511,16 @@ export class FormComponent implements OnInit, AfterViewInit{
             if(fd === null) {
               const formdata: FormulaData = new FormulaData()
               formdata.created = dayjs()
-              formdata.map = JSON.stringify(this.model),
+              formdata.map = JSON.stringify(this.model)
+              formdata.grant = JSON.stringify(this.grant)
               formdata.modified = dayjs()
               formdata.user = this.user
               this.formulaDataService.create(formdata).subscribe()
             } else {
               const a = {...JSON.parse(fd.map), ...this.model}
               fd.map = JSON.stringify(a)
+              const b = {...JSON.parse(fd.grant), ...this.grant}
+              fd.grant = JSON.stringify(b)
               fd.modified = dayjs()
               this.formulaDataService.update(fd).subscribe()
             }
@@ -450,4 +537,23 @@ export class FormComponent implements OnInit, AfterViewInit{
     })
   }
 
+  grantChange(event: any) {
+    this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
+      const fd = res.body
+      const b = {...JSON.parse(fd.grant), ...this.grant}
+      fd.grant = JSON.stringify(b)
+      fd.modified = dayjs()
+      this.formulaDataService.update(fd).subscribe()
+    })
+  }
+
+  modelChange(event: any) {
+    this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
+      const fd = res.body
+      const a = {...JSON.parse(fd.map), ...this.model}
+      fd.map = JSON.stringify(a)
+      fd.modified = dayjs()
+      this.formulaDataService.update(fd).subscribe()
+    })
+  }
 }

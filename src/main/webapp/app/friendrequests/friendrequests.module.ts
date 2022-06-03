@@ -7,6 +7,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { FriendrequestsRoutes } from './friendrequests.routing';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { FriendrequestsRoutes } from './friendrequests.routing';
     DropdownModule,
     ButtonModule,
     InputTextModule,
-    FriendrequestsRoutes
+    FriendrequestsRoutes,
+    CardModule
   ],
   declarations: [FriendrequestsComponent]
 })

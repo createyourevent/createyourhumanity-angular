@@ -6,10 +6,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { ApplicationConfigService } from './core/config/application-config.service';
 import dayjs from 'dayjs/esm';
-import { map } from 'rxjs';
 import { KeyTableService } from './entities/key-table/service/key-table.service';
 import { IFriends } from './entities/friends/friends.model';
 import { IFriendrequest } from './entities/friendrequest/friendrequest.model';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,17 +26,50 @@ export class MaincontrollerService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
+  getGrantFromUser(userId: string, key: string): Observable<string>{
+    const options = {
+      responseType: 'text' as const,
+    };
+    const res = this.http.get(`${this.resourceUrl_formula_datas}/${userId}/${key}/getGrant`, options)
+              .pipe(map((response: string) => response));
+    return res;
+  }
+
+  findFriendrequestByRequestedUserIdAndUser(friendId: string, userId: string): Observable<HttpResponse<IFriendrequest[]>> {
+    return this.http
+    .get<IFriendrequest[]>(`${this.resourceUrl_friendrequests}/${friendId}/${userId}/findByFriendIdAndUserId`, { observe: 'response' });
+  }
+
+  findFriendsByFriendIdAndUser(friendId: string, userId: string): Observable<HttpResponse<IFriends[]>> {
+    const x = this.http
+    .get<IFriends[]>(`${this.resourceUrl_friends}/${friendId}/${userId}/findByFriendIdAndUserId`, { observe: 'response' });
+    return x;
+  }
+
   deleteFriendsByFriendId(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl_friends}/${id}/deleteByFriendId`, { observe: 'response' });
+  }
+
+  deleteFriendsByFriendIdAndUserId(friendId: string, userId: string): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrl_friends}/${friendId}/${userId}/deleteByFriendIdAndUserId`, { observe: 'response' });
   }
 
   deleteFriendrequestByUserId(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl_friendrequests}/${id}/deleteByRequestUserId`, { observe: 'response' });
   }
 
-  findFriendrequestByUserId(userId: string): Observable<HttpResponse<IFriendrequest[]>> {
+  deleteFriendrequestByRequestUserIdAndUserId(requestUserId: string, userId: string): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrl_friendrequests}/${requestUserId}/${userId}/deleteByRequestUserIdAndUser`, { observe: 'response' });
+  }
+
+  findFriendrequestByRequestUserId(userId: string): Observable<HttpResponse<IFriendrequest[]>> {
     return this.http
     .get<IFriendrequest[]>(`${this.resourceUrl_friendrequests}/${userId}/findByRequestUserId`, { observe: 'response' });
+  }
+
+  findFriendrequestByUserId(userId: string): Observable<HttpResponse<IFriendrequest[]>> {
+    return this.http
+    .get<IFriendrequest[]>(`${this.resourceUrl_friendrequests}/${userId}/findByUserId`, { observe: 'response' });
   }
 
   findAuthenticatedUser() {

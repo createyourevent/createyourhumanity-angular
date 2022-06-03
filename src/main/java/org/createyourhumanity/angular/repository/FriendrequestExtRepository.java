@@ -13,8 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FriendrequestExtRepository extends MongoRepository<Friendrequest, String> {
 
-    @Query("{'user.$id': ?0}")
+    @Query("{'user.id': ?0}")
+    List<Friendrequest> findAllByUserId (String userId);
+
+    List<Friendrequest> findByRequestUserIdAndUser(String friendId, String userId);
+
+    @Query("{'requestUserId': ?0}")
     List<Friendrequest> findAllByRequestUserId(String userId);
 
     List<Friendrequest> deleteByRequestUserId(String userId);
+
+    List<Friendrequest> deleteByRequestUserIdAndUser(String requestUserId, String userId);
 }

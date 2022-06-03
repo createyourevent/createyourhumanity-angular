@@ -38,6 +38,8 @@ import {
   faUsers,
   faUsersCog,
   faWrench,
+  faIdCardClip,
+  faRightToBracket
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -80,6 +82,8 @@ export const fontAwesomeIcons = [
   faUsers,
   faUsersCog,
   faWrench,
-  faUserGroup
+  faUserGroup,
+  faIdCardClip,
+  faRightToBracket
   // jhipster-needle-add-icon-import
 ];

@@ -52,10 +52,31 @@ public class FriendrequestExtResource {
         return friendrequest;
     }
 
+    @GetMapping("/friendrequests/{id}/findByUserId")
+    public List<Friendrequest> getFriendrequestByrequestUserId(@PathVariable String id) {
+        log.debug("REST request to get Friendrequest by userid: {}", id);
+        List<Friendrequest> friendrequest = friendrequestExtRepository.findAllByUserId(id);
+        return friendrequest;
+    }
+
+    @GetMapping("/friendrequests/{friendId}/{userId}/findByFriendIdAndUserId")
+    public List<Friendrequest> getFriendrequestByRequestedUserIdAndUser(@PathVariable String friendId, @PathVariable String userId) {
+        log.debug("REST request to get Friendrequest by userid: {},{}", friendId, userId);
+        List<Friendrequest> friendrequest = friendrequestExtRepository.findByRequestUserIdAndUser(friendId, userId);
+        return friendrequest;
+    }
+
     @DeleteMapping("/friendrequests/{id}/deleteByRequestUserId")
     public List<Friendrequest> deleteFriendrequestByUserId(@PathVariable String id) {
         log.debug("REST request to delete Friendrequest by userid: {}", id);
         List<Friendrequest> friendrequest = friendrequestExtRepository.deleteByRequestUserId(id);
+        return friendrequest;
+    }
+
+    @DeleteMapping("/friendrequests/{requestUserId}/{userId}/deleteByRequestUserIdAndUser")
+    public List<Friendrequest> deleteFriendrequestByRequestUserIdAndUser(@PathVariable String requestUserId, @PathVariable String userId) {
+        log.debug("REST request to delete Friendrequest by requestUserId and userid: {},{}", requestUserId, userId);
+        List<Friendrequest> friendrequest = friendrequestExtRepository.deleteByRequestUserIdAndUser(requestUserId, userId);
         return friendrequest;
     }
 

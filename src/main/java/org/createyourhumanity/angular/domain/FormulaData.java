@@ -21,6 +21,9 @@ public class FormulaData implements Serializable {
     @Field("map")
     private String map;
 
+    @Field("grant")
+    private String grant;
+
     @Field("created")
     private ZonedDateTime created;
 
@@ -57,6 +60,19 @@ public class FormulaData implements Serializable {
 
     public void setMap(String map) {
         this.map = map;
+    }
+
+    public String getGrant() {
+        return this.grant;
+    }
+
+    public FormulaData grant(String grant) {
+        this.setGrant(grant);
+        return this;
+    }
+
+    public void setGrant(String grant) {
+        this.grant = grant;
     }
 
     public ZonedDateTime getCreated() {
@@ -123,6 +139,7 @@ public class FormulaData implements Serializable {
         return "FormulaData{" +
             "id=" + getId() +
             ", map='" + getMap() + "'" +
+            ", grant='" + getGrant() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +
             "}";

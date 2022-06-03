@@ -6,8 +6,7 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
   template: `
   <mat-tab-group>
     <mat-tab *ngFor="let tab of field.fieldGroup; let i = index; let last = last;"
-      [label]="tab.templateOptions.label"
-      [disabled]="i !== 0 && !isValid(field.fieldGroup[i - 1])">
+      [label]="tab.templateOptions.label">
       <formly-field [field]="tab"></formly-field>
     </mat-tab>
   </mat-tab-group>

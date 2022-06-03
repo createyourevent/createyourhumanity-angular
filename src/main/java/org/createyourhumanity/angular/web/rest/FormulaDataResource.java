@@ -124,6 +124,9 @@ public class FormulaDataResource {
                 if (formulaData.getMap() != null) {
                     existingFormulaData.setMap(formulaData.getMap());
                 }
+                if (formulaData.getGrant() != null) {
+                    existingFormulaData.setGrant(formulaData.getGrant());
+                }
                 if (formulaData.getCreated() != null) {
                     existingFormulaData.setCreated(formulaData.getCreated());
                 }
