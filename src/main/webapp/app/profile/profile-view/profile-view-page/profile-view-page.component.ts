@@ -14,6 +14,7 @@ import ProfileViewHostDirective from './profile-view-host.directive';
 import { ProfileViewPageService } from '../profile-view.service';
 import { ProfileViewComponent } from '../profile-view.component';
 import { FormulaData } from 'app/entities/formula-data/formula-data.model';
+import { IUser } from 'app/entities/user/user.model';
 
 
 interface Item {
@@ -34,6 +35,8 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit{
   forms: any[] = [];
   pages: any;
   xml: any;
+  profileUser: IUser;
+
 
   @ViewChildren(ProfileViewHostDirective) profileHosts: QueryList<ProfileViewHostDirective>;
   @Input() userId: string;
@@ -54,6 +57,9 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit{
 
   ngOnInit() {
     const profileId = this.route.snapshot.queryParamMap.get('userId');
+    this.userService.query().subscribe(pu => {
+      this.profileUser = pu.body.find(x => x.id === profileId);
+    });
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {

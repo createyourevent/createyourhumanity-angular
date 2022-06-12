@@ -1,0 +1,13 @@
+<hr/>
+<div>
+    <ul>
+      <ng-container *ngFor="let option of props.options | formlySelectOptions: field | async; let i = index">
+        <ng-container *ngIf="getResult(option, i)">
+          <li><fa-icon icon="check"></fa-icon> {{ option.label }}</li>
+        </ng-container>
+        <ng-container *ngIf="!getResult(option, i)">
+          <li><fa-icon icon="xmark"></fa-icon> {{ option.label }}</li>
+        </ng-container>
+      </ng-container>
+    </ul>
+</div>

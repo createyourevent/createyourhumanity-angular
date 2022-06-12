@@ -11,8 +11,7 @@ import { LoginService } from 'app/login/login.service'
 import { ActivatedRoute } from '@angular/router'
 import { FriendsService } from 'app/entities/friends/service/friends.service'
 import { FormulaDataService } from 'app/entities/formula-data/service/formula-data.service'
-import { FormulaData } from 'app/entities/formula-data/formula-data.model'
-import dayjs from 'dayjs/esm'
+import { SelectItem } from 'primeng/api'
 
 @Component({
   selector: 'jhi-profile-view',
@@ -32,7 +31,6 @@ export class ProfileViewComponent implements AfterViewInit{
   formId: string;
   profileUser: IUser;
   key: string;
-  isFriend = false;
 
   fields: FormlyFieldConfig[] = [];
   fieldIds: string[] = [];
@@ -49,12 +47,10 @@ export class ProfileViewComponent implements AfterViewInit{
   @Input() id: string;
 
   constructor(private accountService: AccountService,
-              private formulaDataService: FormulaDataService,
               private maincontrollerService: MaincontrollerService,
               private userService: UserService,
               private loginService: LoginService,
-              private route: ActivatedRoute,
-              private friendsService: FriendsService) {}
+              private route: ActivatedRoute,) {}
 
   getFieldGroup(level: number): string {
     const arr: string[] = [];
@@ -71,20 +67,16 @@ export class ProfileViewComponent implements AfterViewInit{
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
-        this.userService.query().subscribe(users => {
+        this.maincontrollerService.findAllUsersWithFormulaDataAndFriends().subscribe(users => {
           this.profileUser = users.body.find(x => x.id === profileId);
           this.user = users.body.find(x => x.id === this.account.id);
-          this.maincontrollerService.findFriendsByFriendIdAndUser(this.profileUser.id, this.user.id).subscribe(f => {
-            if(f) {
-              this.isFriend = true;
-            }
-            this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {
-              const fd = res.body;
-              this.model = JSON.parse(fd.map);
-              this.grant = JSON.parse(fd.grant);
-              this.convert();
-            })
-          });
+
+          this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {
+            const fd = res.body;
+            this.model = JSON.parse(fd.map);
+            this.grant = JSON.parse(fd.grant);
+            this.convert();
+          })
         })
       } else {
         this.loginService.login()
@@ -149,60 +141,63 @@ export class ProfileViewComponent implements AfterViewInit{
 
   parseJSON(node) {
       const n = node;
-      let req = false;
+      let req = true;
+      let isFriend = false;
+      const found = this.user.friends.find(x => x.friendId === this.profileUser.id);
+      if(found) {
+        isFriend = true;
+      }
       if(JSON.parse(node.firstChild.getAttribute('required')) !== null) {
         req = JSON.parse(node.firstChild.getAttribute('required'));
       }
       req = JSON.parse(node.firstChild.getAttribute('required'));
       this.key = node.getAttribute('id') as string;
-
-        if(n.firstElementChild) {
-          if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
-            this.addDynamicFormlyPage(n);
-          } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'multi_step_form') {
-            this.convertMultistepForm(n);
-          } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'tabs_form') {
-            this.convertTabsForm(n);
-          } else if (n.firstElementChild.tagName === 'htmlFormStep') {
-            this.convertStep(n);
-            this.index = 0;
-          } else if (n.firstElementChild.tagName === 'htmlFormTab') {
-            this.convertTab(n);
-          } else if (n.firstElementChild.tagName === 'textfield') {
-            this.convertTextfield(n, req);
-          } else if (n.firstElementChild.tagName === 'textarea') {
-            this.convertTextarea(n, req);
-          } else if (n.firstElementChild.tagName === 'select') {
-            this.convertSelect(n, req);
-          } else if (n.firstElementChild.tagName === 'option') {
-            console.log('option');
-          } else if (n.firstElementChild.tagName === 'radiogroup') {
-            this.convertRadiogroup(n, req);
-          } else if (n.firstElementChild.tagName === 'radio') {
-            console.log('radio');
-          } else if (n.firstElementChild.tagName === 'checkbox') {
-            this.convertCheckbox(n, req);
-          } else if (n.firstElementChild.tagName === 'hr') {
-            this.convertHr(n);
-          } else if (n.firstElementChild.tagName === 'title') {
-            this.convertTitle(n);
-          } else if (n.firstElementChild.tagName === 'desc') {
-            this.convertDescription(n);
-          } else if (n.firstElementChild.tagName === 'calendar') {
-            this.convertCalendar(n, req);
-          } else if (n.firstElementChild.tagName === 'editor') {
-            this.convertEditor(n, req);
-          } else if (n.firstElementChild.tagName === 'time') {
-            this.convertTime(n, req);
-          } else if (n.firstElementChild.tagName === 'address') {
-            this.convertAddress(n, req);
-          } else if (n.firstElementChild.tagName === 'keywords') {
-            this.convertKeywords(n, req);
+          if(n.firstElementChild) {
+            if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
+              this.addDynamicFormlyPage(n);
+            } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'multi_step_form') {
+              this.convertMultistepForm(n);
+            } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'tabs_form') {
+              this.convertTabsForm(n);
+            } else if (n.firstElementChild.tagName === 'htmlFormStep') {
+              this.convertStep(n);
+              this.index = 0;
+            } else if (n.firstElementChild.tagName === 'htmlFormTab') {
+              this.convertTab(n);
+            } else if (n.firstElementChild.tagName === 'textfield') {
+              this.convertTextfield(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'textarea') {
+              this.convertTextarea(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'select') {
+              this.convertSelect(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'radiogroup') {
+              this.convertRadiogroup(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'checkbox') {
+              this.convertCheckbox(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'hr') {
+              this.convertHr(n);
+            } else if (n.firstElementChild.tagName === 'title') {
+              this.convertTitle(n);
+            } else if (n.firstElementChild.tagName === 'desc') {
+              this.convertDescription(n);
+            } else if (n.firstElementChild.tagName === 'calendar') {
+              this.convertCalendar(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'editor') {
+              this.convertEditor(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'time') {
+              this.convertTime(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'address') {
+              this.convertAddress(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'keywords') {
+              this.convertKeywords(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'ratings') {
+              this.convertRating(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'multicheckbox') {
+              this.convertMulticheckbox(n, req, this.key, isFriend);
+            } else if (n.firstElementChild.tagName === 'multiselectbox') {
+              this.convertMultiselect(n, req, this.key, isFriend);
+            }
           }
-        }
-        /*
-    });
-    */
   }
 
 
@@ -286,427 +281,700 @@ export class ProfileViewComponent implements AfterViewInit{
     );
   }
 
-  convertTextfield(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
+  convertTextfield(node: any, req: boolean, key?: string, isFriend?: boolean) {
     let _key = '';
     if(key) {
       _key = key;
     } else {
       _key = node.firstChild.getAttribute('key');
     }
-    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'input',
-          wrappers: ['form-field'],
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
-            label: node.getAttribute('text'),
-            required: req,
-          },
-        }
-      );
-    } else {
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend)) {
       eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  convertTextarea(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-      let _key = '';
-      if(key) {
-        _key = key;
+          {
+            key: _key,
+            type: 'textfield-summary',
+            wrappers: ['profile-field'],
+            templateOptions: {
+              placeholder: node.getAttribute('text'),
+              description: node.getAttribute('descriptpion'),
+              label: node.getAttribute('text'),
+              required: req,
+            },
+          }
+        );
       } else {
-        _key = node.firstChild.getAttribute('key');
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+          }
+        );
       }
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'textarea',
-          wrappers: ['form-field'],
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
-            rows: 10,
-            label: node.getAttribute('text'),
-            required: req,
-          },
-        }
-      );
     } else {
       eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
           template: `
             <div class="bold">` + node.getAttribute('text') + `</div>
             <hr/>
-            <div class="not-visible">Not visible</div>
+            <div class="not-visible">Not filled from customer</div>
           `,
-          wrappers: ['form-field'],
+          wrappers: ['profile-field'],
           fieldGroup: []
-       }
+      }
       );
     }
   }
 
-  convertSelect(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
+  convertTextarea(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            key: _key,
+            type: 'textarea-summary',
+            wrappers: ['profile-field'],
+            templateOptions: {
+              placeholder: node.getAttribute('text'),
+              description: node.getAttribute('descriptpion'),
+              rows: 10,
+              label: node.getAttribute('text'),
+              required: req,
+            },
+          }
+        );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertSelect(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        const os = node.children;
+        const options = [];
+        for(let i = 1; i < os.length; i++) {
+          const o = {value: i, label: os[i].getAttribute('text')};
+          options.push(o);
+        }
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            key: _key,
+            type: 'select-summary',
+            wrappers: ['profile-field'],
+            templateOptions: {
+              placeholder: node.getAttribute('text'),
+              description: node.firstChild.getAttribute('descriptpion'),
+              label: node.getAttribute('text'),
+              required: req,
+              options
+            },
+          }
+        );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertRadiogroup(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
       const os = node.children;
-      const options = [];
+      const options: { label: string; value: string; }[] = [];
       for(let i = 1; i < os.length; i++) {
-        const o = {value: i, label: os[i].getAttribute('text')};
+        const o = { label: os[i].getAttribute('text'), value:   os[i].getAttribute('text')};
         options.push(o);
       }
-      let _key = '';
-      if(key) {
-        _key = key;
-      } else {
-        _key = node.firstChild.getAttribute('key');
-      }
       eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
-          key: _key,
-          type: 'select',
-          wrappers: ['form-field'],
+          key: node.getAttribute('text'),
+          type: 'radiogroup-summary',
+          wrappers: ['profile-field'],
           templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.firstChild.getAttribute('descriptpion'),
             label: node.getAttribute('text'),
             required: req,
-            options
+            options: options
           },
         }
       );
-    } else {
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  convertRadiogroup(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-    const os = node.children;
-    const options: { label: string; value: string; }[] = [];
-    for(let i = 1; i < os.length; i++) {
-      const o = { label: os[i].getAttribute('text'), value: `${i}`};
-      options.push(o);
-    }
-    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-      {
-        key: node.getAttribute('text'),
-        type: 'radio',
-        wrappers: ['form-field'],
-        templateOptions: {
-          label: node.getAttribute('text'),
-          required: req,
-           options: options
-        },
-      }
-    );
-    } else {
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  convertCheckbox(node: any, req: boolean,  key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-      let _key = '';
-      if(key) {
-        _key = key;
       } else {
-        _key = node.firstChild.getAttribute('key');
-      }
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'checkbox',
-          wrappers: ['form-field'],
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.firstChild.getAttribute('descriptpion'),
-            label: node.getAttribute('text'),
-            required: req,
-          },
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
         }
-      );
+        );
+      }
     } else {
       eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
           template: `
             <div class="bold">` + node.getAttribute('text') + `</div>
             <hr/>
-            <div class="not-visible">Not visible</div>
+            <div class="not-visible">Not filled from customer</div>
           `,
-          wrappers: ['form-field'],
+          wrappers: ['profile-field'],
           fieldGroup: []
-       }
+      }
       );
     }
   }
 
-  convertKeywords(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-      let _key = '';
-      if(key) {
-        _key = key;
-      } else {
-        _key = node.firstChild.getAttribute('key');
-      }
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+  convertCheckbox(node: any, req: boolean,  key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
           {
             key: _key,
-            type: 'keywords',
-            wrappers: ['form-field'],
+            type: 'checkbox',
+            wrappers: ['profile-field'],
             templateOptions: {
               placeholder: node.getAttribute('text'),
-              description: node.getAttribute('descriptpion'),
+              description: node.firstChild.getAttribute('descriptpion'),
               label: node.getAttribute('text'),
               required: req,
             },
           }
         );
-    } else {
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  convertTime(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-      let _key = '';
-      if(key) {
-        _key = key;
       } else {
-        _key = node.firstChild.getAttribute('key');
-      }
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
           {
-            key: _key,
-            type: 'time',
-            wrappers: ['form-field'],
-            templateOptions: {
-              placeholder: node.getAttribute('text'),
-              description: node.getAttribute('descriptpion'),
-              label: node.getAttribute('text'),
-              required: req,
-            },
-          }
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
         );
+      }
     } else {
       eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
           template: `
             <div class="bold">` + node.getAttribute('text') + `</div>
             <hr/>
-            <div class="not-visible">Not visible</div>
+            <div class="not-visible">Not filled from customer</div>
           `,
-          wrappers: ['form-field'],
+          wrappers: ['profile-field'],
           fieldGroup: []
-       }
+      }
       );
     }
   }
 
-  convertAddress(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
+  convertKeywords(node: any, req: boolean, key?: string, isFriend?: boolean) {
     let _key = '';
     if(key) {
       _key = key;
     } else {
       _key = node.firstChild.getAttribute('key');
     }
-    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'address',
-          wrappers: ['form-field'],
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
-            label: node.getAttribute('text'),
-            required: req,
-          },
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        const os = node.children;
+        const options = [];
+        for(let i = 1; i < os.length; i++) {
+          const o = {value: i, label: os[i].getAttribute('text')};
+          options.push(o);
         }
-      );
-    } else {
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  convertEditor(node: any, req: boolean, key?: string) {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
-    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'editor',
-          wrappers: ['form-field'],
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
-            label: node.getAttribute('text'),
-            required: req,
-          },
-        }
-      );
-    } else {
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  convertCalendar(node: any, req: boolean, key?: string): void {
-    if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && this.isFriend) || this.grant[this.key] !== 'NONE') {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
-    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          key: _key,
-          type: 'date',
-          wrappers: ['form-field'],
-          templateOptions: {
-            placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
-            label: node.getAttribute('text'),
-            required: req,
-          },
-        }
-      );
-    } else {
-      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
-        {
-          template: `
-            <div class="bold">` + node.getAttribute('text') + `</div>
-            <hr/>
-            <div class="not-visible">Not visible</div>
-          `,
-          wrappers: ['form-field'],
-          fieldGroup: []
-       }
-      );
-    }
-  }
-
-  submit() {
-    this.accountService.identity().subscribe(account => {
-      this.account = account
-      if(this.account) {
-        this.userService.query().subscribe(users => {
-          this.user = users.body.find(x => x.id === this.account.id)
-          this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
-            const fd = res.body
-            if(fd === null) {
-              const formdata: FormulaData = new FormulaData()
-              formdata.created = dayjs()
-              formdata.map = JSON.stringify(this.model)
-              formdata.grant = JSON.stringify(this.grant)
-              formdata.modified = dayjs()
-              formdata.user = this.user
-              this.formulaDataService.create(formdata).subscribe()
-            } else {
-              const a = {...JSON.parse(fd.map), ...this.model}
-              fd.map = JSON.stringify(a)
-              const b = {...JSON.parse(fd.grant), ...this.grant}
-              fd.grant = JSON.stringify(b)
-              fd.modified = dayjs()
-              this.formulaDataService.update(fd).subscribe()
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+            {
+              key: _key,
+              type: 'keywords-summary',
+              wrappers: ['profile-field'],
+              templateOptions: {
+                placeholder: node.getAttribute('text'),
+                description: node.getAttribute('descriptpion'),
+                label: node.getAttribute('text'),
+                required: req,
+                options
+              },
             }
-          })
-        })
+          );
       } else {
-        this.loginService.login()
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
       }
-    },
-    error => {
-      if(error.status === 401) {
-        this.loginService.login()
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
       }
-    })
+      );
+    }
   }
 
-  grantChange(event: any) {
-    this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
-      const fd = res.body
-      const b = {...JSON.parse(fd.grant), ...this.grant}
-      fd.grant = JSON.stringify(b)
-      fd.modified = dayjs()
-      this.formulaDataService.update(fd).subscribe()
-    })
+  convertTime(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+            {
+              key: _key,
+              type: 'time-summary',
+              wrappers: ['profile-field'],
+              templateOptions: {
+                placeholder: node.getAttribute('text'),
+                description: node.getAttribute('descriptpion'),
+                label: node.getAttribute('text'),
+                required: req,
+              },
+            }
+          );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
   }
 
-  modelChange(event: any) {
-    this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
-      const fd = res.body
-      const a = {...JSON.parse(fd.map), ...this.model}
-      fd.map = JSON.stringify(a)
-      fd.modified = dayjs()
-      this.formulaDataService.update(fd).subscribe()
-    })
+  convertAddress(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            key: _key,
+            type: 'address-summary',
+            wrappers: ['profile-field'],
+            templateOptions: {
+              placeholder: node.getAttribute('text'),
+              description: node.getAttribute('descriptpion'),
+              label: node.getAttribute('text'),
+              required: req,
+            },
+          }
+        );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertEditor(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            key: _key,
+            type: 'editor-summary',
+            wrappers: ['profile-field'],
+            templateOptions: {
+              placeholder: node.getAttribute('text'),
+              description: node.getAttribute('descriptpion'),
+              label: node.getAttribute('text'),
+              required: req,
+            },
+          }
+        );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertCalendar(node: any, req: boolean, key?: string, isFriend?: boolean): void {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            key: _key,
+            type: 'date',
+            wrappers: ['profile-field'],
+            templateOptions: {
+              placeholder: node.getAttribute('text'),
+              description: node.getAttribute('descriptpion'),
+              label: node.getAttribute('text'),
+              required: req,
+            },
+          }
+        );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertRating(node: any, req: boolean, key?: string, isFriend?: boolean): void {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+            {
+              key: _key,
+              type: 'rating-summary',
+              wrappers: ['profile-field'],
+              templateOptions: {
+                placeholder: node.getAttribute('text'),
+                description: node.getAttribute('descriptpion'),
+                label: node.getAttribute('text'),
+                required: req,
+              },
+            }
+          );
+        } else {
+          eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+            {
+              template: `
+                <div class="bold">` + node.getAttribute('text') + `</div>
+                <hr/>
+                <div class="not-visible">Not visible</div>
+              `,
+              wrappers: ['profile-field'],
+              fieldGroup: []
+          }
+          );
+        }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertMulticheckbox(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        const os = node.children;
+        const options: SelectItem[] = [];
+        for(let i = 1; i < os.length; i++) {
+          const o = {value: i, label: os[i].getAttribute('text')};
+          options.push(o);
+        }
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+            {
+              key: _key,
+              type: 'multicheckbox-summary',
+              wrappers: ['profile-field'],
+              templateOptions: {
+                placeholder: node.getAttribute('text'),
+                description: node.getAttribute('descriptpion'),
+                label: node.getAttribute('text'),
+                required: req,
+                options
+              },
+            }
+          );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
+  }
+
+  convertMultiselect(node: any, req: boolean, key?: string, isFriend?: boolean) {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    const val = this.model[_key];
+    if(val) {
+      if(this.grant[this.key] === 'ALL' || (this.grant[this.key] === 'FRIENDS' && isFriend) || this.grant[this.key] !== 'NONE') {
+        const os = node.children;
+        const options: SelectItem[] = [];
+        for(let i = 1; i < os.length; i++) {
+          const o = {value: i, label: os[i].getAttribute('text')};
+          options.push(o);
+        }
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+            {
+              key: _key,
+              type: 'multiselect-summary',
+              wrappers: ['profile-field'],
+              templateOptions: {
+                placeholder: node.getAttribute('text'),
+                description: node.getAttribute('descriptpion'),
+                label: node.getAttribute('text'),
+                required: req,
+                options
+              },
+            }
+          );
+      } else {
+        eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+          {
+            template: `
+              <div class="bold">` + node.getAttribute('text') + `</div>
+              <hr/>
+              <div class="not-visible">Not visible</div>
+            `,
+            wrappers: ['profile-field'],
+            fieldGroup: []
+        }
+        );
+      }
+    } else {
+      eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          template: `
+            <div class="bold">` + node.getAttribute('text') + `</div>
+            <hr/>
+            <div class="not-visible">Not filled from customer</div>
+          `,
+          wrappers: ['profile-field'],
+          fieldGroup: []
+      }
+      );
+    }
   }
 }

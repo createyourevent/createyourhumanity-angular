@@ -58,6 +58,7 @@ export class MainComponent implements OnInit {
     this.accountService.identity().subscribe(res =>{
       this.account = res;
       if(this.account) {
+
         this.userService.query().subscribe(res => {
           this.user = res.body.find(x => x.id === this.account.id);
           if(this.account) {

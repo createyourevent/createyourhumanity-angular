@@ -22,7 +22,10 @@ export class MaincontrollerService {
   public resourceUrl_friends = this.applicationConfigService.getEndpointFor('api/friends');
   public resourceUrl_friendrequests = this.applicationConfigService.getEndpointFor('api/friendrequests');
 
-  public resourceUrl = this.applicationConfigService.getEndpointFor('authenticatedUser');
+  public resourceUrl = this.applicationConfigService.getEndpointFor('api/authenticatedUser');
+  public resourceUrl_user_formuladata = this.applicationConfigService.getEndpointFor('api/authenticatedUserWidthFormulaData');
+  public resourceUrl_users_formuladata = this.applicationConfigService.getEndpointFor('api/allUsersWidthFormulaData');
+  public resourceUrl_users_formuladata_friends = this.applicationConfigService.getEndpointFor('api/allUsersWidthFormulaDataAndFriends');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
@@ -74,6 +77,18 @@ export class MaincontrollerService {
 
   findAuthenticatedUser() {
     return this.http.get<IUser>(`${this.resourceUrl}`, { observe: 'response' });
+  }
+
+  findAuthenticatedUserWithFormulaData() {
+    return this.http.get<IUser>(`${this.resourceUrl_user_formuladata}`, { observe: 'response' });
+  }
+
+  findAllUsersWithFormulaData() {
+    return this.http.get<IUser[]>(`${this.resourceUrl_users_formuladata}`, { observe: 'response' });
+  }
+
+  findAllUsersWithFormulaDataAndFriends() {
+    return this.http.get<IUser[]>(`${this.resourceUrl_users_formuladata_friends}`, { observe: 'response' });
   }
 
   findFriendsFromUser(userId: string): Observable<HttpResponse<IFriends[]>> {

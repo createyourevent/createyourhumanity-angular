@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  * A Friends.
  */
@@ -69,6 +71,7 @@ public class Friends implements Serializable {
         this.friendId = friendId;
     }
 
+    @JsonBackReference
     public User getUser() {
         return this.user;
     }
@@ -77,6 +80,7 @@ public class Friends implements Serializable {
         this.user = user;
     }
 
+    @JsonBackReference
     public Friends user(User user) {
         this.setUser(user);
         return this;

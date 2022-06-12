@@ -161,12 +161,8 @@ export class FormComponent implements OnInit, AfterViewInit{
             this.convertTextarea(n, req, key);
           } else if (n.firstElementChild.tagName === 'select') {
             this.convertSelect(n, req, key);
-          } else if (n.firstElementChild.tagName === 'option') {
-            console.log('option');
           } else if (n.firstElementChild.tagName === 'radiogroup') {
             this.convertRadiogroup(n, req, key);
-          } else if (n.firstElementChild.tagName === 'radio') {
-            console.log('radio');
           } else if (n.firstElementChild.tagName === 'checkbox') {
             this.convertCheckbox(n, req, key);
           } else if (n.firstElementChild.tagName === 'hr') {
@@ -185,6 +181,12 @@ export class FormComponent implements OnInit, AfterViewInit{
             this.convertAddress(n, req, key);
           } else if (n.firstElementChild.tagName === 'keywords') {
             this.convertKeywords(n, req, key);
+          } else if (n.firstElementChild.tagName === 'ratings') {
+            this.convertRating(n, req, key);
+          } else if (n.firstElementChild.tagName === 'multicheckbox') {
+            this.convertMulticheckbox(n, req, key);
+          } else if (n.firstElementChild.tagName === 'multiselectbox') {
+            this.convertMultiselect(n, req, key);
           }
         }
         /*
@@ -194,7 +196,7 @@ export class FormComponent implements OnInit, AfterViewInit{
 
 
   addDynamicFormlyPage(node: any): void {
-    console.log('add_formly');
+    return null;
   }
 
   convertDescription(node: any): void {
@@ -284,10 +286,10 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'input',
-          wrappers: ['form-field', 'grant-field'],
+          wrappers: ['grant-field', 'form-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
+            description: node.firstChild.getAttribute('description'),
             label: node.getAttribute('text'),
             required: req,
           },
@@ -306,10 +308,10 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: _key,
         type: 'textarea',
-        wrappers: ['form-field', 'grant-field'],
+        wrappers: ['grant-field', 'form-field'],
         templateOptions: {
           placeholder: node.getAttribute('text'),
-          description: node.getAttribute('descriptpion'),
+          description: node.firstChild.getAttribute('description'),
           rows: 10,
           label: node.getAttribute('text'),
           required: req,
@@ -335,7 +337,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: _key,
         type: 'select',
-        wrappers: ['form-field', 'grant-field'],
+        wrappers: ['grant-field', 'form-field'],
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
@@ -358,9 +360,10 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: node.getAttribute('text'),
         type: 'radio',
-        wrappers: ['form-field', 'grant-field'],
+        wrappers: ['grant-field', 'form-field'],
         templateOptions: {
           label: node.getAttribute('text'),
+          description: node.firstChild.getAttribute('description'),
           required: true,
            options: options
         },
@@ -379,10 +382,10 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: _key,
         type: 'checkbox',
-        wrappers: ['form-field', 'grant-field'],
+        wrappers: ['grant-field', 'form-field'],
         templateOptions: {
           placeholder: node.getAttribute('text'),
-          description: node.firstChild.getAttribute('descriptpion'),
+          description: node.firstChild.getAttribute('description'),
           label: node.getAttribute('text'),
           required: req,
         },
@@ -401,10 +404,10 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'keywords',
-          wrappers: ['form-field', 'grant-field'],
+          wrappers: ['grant-field', 'form-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
+            description: node.firstChild.getAttribute('description'),
             label: node.getAttribute('text'),
             required: req,
           },
@@ -423,10 +426,10 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'time',
-          wrappers: ['form-field', 'grant-field'],
+          wrappers: ['grant-field', 'form-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
+            description: node.firstChild.getAttribute('description'),
             label: node.getAttribute('text'),
             required: req,
           },
@@ -445,10 +448,10 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'address',
-          wrappers: ['form-field', 'grant-field'],
+          wrappers: ['grant-field', 'form-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
+            description: node.firstChild.getAttribute('description'),
             label: node.getAttribute('text'),
             required: req,
           },
@@ -467,10 +470,10 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'editor',
-          wrappers: ['form-field', 'grant-field'],
+          wrappers: ['grant-field', 'form-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
+            description: node.firstChild.getAttribute('description'),
             label: node.getAttribute('text'),
             required: req,
           },
@@ -489,15 +492,94 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'date',
-          wrappers: ['form-field', 'grant-field'],
+          wrappers: ['grant-field', 'form-field'],
           templateOptions: {
             placeholder: node.getAttribute('text'),
-            description: node.getAttribute('descriptpion'),
+            description: node.firstChild.getAttribute('description'),
             label: node.getAttribute('text'),
             required: req,
           },
         }
       );
+  }
+
+  convertRating(node: any, req: boolean, key?: string): void {
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+        {
+          key: _key,
+          type: 'rating',
+          wrappers: ['grant-field', 'form-field'],
+          props: {
+            description: node.firstChild.getAttribute('description'),
+            label: node.getAttribute('text'),
+            required: req,
+          },
+        }
+      );
+  }
+
+  convertMulticheckbox(node: any, req: boolean, key?: string) {
+    const os = node.children;
+    const options = [];
+    for(let i = 1; i < os.length; i++) {
+      const o = {value: i, label: os[i].getAttribute('text')};
+      options.push(o);
+    }
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        key: _key,
+        type: 'multicheckbox',
+        wrappers: ['grant-field', 'form-field'],
+        templateOptions: {
+          placeholder: node.getAttribute('text'),
+          description: node.firstChild.getAttribute('description'),
+          label: node.getAttribute('text'),
+          required: req,
+          options
+        },
+      }
+    );
+  }
+
+  convertMultiselect(node: any, req: boolean, key?: string) {
+    const os = node.children;
+    const options = [];
+    for(let i = 1; i < os.length; i++) {
+      const o = {value: i, label: os[i].getAttribute('text')};
+      options.push(o);
+    }
+    let _key = '';
+    if(key) {
+      _key = key;
+    } else {
+      _key = node.firstChild.getAttribute('key');
+    }
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        key: _key,
+        type: 'multiselect',
+        wrappers: ['grant-field', 'form-field'],
+        templateOptions: {
+          placeholder: node.getAttribute('text'),
+          description: node.firstChild.getAttribute('description'),
+          label: node.getAttribute('text'),
+          required: req,
+          options
+        },
+      }
+    );
   }
 
   submit() {
@@ -522,6 +604,7 @@ export class FormComponent implements OnInit, AfterViewInit{
               const b = {...JSON.parse(fd.grant), ...this.grant}
               fd.grant = JSON.stringify(b)
               fd.modified = dayjs()
+              fd.user = this.user;
               this.formulaDataService.update(fd).subscribe()
             }
           })
@@ -539,11 +622,12 @@ export class FormComponent implements OnInit, AfterViewInit{
 
   grantChange(event: any) {
     this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
-      const fd = res.body
-      const b = {...JSON.parse(fd.grant), ...this.grant}
-      fd.grant = JSON.stringify(b)
-      fd.modified = dayjs()
-      this.formulaDataService.update(fd).subscribe()
+      const fd = res.body;
+      const b = {...JSON.parse(fd.grant), ...this.grant};
+      fd.grant = JSON.stringify(b);
+      fd.modified = dayjs();
+      fd.user = this.user;
+      this.formulaDataService.update(fd).subscribe();
     })
   }
 
@@ -553,6 +637,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       const a = {...JSON.parse(fd.map), ...this.model}
       fd.map = JSON.stringify(a)
       fd.modified = dayjs()
+      fd.user = this.user;
       this.formulaDataService.update(fd).subscribe()
     })
   }

@@ -231,14 +231,6 @@ public class UserService {
         }
     }
 
-    public void addFriend(User friend) {
-        Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
-        if(self.get() != null) {
-            User _self = self.get();
-            _self.getFriends().add(friend);
-        }
-    }
-
     public Optional<User> getAuthenticatedUser() {
         Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
         return self;

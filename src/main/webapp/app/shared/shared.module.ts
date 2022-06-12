@@ -43,9 +43,29 @@ import { FormlyFieldKeywordsListComponent } from 'app/formly/formly-field-keywor
 import { TextfieldSummaryComponent } from 'app/formly/summary/textfield-summary/textfield-summary.component';
 import { FormlyWrapperGrantField } from 'app/formly/grant-field/src/grant-field.wrapper';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { TextareaSummaryComponent } from 'app/formly/summary/textarea-summary/textarea-summary.component';
+import { RadiogroupSummaryComponent } from 'app/formly/summary/radiogroup-summary/radiogroup-summary.component';
+import { EditorSummaryComponent } from 'app/formly/summary/editor-summary/editor-summary.component';
+import { SafeHtmlPipe } from 'app/pipes/safeHtml.pipe';
+import { TimeSummaryComponent } from 'app/formly/summary/time-summary/time-summary.component';
+import { AddressSummaryComponent } from 'app/formly/summary/address-summary/address-summary.component';
+import { KeywordsSummaryComponent } from 'app/formly/summary/keywords-summary/keywords-summary.component';
+import { SelectSummaryComponent } from 'app/formly/summary/select-summary/select-summary.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormlyFieldRatingsComponent } from 'app/formly/ratings/formly-field-ratings.component';
+import { RatingSummaryComponent } from 'app/formly/summary/rating-summary/rating-summary.component';
+import { MulticheckboxSummaryComponent } from 'app/formly/summary/multicheckbox-summary/multicheckbox-summary.component';
+import { FormlySelectModule } from '@ngx-formly/core/select';
+import { FormlyFieldMultiselectComponent } from 'app/formly/multiselect/formly-field-multiselect.component';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { MultiselectSummaryComponent } from 'app/formly/summary/multiselect-summary/multiselect-summary.component';
+import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-field.wrapper';
 
 @NgModule({
   imports: [SharedLibsModule,
+            MultiSelectModule,
+            FormlySelectModule,
+            NgbModule,
             FormsModule,
             ReactiveFormsModule,
             NgSelectModule,
@@ -64,8 +84,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
                 { name: 'containerwrapper', component: ContainerWrapperComponent },
                 { name: 'rowwrapper', component: RowWrapperComponent },
                 { name: 'columnwrapper', component: ColumnWrapperComponent },
-                { name: 'grant-field', component: FormlyWrapperGrantField,
-                },
+                { name: 'grant-field', component: FormlyWrapperGrantField },
+                { name: 'profile-field', component: FormlyWrapperProfileField }
               ],
               types: [
                 { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
@@ -81,6 +101,18 @@ import { NgSelectModule } from '@ng-select/ng-select';
                 { name: 'editor', component: FormlyFieldEditorComponent, wrappers: ['form-field'] },
                 { name: 'address', component: FormlyFieldAddressComponent, wrappers: ['form-field'] },
                 { name: 'textfield-summary', component: TextfieldSummaryComponent },
+                { name: 'textarea-summary', component: TextareaSummaryComponent },
+                { name: 'radiogroup-summary', component: RadiogroupSummaryComponent },
+                { name: 'editor-summary', component: EditorSummaryComponent },
+                { name: 'time-summary', component: TimeSummaryComponent },
+                { name: 'address-summary', component: AddressSummaryComponent },
+                { name: 'keywords-summary', component:  KeywordsSummaryComponent },
+                { name: 'select-summary', component:  SelectSummaryComponent },
+                { name: 'rating', component:  FormlyFieldRatingsComponent },
+                { name: 'rating-summary', component:  RatingSummaryComponent },
+                { name: 'multicheckbox-summary', component:  MulticheckboxSummaryComponent },
+                { name: 'multiselect', component:   FormlyFieldMultiselectComponent },
+                { name: 'multiselect-summary', component: MultiselectSummaryComponent },
               ],
             }),
   ],
@@ -110,7 +142,20 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormlyFieldEditorComponent,
     FormlyFieldKeywordsListComponent,
     TextfieldSummaryComponent,
-    FormlyWrapperGrantField
+    FormlyWrapperGrantField,
+    TextareaSummaryComponent,
+    RadiogroupSummaryComponent,
+    EditorSummaryComponent,
+    SafeHtmlPipe,
+    AddressSummaryComponent,
+    KeywordsSummaryComponent,
+    SelectSummaryComponent,
+    FormlyFieldRatingsComponent,
+    RatingSummaryComponent,
+    MulticheckboxSummaryComponent,
+    FormlyFieldMultiselectComponent,
+    MultiselectSummaryComponent,
+    FormlyWrapperProfileField
   ],
   exports: [
     SharedLibsModule,
@@ -138,7 +183,20 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormlyFieldAddressComponent,
     FormlyFieldEditorComponent,
     FormlyFieldKeywordsListComponent,
-    FormlyWrapperGrantField
+    FormlyWrapperGrantField,
+    TextareaSummaryComponent,
+    RadiogroupSummaryComponent,
+    EditorSummaryComponent,
+    SafeHtmlPipe,
+    AddressSummaryComponent,
+    KeywordsSummaryComponent,
+    SelectSummaryComponent,
+    FormlyFieldRatingsComponent,
+    RatingSummaryComponent,
+    MulticheckboxSummaryComponent,
+    FormlyFieldMultiselectComponent,
+    MultiselectSummaryComponent,
+    FormlyWrapperProfileField
   ],
 })
 export class SharedModule {}

@@ -1,0 +1,25 @@
+.div-user {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-image {
+  max-width: 75px;
+  max-height: 75px;
+  width: 100%;
+  height: 100%;
+  margin: 15px;
+}
+
+.user-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

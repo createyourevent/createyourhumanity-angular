@@ -7,6 +7,11 @@
     "friendlist": "Friendlist",
     "users": "Users",
     "friendrequests": "Friendrequests",
-    "account": "Account"
+    "account": "Account",
+    "welcome": "Welcome",
+    "search-user": "Search user",
+    "welcome-on": "Welcome on Create Your Event",
+    "mindmap-profile": "Mindmap-Profile",
+    "user-list": "Users list"
   }
 }

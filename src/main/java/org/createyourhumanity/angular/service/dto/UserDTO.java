@@ -1,5 +1,9 @@
 package org.createyourhumanity.angular.service.dto;
 
+import java.util.List;
+
+import org.createyourhumanity.angular.domain.FormulaData;
+import org.createyourhumanity.angular.domain.Friends;
 import org.createyourhumanity.angular.domain.User;
 
 /**
@@ -17,6 +21,10 @@ public class UserDTO {
 
     private String imageUrl;
 
+    private FormulaData formulaData;
+
+    private List<Friends> friends;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -28,6 +36,8 @@ public class UserDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.imageUrl = user.getImageUrl();
+        this.formulaData = new FormulaData();
+        this.friends = user.getFriends();
     }
 
     public String getId() {
@@ -68,6 +78,22 @@ public class UserDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public FormulaData getFormulaData() {
+        return formulaData;
+    }
+
+    public void setFormulaData(FormulaData formulaData) {
+        this.formulaData = formulaData;
+    }
+
+    public List<Friends> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<Friends> friends) {
+        this.friends = friends;
     }
 
     // prettier-ignore

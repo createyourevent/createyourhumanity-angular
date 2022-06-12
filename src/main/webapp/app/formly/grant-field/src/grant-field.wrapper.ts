@@ -14,15 +14,18 @@ interface GrantItem {
   selector: 'formly-wrapper-grant-field',
   styleUrls: ['./grant-field.wrapper.scss'],
   template: `
-  <ng-container #fieldComponent></ng-container>
-  <div class="grant-select">
-    <label for="grant-select" class="grant-title">Grant</label>
-    <ng-select [items]="grantItems"
-      bindLabel="name"
-      bindValue="id"
-      (change)="changeGrant($event)"
-      [(ngModel)]="selectedGrantItem">
-    </ng-select>
+  <div class="border">
+    <ng-container #fieldComponent></ng-container>
+    <hr/>
+    <div class="grant-select">
+      <label for="grant-select" class="grant-title">Grant</label>
+      <ng-select [items]="grantItems"
+        bindLabel="name"
+        bindValue="id"
+        (change)="changeGrant($event)"
+        [(ngModel)]="selectedGrantItem">
+      </ng-select>
+    </div>
   </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -47,9 +50,7 @@ export class FormlyWrapperGrantField extends FieldWrapper<FormlyFieldConfig<Form
       { name: this.translateService.instant('grant-field.friends'), id: GrantEnum.Friends },
       { name: this.translateService.instant('grant-field.all'), id: GrantEnum.All }
     ];
-  }
 
-  ngAfterViewInit(): void {
     this.options.grantChangesSubject.subscribe(s => {
       const x = s[this.field.key + ''];
       const y = this.grantItems.find(gi => gi.id === x);
@@ -58,6 +59,10 @@ export class FormlyWrapperGrantField extends FieldWrapper<FormlyFieldConfig<Form
     if(!this.selectedGrantItem) {
       this.selectedGrantItem = GrantEnum.All;
     }
+  }
+
+  ngAfterViewInit(): void {
+    console.log("test");
   }
 
   changeGrant(e: any) {

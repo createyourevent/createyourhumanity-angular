@@ -1,4 +1,13 @@
-<h1>{{ 'form.my-profile' | translate }}</h1>
+<div class="row profile-banner">
+  <div class="col-md-6 profile-title">
+    <h1>{{ 'form.my-profile' | translate }}</h1>
+  </div>
+  <div class="col-md-6 profile-image">
+    <div class="div-user" *ngIf="user.imageUrl">
+      <img class="user-image" src="{{ user.imageUrl }}">
+    </div>
+  </div>
+</div>
 
 <p-tabView>
   <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">

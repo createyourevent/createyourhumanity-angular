@@ -10,10 +10,20 @@
 @import '~quill/dist/quill.bubble.css';
 @import '~quill/dist/quill.snow.css';
 @import "~@ng-select/ng-select/themes/default.theme.css";
+@import "~bootstrap/dist/css/bootstrap.css";
 
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/
+body {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#3b679e+0,207cca+48,2b88d9+50,207cca+51,7db9e8+100&0.25+0,0.25+100;Blue+Gloss+%232 */
+  background: -moz-linear-gradient(top,  rgba(59,103,158,0.25) 0%, rgba(32,124,202,0.25) 48%, rgba(43,136,217,0.25) 50%, rgba(32,124,202,0.25) 51%, rgba(125,185,232,0.25) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(59,103,158,0.25) 0%,rgba(32,124,202,0.25) 48%,rgba(43,136,217,0.25) 50%,rgba(32,124,202,0.25) 51%,rgba(125,185,232,0.25) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(59,103,158,0.25) 0%,rgba(32,124,202,0.25) 48%,rgba(43,136,217,0.25) 50%,rgba(32,124,202,0.25) 51%,rgba(125,185,232,0.25) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#403b679e', endColorstr='#407db9e8',GradientType=0 ); /* IE6-9 */
+  background-repeat: none;
+  background-size: cover;
+}
 
 body,
 h1,
@@ -82,6 +92,7 @@ Generic styles
   padding: 1.5%;
   margin-top: 20px;
   border: none;
+  min-height: 670px;
 }
 
 .error {
@@ -247,15 +258,6 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
   float: right;
 }
 
-.border {
-  border: 1px solid #d5dce6;
-  border-radius: 10px;
-  padding: 7px;
-  margin: 8px;
-  -webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgb(0 0 0 / 0%);
-  box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgb(0 0 0 / 0%);
-}
-
 .form-label {
   font-weight: bold;
 }
@@ -276,8 +278,31 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
   font-weight: bold;
 }
 
-.not-visible {
-  font-weight: bold;
-  font-size: large;
-  color: red;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mat-tab-body {
+  overflow-y: visible !important;
+}
+
+.mat-tab-body-wrapper {
+  overflow-y: visible !important;
+}
+
+.mat-tab-body-content {
+  overflow: hidden;
+}
+
+.card-body {
+  overflow: visible !important;
+  padding: 0px !important;
 }

@@ -1,6 +1,19 @@
-<p-tabView>
-  <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">
-    <ng-container appProfileViewHost></ng-container>
-  </p-tabPanel>
-</p-tabView>
+<ng-container *ngIf="profileUser">
+  <div class="row profile-banner">
+    <div class="col-md-6 profile-title">
+      <h1>{{ 'form.profile-from' | translate }} {{profileUser.lastName}} {{profileUser.firstName}}</h1>
+    </div>
+    <div class="col-md-6 profile-image">
+      <div class="div-user" *ngIf="profileUser.imageUrl">
+        <img class="user-image" src="{{ profileUser.imageUrl }}">
+      </div>
+    </div>
+  </div>
+
+  <p-tabView>
+    <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">
+      <ng-container appProfileViewHost></ng-container>
+    </p-tabPanel>
+  </p-tabView>
+</ng-container>
 

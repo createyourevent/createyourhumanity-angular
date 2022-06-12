@@ -52,10 +52,8 @@ export class FriendrequestsComponent implements OnInit {
               i++;
               const user = users.find(x => x.id === el.user.id);
               this.requestsUsers.push(user);
-              // this.requestingUsers.push({user: user , own: el.user.id === this.account.id });
               if(i === this.requests.length) {
                 this.requestsUsers = this.requestsUsers.splice(0);
-                // this.requestingUsers = this.requestingUsers.splice(0);
               }
           });
         });

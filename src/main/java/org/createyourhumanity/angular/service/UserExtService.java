@@ -5,8 +5,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.createyourhumanity.angular.config.Constants;
 import org.createyourhumanity.angular.domain.Authority;
+import org.createyourhumanity.angular.domain.FormulaData;
+import org.createyourhumanity.angular.domain.Friends;
 import org.createyourhumanity.angular.domain.User;
 import org.createyourhumanity.angular.repository.AuthorityRepository;
+import org.createyourhumanity.angular.repository.FormulaDataExtRepository;
+import org.createyourhumanity.angular.repository.FormulaDataRepository;
+import org.createyourhumanity.angular.repository.FriendsExtRepository;
+import org.createyourhumanity.angular.repository.UserExtRepository;
 import org.createyourhumanity.angular.repository.UserRepository;
 import org.createyourhumanity.angular.security.SecurityUtils;
 import org.createyourhumanity.angular.service.dto.AdminUserDTO;
@@ -33,14 +39,23 @@ public class UserExtService {
 
     private final UserRepository userRepository;
 
+    private final UserExtRepository userExtRepository;
+
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
 
-    public UserExtService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    private final FormulaDataExtRepository formulaDataExtRepository;
+
+    private final FriendsExtRepository friendsExtRepository;
+
+    public UserExtService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, FormulaDataExtRepository formulaDataExtRepository, UserExtRepository userExtRepository, FriendsExtRepository friendsExtRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.formulaDataExtRepository = formulaDataExtRepository;
+        this.userExtRepository = userExtRepository;
+        this.friendsExtRepository = friendsExtRepository;
     }
 
     /**
@@ -106,6 +121,7 @@ public class UserExtService {
                 authorityRepository.save(authorityToSave);
             }
         }
+
         // save account in to sync users between IdP and JHipster's local database
         Optional<User> existingUser = userRepository.findOneByLogin(user.getLogin());
         if (existingUser.isPresent()) {
@@ -231,7 +247,7 @@ public class UserExtService {
         }
     }
 
-    public void addFriend(User friend) {
+    public void addFriend(Friends friend) {
         Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
         if(self.get() != null) {
             User _self = self.get();
@@ -241,6 +257,32 @@ public class UserExtService {
 
     public Optional<User> getAuthenticatedUser() {
         Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
+        User user = self.get();
+        List<Friends> friends = this.friendsExtRepository.findByUser(user.getId());
+        user.setFriends(friends);
         return self;
+    }
+
+    public User getAuthenticatedUserWithFormulaData() {
+        Optional<User> self = this.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get());
+        User user = self.get();
+        FormulaData fd = this.formulaDataExtRepository.findByUser(user.getId());
+        List<Friends> friends = this.friendsExtRepository.findByUser(user.getId());
+        user.setFriends(friends);
+        user.setFormulaData(fd);
+        return user;
+    }
+
+    public List<User> getAllUsersWithFormulaData() {
+        List<User> users = this.userExtRepository.findAllByIdNotNullAndActivatedIsTrue();
+        List<User> usersWithFormulaData = new ArrayList<User>();
+        for(User u: users) {
+            List<Friends> friends = this.friendsExtRepository.findByUser(u.getId());
+            u.setFriends(friends);
+            FormulaData fd = this.formulaDataExtRepository.findByUser(u.getId());
+            u.setFormulaData(fd);
+            usersWithFormulaData.add(u);
+        }
+        return usersWithFormulaData;
     }
 }

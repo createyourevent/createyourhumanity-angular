@@ -38,15 +38,12 @@ export class FriendlistComponent implements OnInit {
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
-        this.userService.query().subscribe(users => {
+        this.maincontrollerService.findAllUsersWithFormulaDataAndFriends().subscribe(users => {
           this.user = users.body.find(x => x.id === this.account.id);
-          this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
-            const userFriends = res.body;
-            userFriends.forEach(el => {
-              const friend = users.body.find(x => x.id === el.friendId);
-              this.friends.push(friend);
-              this.friends = this.friends.splice(0);
-            });
+          this.user.friends.forEach(el => {
+            const friend = users.body.find(x => x.id === el.friendId);
+            this.friends.push(friend);
+            this.friends = this.friends.splice(0);
           });
         })
       } else {

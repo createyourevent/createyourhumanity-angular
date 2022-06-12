@@ -1,6 +1,8 @@
 package org.createyourhumanity.angular.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,13 +62,25 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
 
-    private List<User> friends = new ArrayList();
+    private List<Friends> friends = new ArrayList<Friends>();
 
-    public List<User> getFriends() {
+    private FormulaData formulaData  = new FormulaData();
+
+    @JsonManagedReference
+    public FormulaData getFormulaData() {
+        return formulaData;
+    }
+
+    public void setFormulaData(FormulaData formulaData) {
+        this.formulaData = formulaData;
+    }
+
+    public List<Friends> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<User> friends) {
+    @JsonManagedReference
+    public void setFriends(List<Friends> friends) {
         this.friends = friends;
     }
 

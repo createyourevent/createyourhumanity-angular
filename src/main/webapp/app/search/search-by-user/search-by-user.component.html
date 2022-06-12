@@ -1,0 +1,29 @@
+<p-dataView [value]="users" [sortField]="sortField" [sortOrder]="sortOrder">
+  <ng-template pTemplate="header">
+      <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By"
+          (onChange)="onSortChange($event)" [style]="{'min-width':'15em'}"></p-dropdown>
+  </ng-template>
+  <ng-template let-user pTemplate="listItem">
+      <div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="div-user" *ngIf="!user.imageUrl">
+                <img class="user-image" src="../../content/images/userlist/user.png">
+              </div>
+              <div class="div-user" *ngIf="user.imageUrl">
+                <img class="user-image" src="{{ user.imageUrl }}">
+              </div>
+            </div>
+            <div class="col-md-4 user-name">
+              {{ user.firstName }} {{ user.lastName }}
+            </div>
+            <div class="col-md-4 profile-button">
+              <p-button (click)="showProfile(user.id)">
+                <fa-icon icon="id-card-clip"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="userlist.showProfile">Show Profile</span>
+              </p-button>
+            </div>
+          </div>
+      </div>
+  </ng-template>
+</p-dataView>

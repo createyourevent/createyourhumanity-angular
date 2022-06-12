@@ -1,19 +1,15 @@
 import { FormComponent } from './../form/form.component';
-import { FormulaData } from './../entities/formula-data/formula-data.model';
+import { FormulaData, IFormulaData } from './../entities/formula-data/formula-data.model';
 import { Mindmap } from 'app/entities/mindmap/mindmap.model';
-import { FormService } from './../form/form.service';
-import { Component, Input, AfterViewInit, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ViewContainerRef, ViewChild } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChildren, QueryList, OnInit } from '@angular/core';
 import { AccountService } from 'app/core/auth/account.service';
 import { FormulaDataService } from 'app/entities/formula-data/service/formula-data.service';
 import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
-import { UserService } from 'app/entities/user/user.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { Account } from 'app/core/auth/account.model';
 import { ProfileHostDirective } from './profile-host.directive';
-import { startWith } from 'rxjs/operators';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
-import { TabPanel, TabView } from 'primeng/tabview';
+import dayjs from 'dayjs/esm';
+import { IUser } from 'app/entities/user/user.model';
 
 
 interface Item {
@@ -34,6 +30,7 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   forms: any[] = [];
   pages: any;
   xml: any;
+  user: IUser;
 
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @Input() userId: string;
@@ -43,12 +40,17 @@ export class ProfileComponent implements OnInit, AfterViewInit{
 
   constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
-              private mindmapService: MindmapService) { }
+              private mindmapService: MindmapService,
+              private formulaDataService: FormulaDataService) { }
 
   ngOnInit() {
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
+          this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
+            this.user = u.body;
+          });
+          this.checkFormulaDataFromUser(this.account);
           this.mindmapService.query().subscribe(umm => {
             const mindmaps = umm.body;
             this.mindmap = mindmaps[0];
@@ -81,6 +83,23 @@ export class ProfileComponent implements OnInit, AfterViewInit{
         r.instance.mapId = this.mindmap.id;
         index++;
       });
+    });
+  }
+
+  private checkFormulaDataFromUser(account: Account): void {
+    this.maincontrollerService.findFormulaDataByUserId(account.id).subscribe(fd => {
+      if(!fd.body) {
+        this.maincontrollerService.findAuthenticatedUser().subscribe(u => {
+          const user = u.body;
+          const formulaData: IFormulaData = new FormulaData();
+          formulaData.map = '{}';
+          formulaData.grant = '{}';
+          formulaData.created = dayjs();
+          formulaData.modified = dayjs();
+          formulaData.user = user;
+          this.formulaDataService.create(formulaData).subscribe();
+        });
+      }
     });
   }
 }

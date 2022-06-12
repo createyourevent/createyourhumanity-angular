@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FieldType} from '@ngx-formly/core';
 
 @Component({
@@ -6,4 +6,4 @@ import { FieldType} from '@ngx-formly/core';
   templateUrl: './textfield-summary.component.html',
   styleUrls: ['./textfield-summary.component.scss']
 })
-export class TextfieldSummaryComponent extends FieldType {}
+export class TextfieldSummaryComponent extends FieldType{}

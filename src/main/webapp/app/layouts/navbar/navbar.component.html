@@ -1,8 +1,8 @@
 <nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()">
-      <span class="logo-img"></span>
-      <span jhiTranslate="global.title" class="navbar-title">Createyourhumanity_angular</span>
+    <a class="navbar-brand" routerLink="/" (click)="collapseNavbar()">
+      <img src="../../../content/images/logos/deep_blue_robot_smallbigcompressed.png" class="logo"/>
+      <!-- <span jhiTranslate="global.title" class="navbar-title">Create Your Humanity - Create a humanity with logical relations...</span> -->
       <span class="navbar-version">{{ version }}</span>
     </a>
     <a
@@ -27,14 +27,6 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a class="nav-link" routerLink="/userlist" (click)="collapseNavbar()">
-            <span>
-              <fa-icon icon="user-group"></fa-icon>
-              <span jhiTranslate="navbar.users">Users</span>
-            </span>
-          </a>
-        </li>
         <!--
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link" routerLink="/form" (click)="collapseNavbar()">
@@ -45,14 +37,72 @@
           </a>
         </li>
         -->
-        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a class="nav-link" routerLink="/createyourhumanity-mindmap" (click)="collapseNavbar()">
+        <li
+        *jhiHasAnyAuthority="'ROLE_USER'"
+        ngbDropdown
+        class="nav-item dropdown pointer"
+        display="dynamic"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >
+        <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="mindmapprofile-menu" data-cy="mindmapprofileMenu">
+          <span>
+            <fa-icon icon="heart"></fa-icon>
+            <span jhiTranslate="navbar.mindmap-profile">Mindmap-Profile</span>
+          </span>
+        </a>
+        <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="mindmapprofile-menu">
+          <li class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="dropdown-item" routerLink="/createyourhumanity-mindmap" (click)="collapseNavbar()">
+              <span>
+                <fa-icon icon="atom"></fa-icon>
+                <span jhiTranslate="navbar.mindmap">Mindmap</span>
+              </span>
+            </a>
+          </li>
+          <li class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="dropdown-item" routerLink="/profile" (click)="collapseNavbar()">
+              <span>
+                <fa-icon icon="user"></fa-icon>
+                <span jhiTranslate="navbar.profile">Profile</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li
+      *jhiHasAnyAuthority="'ROLE_USER'"
+      ngbDropdown
+      class="nav-item dropdown pointer"
+      display="dynamic"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >
+      <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="users-menu" data-cy="usersMenu">
+        <span>
+          <fa-icon icon="user-plus"></fa-icon>
+          <span jhiTranslate="navbar.users">Users</span>
+        </span>
+      </a>
+      <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="users-menu">
+        <li class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="dropdown-item" routerLink="/search" (click)="collapseNavbar()">
             <span>
-              <fa-icon icon="heart"></fa-icon>
-              <span jhiTranslate="navbar.mindmap">Mindmap</span>
+              <fa-icon icon="magnifying-glass"></fa-icon>
+              <span jhiTranslate="navbar.search-user">Search user</span>
             </span>
           </a>
         </li>
+        <li class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="dropdown-item" routerLink="/userlist" (click)="collapseNavbar()">
+            <span>
+              <fa-icon icon="user-group"></fa-icon>
+              <span jhiTranslate="navbar.user-list">User list</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </li>
         <!--
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link" routerLink="/form-generator" (click)="collapseNavbar()">
@@ -63,17 +113,10 @@
           </a>
         </li>
         -->
-        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a class="nav-link" routerLink="/profile" (click)="collapseNavbar()">
-            <span>
-              <fa-icon icon="user"></fa-icon>
-              <span jhiTranslate="navbar.profile">Profile</span>
-            </span>
-          </a>
-        </li>
         <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
+        <!-- *ngSwitchCase="true" -->
         <li
-          *ngSwitchCase="true"
+          *jhiHasAnyAuthority="'ROLE_ADMIN'"
           ngbDropdown
           class="nav-item dropdown pointer"
           display="dynamic"
@@ -289,3 +332,13 @@
     </div>
   </div>
 </nav>
+<div class="nav-account">
+  <div class="welcome">
+    <ng-container *ngIf="account">
+      <span jhiTranslate="navbar.welcome">Welcome</span> {{account.lastName}} {{account.firstName}}
+    </ng-container>
+    <ng-container *ngIf="!account">
+      <span jhiTranslate="navbar.welcome-on">Welcome on Create Your Humanity</span>
+    </ng-container>
+  </div>
+</div>

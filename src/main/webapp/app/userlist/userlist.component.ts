@@ -3,7 +3,6 @@ import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { Friendrequest } from 'app/entities/friendrequest/friendrequest.model';
 import { FriendrequestService } from 'app/entities/friendrequest/service/friendrequest.service';
-import { IFriends } from 'app/entities/friends/friends.model';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
 import { LoginService } from 'app/login/login.service';
@@ -114,37 +113,46 @@ export class UserlistComponent implements OnInit {
     req.requestUserId = userId;
     req.user = this.user;
     req.info = '';
-    this.friendrequestService.create(req).subscribe(() => {
-
+    this.friendrequestService.create(req).subscribe(res => {
       this.userService.query().subscribe(users => {
-      this.users = users.body;
-      this.userService.query().subscribe(users => {
-          this.user = users.body.find(x => x.id === this.account.id);
-            const self = this.users.findIndex(x => x.id === this.account.id);
-            this.users.splice(self, 1);
+        this.users = users.body;
+        const self = this.users.findIndex(x => x.id === this.account.id);
+        this.users.splice(self, 1);
+        this.users = this.users.splice(0);
 
-            this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(r => {
-              const reqs = r.body;
-              reqs.forEach(el => {
-                const found = this.users.findIndex(x => x.id === el.requestUserId)
-                if(found >= 0) {
-                  this.users.splice(found, 1);
-                }
-              });
-              this.users = this.users.splice(0);
-              this.maincontrollerService.findFriendsFromUser(this.user.id).subscribe(res => {
-                const userFriends = res.body;
-                userFriends.forEach(el => {
-                  const found = this.users.findIndex(x => x.id === el.friendId);
-                  if(found >= 0) {
-                    this.users.splice(found, 1);
-                  }
-                });
-                this.users = this.users.splice(0);
-              });
-            });
-        })
-      });
+        this.maincontrollerService.findFriendrequestByUserId(this.account.id).subscribe(r => {
+          const reqs = r.body;
+          reqs.forEach(el => {
+            const found = this.users.findIndex(x => x.id === el.requestUserId)
+            if(found >= 0) {
+              this.users.splice(found, 1);
+            }
+          });
+          this.users = this.users.splice(0);
+        });
+
+        this.maincontrollerService.findFriendrequestByRequestUserId(this.account.id).subscribe(r => {
+          const reqs = r.body;
+          reqs.forEach(el => {
+            const found = this.users.findIndex(x => x.id === el.user.id)
+            if(found >= 0) {
+              this.users.splice(found, 1);
+            }
+          });
+          this.users = this.users.splice(0);
+        });
+
+        this.maincontrollerService.findFriendsFromUser(this.account.id).subscribe(res => {
+          const userFriends = res.body;
+          userFriends.forEach(el => {
+            const found = this.users.findIndex(x => x.id === el.friendId);
+            if(found >= 0) {
+              this.users.splice(found, 1);
+            }
+          });
+          this.users = this.users.splice(0);
+        });
+      })
     });
   }
 
