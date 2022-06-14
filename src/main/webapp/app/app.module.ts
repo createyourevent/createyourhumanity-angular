@@ -27,10 +27,12 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/createyourhumanity-mindmap.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CreateyourhumanityMindmapProfileModule } from './createyourhumanity-mindmap-profile/createyourhumanity-mindmap-profile.module';
 
 @NgModule({
   imports: [
     CreateyourhumanityMindmapModule,
+    CreateyourhumanityMindmapProfileModule,
     BrowserModule,
     BrowserAnimationsModule,
     SharedModule,
@@ -42,7 +44,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
     TranslationModule,
-    CreateyourhumanityMindmapModule,
   ],
   providers: [
     Title,

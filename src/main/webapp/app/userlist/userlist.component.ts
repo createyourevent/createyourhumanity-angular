@@ -159,4 +159,9 @@ export class UserlistComponent implements OnInit {
   showProfile(userId: string): void {
     this.router.navigate(['/profile-view'], { queryParams: { userId: userId } });
   }
+
+  showMindmapProfile(userId: string): void {
+    this.router.navigate(['/mindmap-profile'], { queryParams: { userId: userId } });
+  }
+
 }

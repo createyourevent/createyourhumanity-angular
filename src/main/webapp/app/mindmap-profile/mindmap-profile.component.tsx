@@ -19,15 +19,22 @@ import { filter, Subscription } from 'rxjs';
 
 
 @Component({
-  selector: 'jhi-mindmap',
+  selector: 'jhi-mindmap-profile',
   template: '<div [id]="rootId"></div>'
 })
-export class MindmapComponent implements OnChanges, AfterViewInit{
+export class MindmapProfileComponent implements OnChanges, AfterViewInit{
 
   @Input() mapId: any;
+  @Input() values: Map<string, string>;
+  @Input() grants: Map<string, string>;
+  @Input() isFriendString: string;
+  isFriend: boolean;
   public rootId = 'rootId';
   private hasViewLoaded = false;
   private hasDataLoaded = false;
+  private hasValuesLoaded = false;
+  private hasGrantsLoaded = false;
+  private isFriendLoaded = false;
   private location = 'en';
   private pm: PersistenceManager;
   private account: Account;
@@ -48,9 +55,24 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if(changes['mapId'].currentValue !== undefined) {
+    if(changes['mapId'] && changes['mapId'].currentValue  && changes['mapId'].currentValue !== undefined) {
       this.hasDataLoaded = true;
       this.mapId = changes['mapId'].currentValue;
+      this.renderComponent();
+    }
+    if(changes['values'] && changes['values'].currentValue && changes['values'].currentValue !== undefined) {
+      this.hasValuesLoaded = true;
+      this.values = changes['values'].currentValue;
+      this.renderComponent();
+    }
+    if(changes['grants'] && changes['grants'].currentValue && changes['grants'].currentValue !== undefined) {
+      this.hasGrantsLoaded = true;
+      this.grants = changes['grants'].currentValue;
+      this.renderComponent();
+    }
+    if(changes['isFriendString'] && changes['isFriendString'].currentValue && changes['isFriendString'].currentValue !== undefined) {
+      this.isFriendLoaded = true;
+      this.isFriend = Boolean(JSON.parse(changes['isFriendString'].currentValue));
       this.renderComponent();
     }
   }
@@ -70,7 +92,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   }
 
   private renderComponent() {
-    if (!this.hasViewLoaded || !this.hasDataLoaded) {
+    if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasValuesLoaded || !this.hasGrantsLoaded || !this.isFriendLoaded) {
       return;
     }
 
@@ -87,12 +109,13 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     this.accountService.identity().subscribe(account => {
       this.account = account
       this.account.authorities.forEach(el => {
-        console.log(el);
+        /*
         if(el === "ROLE_ADMIN") {
           this.isAdmin = true;
         } else {
           this.isAdmin = false;
         }
+        */
       });
 
       let persistence = null;
@@ -137,6 +160,9 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
         mapId: this.mapId,
         options: options,
         persistenceManager: this.pm,
+        values: this.values,
+        grants: this.grants,
+        isFriend: this.isFriend,
         onAction: (action: any) => console.log('action called:', action),
         onLoad: initialization
       }

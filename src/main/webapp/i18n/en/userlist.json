@@ -2,6 +2,7 @@
   "userlist": {
     "title": "Userlist",
     "addFriendRequest": "Add friendrequest",
-    "showProfile": "Show profile"
+    "showProfile": "Show profile",
+    "showMindmapProfile": "Show Mindmap-Profile"
   }
 }

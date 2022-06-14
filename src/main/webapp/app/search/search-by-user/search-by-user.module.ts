@@ -6,6 +6,8 @@ import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { SharedModule } from 'app/shared/shared.module';
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+
 
 @NgModule({
   imports: [
@@ -14,7 +16,8 @@ import { ButtonModule } from 'primeng/button';
     SearchByUserRoutes,
     DataViewModule,
     DropdownModule,
-    ButtonModule
+    ButtonModule,
+    InputTextModule
   ],
   declarations: [SearchByUserComponent]
 })

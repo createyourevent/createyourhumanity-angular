@@ -40,9 +40,8 @@ export class SearchByUserComponent implements OnInit {
 
   ngOnInit() {
     this.sortOptions = [
-      {label: 'Newest First', value: '!year'},
-      {label: 'Oldest First', value: 'year'},
-      {label: 'Brand', value: 'brand'}
+      {label: 'Lastname', value: 'lastName'},
+      {label: 'Firstname', value: 'firstName'},
     ];
 
     this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
@@ -79,4 +78,11 @@ export class SearchByUserComponent implements OnInit {
     this.router.navigate(['/profile-view'], { queryParams: { userId: userId } });
   }
 
+  showMindmapProfile(userId: string): void {
+    this.router.navigate(['/mindmap-profile'], { queryParams: { userId: userId } });
+  }
+
+  getString(event: any): string {
+    return event.target.value;
+  }
 }

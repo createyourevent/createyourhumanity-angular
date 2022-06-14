@@ -1,1 +1,18 @@
+h1 {
+  text-shadow: 4px 4px 2px rgba(150, 150, 150, 1);
+  text-align: center;
+}
 
+.alert-success {
+  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
+  box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
+  border: 3px solid #fff;
+  border-radius: 10px;
+}
+
+.alert-danger {
+  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
+  box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
+  border: 3px solid #fff;
+  border-radius: 10px;
+}

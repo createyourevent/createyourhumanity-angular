@@ -3,7 +3,7 @@
 [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
 <ng-template pTemplate="header">
     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
-        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="p-mb-2 p-mb-md-0"></p-dropdown>
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Name" (onChange)="onSortChange($event)" styleClass="p-mb-2 p-mb-md-0"></p-dropdown>
         <span class="p-input-icon-left p-mb-2 p-mb-md-0">
             <i class="pi pi-search"></i>
             <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter(getSearch($event))">
@@ -35,6 +35,10 @@
           <p-button (click)="showProfile(user.id)">
             <fa-icon icon="id-card-clip"></fa-icon>
             <span class="d-none d-md-inline" jhiTranslate="userlist.showProfile">Show Profile</span>
+          </p-button>
+          <p-button (click)="showMindmapProfile(user.id)">
+            <fa-icon icon="diagram-project"></fa-icon>
+            <span class="d-none d-md-inline" jhiTranslate="userlist.showMindmapProfile">Show Mindmap Profile</span>
           </p-button>
         </div>
       </ng-template>
