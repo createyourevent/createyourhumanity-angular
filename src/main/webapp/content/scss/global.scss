@@ -321,3 +321,7 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
 .panel .card {
   margin: 15px;
 }
+
+.p-dock {
+  position: fixed !important;
+}

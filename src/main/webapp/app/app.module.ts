@@ -28,11 +28,13 @@ import { ErrorComponent } from './layouts/error/error.component';
 import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/createyourhumanity-mindmap.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateyourhumanityMindmapProfileModule } from './createyourhumanity-mindmap-profile/createyourhumanity-mindmap-profile.module';
+import { DockerAppsModule } from './docker-apps/docker-apps.module';
 
 @NgModule({
   imports: [
     CreateyourhumanityMindmapModule,
     CreateyourhumanityMindmapProfileModule,
+    DockerAppsModule,
     BrowserModule,
     BrowserAnimationsModule,
     SharedModule,
