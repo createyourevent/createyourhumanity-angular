@@ -60,10 +60,14 @@ import { FormlyFieldMultiselectComponent } from 'app/formly/multiselect/formly-f
 import { MultiSelectModule } from 'primeng/multiselect';
 import { MultiselectSummaryComponent } from 'app/formly/summary/multiselect-summary/multiselect-summary.component';
 import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-field.wrapper';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ExpansionPanelComponent } from 'app/formly/expansion-panel.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   imports: [SharedLibsModule,
             MultiSelectModule,
+            MatSelectModule,
             FormlySelectModule,
             NgbModule,
             FormsModule,
@@ -73,6 +77,7 @@ import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-fiel
             MatStepperModule,
             MatIconModule,
             MatTabsModule,
+            MatExpansionModule,
             NgxMaterialTimepickerModule,
             TagInputModule,
             GooglePlaceModule,
@@ -85,7 +90,8 @@ import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-fiel
                 { name: 'rowwrapper', component: RowWrapperComponent },
                 { name: 'columnwrapper', component: ColumnWrapperComponent },
                 { name: 'grant-field', component: FormlyWrapperGrantField },
-                { name: 'profile-field', component: FormlyWrapperProfileField }
+                { name: 'profile-field', component: FormlyWrapperProfileField },
+                { name: 'expansion', component: ExpansionPanelComponent },
               ],
               types: [
                 { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
@@ -155,9 +161,12 @@ import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-fiel
     MulticheckboxSummaryComponent,
     FormlyFieldMultiselectComponent,
     MultiselectSummaryComponent,
-    FormlyWrapperProfileField
+    FormlyWrapperProfileField,
+    ExpansionPanelComponent
   ],
   exports: [
+    FormsModule,
+    ReactiveFormsModule,
     SharedLibsModule,
     FindLanguageFromKeyPipe,
     TranslateDirective,
@@ -170,7 +179,6 @@ import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-fiel
     SortByDirective,
     SortDirective,
     ItemCountComponent,
-    ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,
     XmlPipe,
@@ -196,7 +204,9 @@ import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-fiel
     MulticheckboxSummaryComponent,
     FormlyFieldMultiselectComponent,
     MultiselectSummaryComponent,
-    FormlyWrapperProfileField
+    FormlyWrapperProfileField,
+    MatExpansionModule,
+    MatSelectModule
   ],
 })
 export class SharedModule {}

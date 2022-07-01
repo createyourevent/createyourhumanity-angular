@@ -46,4 +46,12 @@ public class UserExtResource {
         List<User> users = userExtService.getAllUsersWithFormulaData();
         return users;
     }
+
+
+    @GetMapping("/authenticatedUserWithDescription")
+    public User getUserWithDescription() {
+        User user = userExtService.findUserByLoginAndActivatedIsTrue();
+        return user;
+    }
+
 }

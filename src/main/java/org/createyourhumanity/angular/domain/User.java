@@ -59,6 +59,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Field("image_url")
     private String imageUrl;
 
+    @Size(max = 512)
+    @Field("description")
+    private String description;
+
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
 
@@ -157,6 +161,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -185,6 +197,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
             ", imageUrl='" + imageUrl + '\'' +
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
+            ", description='" + description + '\'' +
             "}";
     }
 }

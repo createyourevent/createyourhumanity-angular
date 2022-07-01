@@ -16,6 +16,8 @@ import { Account } from 'app/core/auth/account.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import MongoStorageManager from 'app/mindmap/MongoStorageManager.component';
+import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
 
 
 @Component({
@@ -28,6 +30,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   @Input() values: Map<string, string>;
   @Input() grants: Map<string, string>;
   @Input() isFriendString: string;
+  @Input() map: any;
   isFriend: boolean;
   public rootId = 'rootId';
   private hasViewLoaded = false;
@@ -39,12 +42,14 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   private pm: PersistenceManager;
   private account: Account;
   private isAdmin = false;
+  private hasXMLLoaded = false;
   _routerSub = Subscription.EMPTY;
 
   constructor(private translateService: TranslateService,
                       sessionStorageService: SessionStorageService,
               private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
+              private mindmapService: MindmapService,
               private router: Router) {
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
     this._routerSub = this.router.events
@@ -73,6 +78,13 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
     if(changes['isFriendString'] && changes['isFriendString'].currentValue && changes['isFriendString'].currentValue !== undefined) {
       this.isFriendLoaded = true;
       this.isFriend = Boolean(JSON.parse(changes['isFriendString'].currentValue));
+      this.renderComponent();
+    }
+
+    if(changes['map'].currentValue !== undefined) {
+      this.hasXMLLoaded = true;
+      this.map = changes['map'].currentValue;
+      this.pm = new MongoStorageManager(this.map, false, false ,this.mindmapService, this.maincontrollerService);
       this.renderComponent();
     }
   }
@@ -121,13 +133,13 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
       let persistence = null;
       if(this.account) {
         persistence = new CreateYourHumanityPersistenceManager({
-          documentUrl: 'http://localhost:9000/api/mindmaps/{id}/true',
+          documentUrl: 'https://www.createyourhumanity.org/api/mindmaps/{id}/true',
           revertUrl: '/c/restful/maps/{id}/history/latest',
           lockUrl: '/c/restful/maps/{id}/lock',
         });
       } else {
         persistence = new CreateYourHumanityPersistenceManager({
-          documentUrl: 'http://localhost:9000/api/mindmaps/{id}/false',
+          documentUrl: 'https://www.createyourhumanity.org/api/mindmaps/{id}/false',
           revertUrl: '/c/restful/maps/{id}/history/latest',
           lockUrl: '/c/restful/maps/{id}/lock',
         });

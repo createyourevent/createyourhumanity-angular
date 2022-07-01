@@ -8,7 +8,7 @@ import { FieldWrapper } from '@ngx-formly/core';
       <div class="card-header" style="background-color:{{ bgColor }}; color:{{ color }}">
         <h3 class="title" [style]="margin">{{ to.label }}</h3>
         <div class="expandable">
-          <a (click)="setExpanded()">+Expand+</a>
+          <a [id]="id_link" (click)="setExpanded()">+Expand+</a>
         </div>
       </div>
       <div class="card-body" [style] = "style">
@@ -24,6 +24,7 @@ export class PanelWrapperComponent extends FieldWrapper implements OnInit {
   margin = "margin-top: 4px; margin-bottom: 4px;";
   bgColor: string;
   color: string;
+  id_link: string;
   constructor() {
     super();
     // this.bgColor = this.field.templateOptions;
@@ -31,6 +32,7 @@ export class PanelWrapperComponent extends FieldWrapper implements OnInit {
   ngOnInit(): void {
     this.bgColor = this.field.templateOptions.bgColor;
     this.color = this.field.templateOptions.color;
+    this.id_link = this.field.id;
   }
 
 

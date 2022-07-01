@@ -26,6 +26,19 @@ export class DockerAppsComponent implements OnInit {
           }
       },
       {
+        label: 'Create Your Humanity',
+        tooltipOptions: {
+            tooltipLabel: "Create Your Humanity",
+            tooltipPosition: 'top',
+            positionTop: -15,
+            positionLeft: 15
+        },
+        icon: "../content/images/dock-apps/logo_createyourhumanity_60.png",
+        command: () => {
+          window.open('https://www.createyourhumanity.org');
+        }
+      },
+      {
         label: 'Create Your Ideas',
         tooltipOptions: {
             tooltipLabel: "Create Your Ideas",

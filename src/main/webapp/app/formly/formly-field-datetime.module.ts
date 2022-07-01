@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 
 import { FormlyModule } from '@ngx-formly/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyFieldDateTimeComponent } from './formly-field-datetime.component';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    SharedModule,
     FormlyModule.forRoot({
       types: [{ name: 'datetime-local', component: FormlyFieldDateTimeComponent, wrappers: ['form-field'] }]
     }),

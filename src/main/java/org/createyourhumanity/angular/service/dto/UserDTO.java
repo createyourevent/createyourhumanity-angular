@@ -25,6 +25,8 @@ public class UserDTO {
 
     private List<Friends> friends;
 
+    private String description;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -38,6 +40,7 @@ public class UserDTO {
         this.imageUrl = user.getImageUrl();
         this.formulaData = new FormulaData();
         this.friends = user.getFriends();
+        this.description = user.getDescription();
     }
 
     public String getId() {
@@ -96,12 +99,21 @@ public class UserDTO {
         this.friends = friends;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
         return "UserDTO{" +
             "id='" + id + '\'' +
             ", login='" + login + '\'' +
+            ", description='" + description + '\'' +
             "}";
     }
 }

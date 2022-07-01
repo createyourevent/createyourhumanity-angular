@@ -13,8 +13,10 @@ import { UserService } from 'app/entities/user/user.service';
 import { IUser } from 'app/entities/user/user.model';
 import dayjs from 'dayjs/esm';
 import { MindmapComponent } from 'app/mindmap/mindmap.component';
+import LayoutManager, { LayoutManager_getInstance } from '@wisemapping/mindplot';
 
 @Component({
+  selector: 'jhi-createyourhumanity-mindmap',
   templateUrl: './createyourhumanity-mindmap.component.html',
   styleUrls: ['./createyourhumanity-mindmap.component.scss']
 })
@@ -30,6 +32,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
   user: IUser;
   xmlId: any;
   mySubscription;
+  layoutManager: LayoutManager;
 
   constructor(private router:Router,
               private mindmapService: MindmapService,
@@ -55,7 +58,10 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
               });
             } else {
               this.formatedXml = format(this.mindmap.text);
-              this.xmlId = this.mindmap.id;
+              //Lokal
+              this.xmlId = '6281b488c02b8d7b528278f3';
+              //Online
+              //this.xmlId = '62bb05af4e6db14d6dc56357';
             }
         });
   }

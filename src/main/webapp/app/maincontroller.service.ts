@@ -26,6 +26,7 @@ export class MaincontrollerService {
   public resourceUrl_user_formuladata = this.applicationConfigService.getEndpointFor('api/authenticatedUserWidthFormulaData');
   public resourceUrl_users_formuladata = this.applicationConfigService.getEndpointFor('api/allUsersWidthFormulaData');
   public resourceUrl_users_formuladata_friends = this.applicationConfigService.getEndpointFor('api/allUsersWidthFormulaDataAndFriends');
+  public resourceUrl_desc = this.applicationConfigService.getEndpointFor('api/authenticatedUserWithDescription');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
@@ -79,8 +80,13 @@ export class MaincontrollerService {
     return this.http.get<IUser>(`${this.resourceUrl}`, { observe: 'response' });
   }
 
+  findAuthenticatedUserWithDescription() {
+    return this.http.get<IUser>(`${this.resourceUrl_desc}`, { observe: 'response' });
+  }
+
   findAuthenticatedUserWithFormulaData() {
-    return this.http.get<IUser>(`${this.resourceUrl_user_formuladata}`, { observe: 'response' });
+    const u = this.http.get<IUser>(`${this.resourceUrl_user_formuladata}`, { observe: 'response' });
+    return u;
   }
 
   findAllUsersWithFormulaData() {

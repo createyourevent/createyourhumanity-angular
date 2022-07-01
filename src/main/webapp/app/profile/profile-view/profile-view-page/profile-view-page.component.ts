@@ -1,21 +1,21 @@
 import { Mindmap } from 'app/entities/mindmap/mindmap.model';
-import { Component, Input, AfterViewInit, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ViewContainerRef, ViewChild } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChildren, QueryList, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { AccountService } from 'app/core/auth/account.service';
 import { FormulaDataService } from 'app/entities/formula-data/service/formula-data.service';
 import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
-import { UserService } from 'app/entities/user/user.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { Account } from 'app/core/auth/account.model';
-import { startWith } from 'rxjs/operators';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
-import { TabPanel, TabView } from 'primeng/tabview';
-import ProfileViewHostDirective from './profile-view-host.directive';
-import { ProfileViewPageService } from '../profile-view.service';
-import { ProfileViewComponent } from '../profile-view.component';
-import { FormulaData } from 'app/entities/formula-data/formula-data.model';
+import dayjs from 'dayjs/esm';
 import { IUser } from 'app/entities/user/user.model';
-
+import { LayoutManager } from '@wisemapping/mindplot';
+import { Designer, Topic } from '@wisemapping/mindplot';
+import { LoginService } from 'app/login/login.service';
+import { FormulaData, IFormulaData } from 'app/entities/formula-data/formula-data.model';
+import ProfileViewPageHostDirective from './profile-view-page-host.directive';
+import { ProfileViewComponent } from '../profile-view.component';
+import { ActivatedRoute } from '@angular/router';
+import { MatExpansionPanel, MatAccordion } from '@angular/material/expansion';
+import { MatTabGroup } from '@angular/material/tabs';
 
 interface Item {
   id: string,
@@ -24,9 +24,9 @@ interface Item {
 @Component({
   selector: 'jhi-profile-view-page',
   templateUrl: './profile-view-page.component.html',
-  styleUrls: ['./profile-view-page.component.scss']
+  styleUrls: ['./profile-view-page.component.scss'],
 })
-export class ProfileViewPageComponent implements OnInit, AfterViewInit{
+export class ProfileViewPageComponent implements OnInit, AfterViewInit {
 
   items: Item[] = [];
   components: any[] = []
@@ -35,67 +35,179 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit{
   forms: any[] = [];
   pages: any;
   xml: any;
+  user: IUser;
+
   profileUser: IUser;
+  layoutManager: LayoutManager;
+  designer: Designer;
+  topic: Topic;
+  topics: Topic[] = [];
+  refs: any[] = [];
+  path: number[];
+  index = 0;
 
 
-  @ViewChildren(ProfileViewHostDirective) profileHosts: QueryList<ProfileViewHostDirective>;
+  @ViewChildren(ProfileViewPageHostDirective) profileHosts: QueryList<ProfileViewPageHostDirective>;
+  @ViewChild('mainTabView') mainTabView: MatTabGroup;
+  @ViewChild('profileTabView') profileTabView: MatTabGroup;
+  @ViewChildren('matexpansionpanel', {read: ViewContainerRef}) matExpansionPanels: QueryList<MatExpansionPanel>;
+  @ViewChild('accordion', {static: true}) accordion: MatAccordion;
+
   @Input() userId: string;
   @Input() mapId: string;
 
   account: Account | null = null;
 
-  constructor(private formService: ProfileViewPageService,
-              private accountService: AccountService,
-              private formulaDataService: FormulaDataService,
+  constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
-              private userService: UserService,
               private mindmapService: MindmapService,
-              private cd: ChangeDetectorRef,
-              private router: Router,
-              private route: ActivatedRoute,
-              private viewContainerRef: ViewContainerRef ) { }
+              private formulaDataService: FormulaDataService,
+              private loginService: LoginService,
+              private route: ActivatedRoute,) {
+                window.addEventListener('LinkData', (e: CustomEvent) => {
+                  if (e.detail.path.length > 0 && this.mainTabView.selectedIndex === 0) {
+                    this.path = e.detail.path;
 
-  ngOnInit() {
+                    this.openPath(this.path);
+                    e.stopPropagation();
+                  } else {
+                    this.path = [];
+                  }
+                });
+              }
+
+
+  ngAfterViewInit(): void {
     const profileId = this.route.snapshot.queryParamMap.get('userId');
-    this.userService.query().subscribe(pu => {
-      this.profileUser = pu.body.find(x => x.id === profileId);
-    });
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
-          this.mindmapService.query().subscribe(umm => {
-            const mindmaps = umm.body;
-            this.mindmap = mindmaps[0];
-            this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {
-              this.formulaData = res.body;
-              const parser = new DOMParser();
-              const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
-              this.pages = xml.querySelectorAll('[id="form"]');
-
-              let index = 0;
-              this.pages.forEach(page => {
-                this.forms.push(page.parentElement);
-                this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-                index++;
+        this.maincontrollerService.findAllUsersWithFormulaDataAndFriends().subscribe(users => {
+          this.profileUser = users.body.find(x => x.id === profileId);
+          this.user = users.body.find(x => x.id === this.account.id);
+        });
+        this.processData().then(() => {
+          this.profileHosts.changes.subscribe(ph => {
+            let i = 0;
+            ph.forEach(p => {
+              const component: typeof ProfileViewComponent = ProfileViewComponent;
+              this.refs.push(p.viewContainerRef.createComponent(component));
+              this.refs[i].instance.userId = this.profileUser.id;
+              this.refs[i].instance.mapId = this.mindmap.id;
+              this.refs[i].instance.topic = this.topics[i];
+              this.refs[i].instance.initComponent().then(() => {
+                this.refs[i].instance.cloneFields();
               });
+              i++;
             });
           });
-        }
-      })
+        });
+      }
+    });
   }
 
-  ngAfterViewInit(): any {
-    this.profileHosts.changes.subscribe(ph => {
-      let index = 0;
-      ph.forEach(p => {
-        const component: typeof ProfileViewComponent = ProfileViewComponent;
-        const r = p.viewContainerRef.createComponent(component);
-        r.instance.xml = this.forms[index].outerHTML;
-        r.instance.userId = this.userId;
-        r.instance.mapId = this.mindmap.id;
-        index++;
+  openPath(arr_path: number[]): void {
+    arr_path.reverse();
+    this.mainTabView.selectedIndex = arr_path[0];
+    this.mainTabView.focusTab(arr_path[0]);
+    this.mainTabView.realignInkBar();
+    arr_path.splice(0,1);
+    this.mainTabView.animationDone.subscribe(() => {
+      const designer = global.designer;
+      if(arr_path && arr_path.length > 0) {
+        const fieldSearched: Topic = designer.getMindmap().findNodeById(arr_path[0]);
+        let index = 0;
+        const arr = this.profileTabView._allTabs.toArray();
+        const t = fieldSearched.getText();
+        for(let i = 0; i < this.profileTabView._allTabs.length; i++) {
+          if(arr[i].textLabel === t) {
+            index = i;
+            break;
+          }
+        }
+        this.profileTabView.selectedIndex = index;
+        this.profileTabView.focusTab(index);
+        this.profileTabView.realignInkBar();
+        arr_path.splice(0,1);
+        if(index === 0) {
+          this.refs[index].instance.setPath(arr_path);
+        } else {
+          this.profileTabView.animationDone.subscribe(() => {
+            this.refs[index].instance.setPath(arr_path);
+          });
+        }
+      }
+    });
+  }
+
+  handleChange(event): void {
+    this.refs.forEach(r => {
+      r.instance.cloneFields();
+      r.instance.reloadData();
+    });
+  }
+
+  processData(): Promise<Item[]> {
+    return new Promise<Item[]>((resolve) => {
+      this.mindmapService.query().subscribe(umm => {
+        const mindmaps = umm.body;
+        this.mindmap = mindmaps[0];
+        this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+          this.formulaData = res.body;
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
+          this.pages = xml.querySelectorAll('[id="form"]');
+          let index = 0;
+          this.pages.forEach(page => {
+            this.forms.push(page.parentElement);
+            this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+            index++;
+          });
+          this.designer = global.designer;
+          const root = this.designer.getMindmap().findNodeById(1);
+          const children = root.getChildren();
+          children.forEach(child => {
+            this.topics.push(child);
+          });
+          resolve(this.items);
+        });
       });
     });
   }
-}
 
+  ngOnInit() {
+    this.accountService.identity().subscribe(account => {
+      this.account = account
+      if(this.account) {
+          this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
+            this.user = u.body;
+            this.checkFormulaDataFromUser(this.account);
+          });
+        } else {
+          this.loginService.login()
+        }
+      },
+      error => {
+        if(error.status === 401) {
+          this.loginService.login()
+        }
+      });
+  }
+
+  private checkFormulaDataFromUser(account: Account): void {
+    this.maincontrollerService.findFormulaDataByUserId(account.id).subscribe(fd => {
+      if(!fd.body) {
+        this.maincontrollerService.findAuthenticatedUser().subscribe(u => {
+          const user = u.body;
+          const formulaData: IFormulaData = new FormulaData();
+          formulaData.map = '{}';
+          formulaData.grant = '{}';
+          formulaData.created = dayjs();
+          formulaData.modified = dayjs();
+          formulaData.user = user;
+          this.formulaDataService.create(formulaData).subscribe();
+        });
+      }
+    });
+  }
+}

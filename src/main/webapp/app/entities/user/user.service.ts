@@ -19,6 +19,10 @@ export class UserService {
     return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
+  update(user: IUser): Observable<HttpResponse<IUser[]>> {
+    return this.http.put<IUser[]>(`${this.resourceUrl}/${user.id}`, user, { observe: 'response' });
+  }
+
   addUserToCollectionIfMissing(userCollection: IUser[], ...usersToCheck: (IUser | null | undefined)[]): IUser[] {
     const users: IUser[] = usersToCheck.filter(isPresent);
     if (users.length > 0) {

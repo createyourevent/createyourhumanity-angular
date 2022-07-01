@@ -17,7 +17,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     String USERS_BY_EMAIL_CACHE = "usersByEmail";
 
-    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
+    // @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<User> findOneByLogin(String login);
 
     Page<User> findAllByIdNotNullAndActivatedIsTrue(Pageable pageable);

@@ -29,15 +29,22 @@ import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/cr
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateyourhumanityMindmapProfileModule } from './createyourhumanity-mindmap-profile/createyourhumanity-mindmap-profile.module';
 import { DockerAppsModule } from './docker-apps/docker-apps.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormModule } from './form/form.module';
+import { ProfileViewModule } from './profile/profile-view/profile-view.module';
 
 @NgModule({
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    FormModule,
+    ProfileViewModule,
     CreateyourhumanityMindmapModule,
     CreateyourhumanityMindmapProfileModule,
     DockerAppsModule,
     BrowserModule,
     BrowserAnimationsModule,
-    SharedModule,
     HomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,

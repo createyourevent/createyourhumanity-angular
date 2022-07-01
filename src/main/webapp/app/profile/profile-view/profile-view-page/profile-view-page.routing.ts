@@ -8,4 +8,4 @@ const routes: Routes = [
   },
 ];
 
-export const ProfileRoutes = RouterModule.forChild(routes);
+export const ProfileViewPageRoutes = RouterModule.forChild(routes);

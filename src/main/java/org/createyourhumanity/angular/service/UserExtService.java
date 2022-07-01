@@ -67,7 +67,7 @@ public class UserExtService {
      * @param langKey   language key.
      * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl, String description) {
         SecurityUtils
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
@@ -79,6 +79,7 @@ public class UserExtService {
                 }
                 user.setLangKey(langKey);
                 user.setImageUrl(imageUrl);
+                user.setDescription(description);
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
@@ -131,12 +132,12 @@ public class UserExtService {
                 Instant idpModifiedDate = (Instant) details.get("updated_at");
                 if (idpModifiedDate.isAfter(dbModifiedDate)) {
                     log.debug("Updating user '{}' in local database", user.getLogin());
-                    updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl());
+                    updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl(), user.getDescription());
                 }
                 // no last updated info, blindly update
             } else {
                 log.debug("Updating user '{}' in local database", user.getLogin());
-                updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl());
+                updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl(), user.getDescription());
             }
         } else {
             log.debug("Saving user '{}' in local database", user.getLogin());
@@ -284,5 +285,10 @@ public class UserExtService {
             usersWithFormulaData.add(u);
         }
         return usersWithFormulaData;
+    }
+
+    public User findUserByLoginAndActivatedIsTrue() {
+        User u = userExtRepository.findByLoginAndActivatedIsTrue(SecurityUtils.getCurrentUserLogin().get());
+        return u;
     }
 }

@@ -52,13 +52,14 @@ public class UserService {
      * @param langKey   language key.
      * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl, String description) {
         SecurityUtils
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .ifPresent(user -> {
                 user.setFirstName(firstName);
                 user.setLastName(lastName);
+                user.setDescription(description);
                 if (email != null) {
                     user.setEmail(email.toLowerCase());
                 }
@@ -79,7 +80,8 @@ public class UserService {
     }
 
     public Page<UserDTO> getAllPublicUsers(Pageable pageable) {
-        return userRepository.findAllByIdNotNullAndActivatedIsTrue(pageable).map(UserDTO::new);
+        Page<UserDTO> u = userRepository.findAllByIdNotNullAndActivatedIsTrue(pageable).map(UserDTO::new);
+        return u;
     }
 
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
@@ -115,12 +117,12 @@ public class UserService {
                 Instant idpModifiedDate = (Instant) details.get("updated_at");
                 if (idpModifiedDate.isAfter(dbModifiedDate)) {
                     log.debug("Updating user '{}' in local database", user.getLogin());
-                    updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl());
+                    updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl(), user.getDescription());
                 }
                 // no last updated info, blindly update
             } else {
                 log.debug("Updating user '{}' in local database", user.getLogin());
-                updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl());
+                updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getLangKey(), user.getImageUrl(), user.getDescription());
             }
         } else {
             log.debug("Saving user '{}' in local database", user.getLogin());
@@ -146,7 +148,9 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("AuthenticationToken is not OAuth2 or JWT!");
         }
-        User user = getUser(attributes);
+        User u = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().get()).get();
+        String desc = u.getDescription();
+        User user = getUser(attributes, desc);
         user.setAuthorities(
             authToken
                 .getAuthorities()
@@ -163,9 +167,10 @@ public class UserService {
         return new AdminUserDTO(syncUserWithIdP(attributes, user));
     }
 
-    private static User getUser(Map<String, Object> details) {
+    private static User getUser(Map<String, Object> details, String description) {
         User user = new User();
         Boolean activated = Boolean.TRUE;
+        user.setDescription(description);
         String sub = String.valueOf(details.get("sub"));
         String username = null;
         if (details.get("preferred_username") != null) {

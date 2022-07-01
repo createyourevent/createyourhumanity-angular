@@ -1,4 +1,4 @@
-import { Component, OnInit, RendererFactory2, Renderer2 } from '@angular/core';
+import { Component, OnInit, RendererFactory2, Renderer2, HostBinding } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
@@ -20,6 +20,11 @@ import { IUser, User } from 'app/entities/user/user.model';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
+
+  @HostBinding('@.disabled')
+  public animationsDisabled = true;
+
+
   private renderer: Renderer2;
   private account: Account;
   private user: IUser;

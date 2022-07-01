@@ -1,10 +1,16 @@
 package org.createyourhumanity.angular.web.rest;
 
+import java.net.URISyntaxException;
 import java.util.*;
+
+import org.createyourhumanity.angular.domain.User;
+import org.createyourhumanity.angular.repository.UserRepository;
 import org.createyourhumanity.angular.service.UserService;
 import org.createyourhumanity.angular.service.dto.UserDTO;
+import org.createyourhumanity.angular.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 
 @RestController
@@ -22,8 +30,16 @@ public class PublicUserResource {
 
     private final UserService userService;
 
-    public PublicUserResource(UserService userService) {
+    private static final String ENTITY_NAME = "user";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    public final UserRepository userRepository;
+
+    public PublicUserResource(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -39,6 +55,30 @@ public class PublicUserResource {
         final Page<UserDTO> page = userService.getAllPublicUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(
+        @PathVariable(value = "id", required = false) final String id,
+        @RequestBody User user
+    ) throws URISyntaxException {
+        log.debug("REST request to update Friends : {}, {}", id, user);
+        if (user.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, user.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!userRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        User result = userRepository.save(user);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, user.getId()))
+            .body(result);
     }
 
     /**

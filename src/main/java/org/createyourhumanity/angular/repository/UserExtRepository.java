@@ -19,4 +19,5 @@ public interface UserExtRepository extends MongoRepository<User, String> {
 
     List<User> findAllByIdNotNullAndActivatedIsTrue();
     User findByIdAndActivatedIsTrue(String id);
+    User findByLoginAndActivatedIsTrue(String login);
 }

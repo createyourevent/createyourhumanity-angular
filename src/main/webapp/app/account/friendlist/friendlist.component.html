@@ -11,7 +11,7 @@
 </ng-template>
 <ng-template let-friend pTemplate="gridItem">
 
-<p-card header="" subheader="" [style]="{width: '360px', display: 'inline-block', margin: '15px'}" styleClass="p-card">
+<p-card header="{{friend.firstName}} {{friend.lastName}}" subheader="" [style]="{width: '360px', display: 'inline-block', margin: '15px'}" styleClass="p-card user-box">
   <ng-template pTemplate="header">
     <div class="div-user" *ngIf="!friend.imageUrl">
       <img class="user-image" src="../../content/images/userlist/user.png">
@@ -20,8 +20,6 @@
       <img class="user-image" src="{{ friend.imageUrl }}">
     </div>
   </ng-template>
-    <p class="user-name">
-      {{friend.firstName}} {{friend.lastName}}
     <p class="user-description">
       {{friend.description}}
     </p>

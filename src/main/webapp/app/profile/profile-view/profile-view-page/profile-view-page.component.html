@@ -10,10 +10,16 @@
     </div>
   </div>
 
-  <p-tabView>
-    <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">
-      <ng-container appProfileViewHost></ng-container>
-    </p-tabPanel>
-  </p-tabView>
-</ng-container>
+  <mat-tab-group #mainTabView  (selectedTabChange)="handleChange($event)">
+    <mat-tab label="Mindmap">
+      <jhi-createyourhumanity-mindmap></jhi-createyourhumanity-mindmap>
+    </mat-tab>
+    <mat-tab label="Profile">
+      <mat-tab-group #profileTabView>
+        <mat-tab [label]="item.header" *ngFor="let item of items; let i = index">
+          <ng-container appProfileViewPageHost></ng-container>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-tab>
+  </mat-tab-group>
 

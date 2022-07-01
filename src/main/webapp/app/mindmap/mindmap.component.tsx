@@ -16,6 +16,9 @@ import { Account } from 'app/core/auth/account.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import MongoStorageManager from './MongoStorageManager.component';
+import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
+import { FormulaDataService } from 'app/entities/formula-data/service/formula-data.service';
 
 
 @Component({
@@ -25,9 +28,11 @@ import { filter, Subscription } from 'rxjs';
 export class MindmapComponent implements OnChanges, AfterViewInit{
 
   @Input() mapId: any;
+  @Input() map: any;
   public rootId = 'rootId';
   private hasViewLoaded = false;
   private hasDataLoaded = false;
+  private hasXMLLoaded = false;
   private location = 'en';
   private pm: PersistenceManager;
   private account: Account;
@@ -37,8 +42,10 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   constructor(private translateService: TranslateService,
                       sessionStorageService: SessionStorageService,
               private accountService: AccountService,
+              private formulaDataService: FormulaDataService,
               private maincontrollerService: MaincontrollerService,
-              private router: Router) {
+              private router: Router,
+              private mindmapService: MindmapService) {
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
     this._routerSub = this.router.events
         .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
@@ -53,6 +60,13 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
       this.mapId = changes['mapId'].currentValue;
       this.renderComponent();
     }
+
+    if(changes['map'].currentValue !== undefined) {
+      this.hasXMLLoaded = true;
+      this.map = changes['map'].currentValue;
+      this.pm = new MongoStorageManager(this.map, false, false ,this.mindmapService, this.maincontrollerService);
+      this.renderComponent();
+    }
   }
 
   public ngAfterViewInit() {
@@ -64,13 +78,12 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     let currentUrl = this.router.url;
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
         this.router.navigate([currentUrl]);
-        console.log(currentUrl);
         this._routerSub.unsubscribe();
     });
   }
 
   private renderComponent() {
-    if (!this.hasViewLoaded || !this.hasDataLoaded) {
+    if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasXMLLoaded) {
       return;
     }
 
@@ -87,65 +100,58 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     this.accountService.identity().subscribe(account => {
       this.account = account
       this.account.authorities.forEach(el => {
-        console.log(el);
         if(el === "ROLE_ADMIN") {
           this.isAdmin = true;
         } else {
           this.isAdmin = false;
         }
       });
+      this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(r => {
+        const fd = r.body;
+        const values = JSON.parse(fd.map);
+        const grants = JSON.parse(fd.grant);
+        const isFriend = true;
 
-      let persistence = null;
-      if(this.account) {
-        persistence = new CreateYourHumanityPersistenceManager({
-          documentUrl: 'http://localhost:9000/api/mindmaps/{id}/true',
-          revertUrl: '/c/restful/maps/{id}/history/latest',
-          lockUrl: '/c/restful/maps/{id}/lock',
-        });
-      } else {
-        persistence = new CreateYourHumanityPersistenceManager({
-          documentUrl: 'http://localhost:9000/api/mindmaps/{id}/false',
-          revertUrl: '/c/restful/maps/{id}/history/latest',
-          lockUrl: '/c/restful/maps/{id}/lock',
-        });
-      }
+        if(global.PersistenceManager) {
+          this.pm = global.PersistenceManager;
+        } else {
+          const pm: any = global;
+          pm.PersistenceManager = this.pm;
+        }
+          let m = '';
+          if(this.isAdmin) {
+            m = 'edition-owner';
+          } else {
+            m = 'viewonly';
+          }
 
-    if(global.PersistenceManager) {
-      this.pm = global.PersistenceManager;
-    } else {
-      const pm: any = global;
-      pm.PersistenceManager = persistence;
-      this.pm = persistence;
-    }
-      let m = '';
-      if(this.isAdmin) {
-        m = 'edition-owner';
-      } else {
-        m = 'viewonly';
-      }
+          const options: EditorOptions = {
+            zoom: 0.8,
+            locked: false,
+            mapTitle: "Create Your Humanity Mindmap",
+            mode: m,
+            locale: this.location,
+            enableKeyboardEvents: true,
+            isProfile: true,
+          };
 
-      const options: EditorOptions = {
-        zoom: 0.8,
-        locked: false,
-        mapTitle: "Create Your Humanity Mindmap",
-        mode: m,
-        locale: this.location,
-        enableKeyboardEvents: true
-      };
-
-      const props: EditorProps = {
-        mapId: this.mapId,
-        options: options,
-        persistenceManager: this.pm,
-        onAction: (action: any) => console.log('action called:', action),
-        onLoad: initialization
-      }
+          const props: EditorProps = {
+            mapId: this.mapId,
+            options: options,
+            values: {values},
+            grants: {grants},
+            isFriend: {isFriend},
+            persistenceManager: this.pm,
+            onAction: (action: any) => console.log('action called:', action),
+            onLoad: initialization
+          }
 
 
-      ReactDOM.render(
-        <Editor {...props} />,
-        document.getElementById(this.rootId)
-      );
+          ReactDOM.render(
+            <Editor {...props} />,
+            document.getElementById(this.rootId)
+          );
+      });
     });
   }
 }
