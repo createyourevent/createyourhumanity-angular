@@ -4,10 +4,10 @@ import { MindmapProfileComponent } from 'app/mindmap-profile/mindmap-profile.com
 
 import { SharedModule } from 'app/shared/shared.module';
 import { CreateyourhumanityMindmapProfileComponent } from './createyourhumanity-mindmap-profile.component';
-import { CreateyourhumanityMindmapProfileRoute } from './createyourhumanity-mindmap-profile.routing';
 
 @NgModule({
-  imports: [SharedModule, CreateyourhumanityMindmapProfileRoute],
+  imports: [SharedModule],
   declarations: [CreateyourhumanityMindmapProfileComponent, MindmapProfileComponent],
+  exports: [CreateyourhumanityMindmapProfileComponent]
 })
 export class CreateyourhumanityMindmapProfileModule {}

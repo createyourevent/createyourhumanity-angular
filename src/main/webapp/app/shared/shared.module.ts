@@ -86,7 +86,7 @@ import { MatSelectModule } from '@angular/material/select';
             FormlyModule.forRoot({
               wrappers: [
                 { name: 'panel', component: PanelWrapperComponent },
-                { name: 'containerwrapper', component: ContainerWrapperComponent },
+                { name: 'container-wrapper', component: ContainerWrapperComponent },
                 { name: 'rowwrapper', component: RowWrapperComponent },
                 { name: 'columnwrapper', component: ColumnWrapperComponent },
                 { name: 'grant-field', component: FormlyWrapperGrantField },
@@ -188,6 +188,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatTabsModule,
     FormlyFieldTimeComponent,
     FormlyFieldKeywordsComponent,
+    ContainerComponent,
     FormlyFieldAddressComponent,
     FormlyFieldEditorComponent,
     FormlyFieldKeywordsListComponent,

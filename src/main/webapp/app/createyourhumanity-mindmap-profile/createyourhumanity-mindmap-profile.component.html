@@ -1,14 +1,3 @@
-<ng-container *ngIf="profileUser">
-  <div class="row profile-banner">
-    <div class="col-md-6 profile-title">
-      <h1>{{ 'form.profile-from' | translate }} {{profileUser.lastName}} {{profileUser.firstName}}</h1>
-    </div>
-    <div class="col-md-6 profile-image">
-      <div class="div-user" *ngIf="profileUser.imageUrl">
-        <img class="user-image" src="{{ profileUser.imageUrl }}">
-      </div>
-    </div>
-  </div>
-
-<jhi-mindmap-profile [mapId]="xmlId" [values]="values" [grants]="grants" [isFriendString]="isFriend" [map]="mindmap.text"></jhi-mindmap-profile>
-<hr/>
+<div classs="mindmap" *ngIf="mindmap">
+  <jhi-mindmap-profile [mapId]="xmlId" [values]="values" [grants]="grants" [isFriendString]="isFriend" [map]="mindmap.text"></jhi-mindmap-profile>
+</div>

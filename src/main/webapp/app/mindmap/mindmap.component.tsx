@@ -132,7 +132,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
             mode: m,
             locale: this.location,
             enableKeyboardEvents: true,
-            isProfile: true,
+            isProfile: false,
           };
 
           const props: EditorProps = {

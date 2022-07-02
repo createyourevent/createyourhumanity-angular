@@ -12,6 +12,7 @@ import { MaincontrollerService } from 'app/maincontroller.service';
 import { UserService } from 'app/entities/user/user.service';
 
 @Component({
+  selector: 'jhi-createyourhumanity-mindmap-profile',
   templateUrl: './createyourhumanity-mindmap-profile.component.html',
   styleUrls: ['./createyourhumanity-mindmap-profile.component.scss']
 })

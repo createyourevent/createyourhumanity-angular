@@ -223,7 +223,7 @@ jhipster:
     license: unlicensed
     license-url:
   security:
-    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com https://maps.googleapis.com; connect-src 'self' https://maps.googleapis.com https://www.createyourhumanity.org; style-src 'self' 'unsafe-inline'; img-src 'self' https://api.minion.heartfull-mind.space data:; font-src 'self' data:"
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com https://maps.googleapis.com; connect-src 'self' https://maps.googleapis.com https://www.createyourhumanity.org; style-src 'self' 'unsafe-inline'; img-src 'self' https://maps.gstatic.com https://api.minion.heartfull-mind.space data:; font-src 'self' data:"
     oauth2:
       audience:
         - account

@@ -84,7 +84,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
     if(changes['map'].currentValue !== undefined) {
       this.hasXMLLoaded = true;
       this.map = changes['map'].currentValue;
-      this.pm = new MongoStorageManager(this.map, false, false ,this.mindmapService, this.maincontrollerService);
+      this.pm = new MongoStorageManager(this.map, false, true ,this.mindmapService, this.maincontrollerService);
       this.renderComponent();
     }
   }
@@ -104,7 +104,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   }
 
   private renderComponent() {
-    if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasValuesLoaded || !this.hasGrantsLoaded || !this.isFriendLoaded) {
+    if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasValuesLoaded || !this.hasGrantsLoaded || !this.isFriendLoaded || !this.hasXMLLoaded) {
       return;
     }
 
@@ -130,6 +130,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
         */
       });
 
+      /*
       let persistence = null;
       if(this.account) {
         persistence = new CreateYourHumanityPersistenceManager({
@@ -145,19 +146,16 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
         });
       }
 
+      */
+
     if(global.PersistenceManager) {
       this.pm = global.PersistenceManager;
     } else {
       const pm: any = global;
-      pm.PersistenceManager = persistence;
-      this.pm = persistence;
+      pm.PersistenceManager = this.pm;
     }
       let m = '';
-      if(this.isAdmin) {
-        m = 'edition-owner';
-      } else {
-        m = 'viewonly';
-      }
+      m = 'viewonly';
 
       const options: EditorOptions = {
         zoom: 0.8,
@@ -165,7 +163,8 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
         mapTitle: "Create Your Humanity Mindmap",
         mode: m,
         locale: this.location,
-        enableKeyboardEvents: true
+        enableKeyboardEvents: true,
+        isProfile: true,
       };
 
       const props: EditorProps = {

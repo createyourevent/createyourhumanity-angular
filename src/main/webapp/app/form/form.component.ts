@@ -191,12 +191,24 @@ export class FormComponent implements OnInit {
 
 
   addDynamicFormlyPage(node: any): void {
-    eval(this.getFieldGroup(node)).push(
-      {
-        id: node.getProperty('id'),
-        fieldGroup: []
-      }
-    );
+    const n = node.getParent().getProperty('id');
+    if(n !== 1) {
+      eval(this.getFieldGroup(node)).push(
+        {
+          id: node.getProperty('id'),
+          type: ['container'],
+          wrappers: ['expansion'],
+          fieldGroup: []
+        }
+      );
+    } else {
+      eval(this.getFieldGroup(node)).push(
+        {
+          id: node.getProperty('id'),
+          fieldGroup: []
+        }
+      );
+    }
   }
 
   convertMultistepForm(node: any) {
