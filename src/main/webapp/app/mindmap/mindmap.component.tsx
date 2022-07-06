@@ -100,11 +100,11 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     }
 
     const initialization = (designer: Designer) => {
-      this.setDesigner.emit(designer);
       designer.addEvent('loadSuccess', () => {
         const elem = document.getElementById('mindplot');
         if (elem) {
           elem.classList.add('ready');
+          this.setDesigner.emit(designer);
         }
       });
     };

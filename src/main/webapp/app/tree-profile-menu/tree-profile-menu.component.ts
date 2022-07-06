@@ -49,7 +49,7 @@ export class TreeProfileMenuComponent implements OnInit {
         this.user = u.body;
         this.subscription = this.designerGlobalService.getDesigner().subscribe(designer => {
           this.designer = designer;
-          if(this.designer.getMindmap()) {
+          if(this.designer && this.designer.getMindmap()) {
             this.topicsMindmap = this.designer.getMindmap().getBranches();
             this.topics = this.createTree(this.topicsMindmap);
           }
@@ -142,7 +142,7 @@ export class TreeProfileMenuComponent implements OnInit {
 
   openPath(arr_path: number[]): void {
     const q = arr_path.toString();
-    this.router.navigate(['/mindmap-profile/profile'], { queryParams: {q: q} }).then(() => {
+    this.router.navigate(['/profile'], { queryParams: {q: q} }).then(() => {
       this.collapseAll();
     });
   }

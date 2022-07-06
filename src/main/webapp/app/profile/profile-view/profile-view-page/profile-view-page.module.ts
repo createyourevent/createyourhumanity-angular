@@ -6,6 +6,7 @@ import ProfileViewPageHostDirective from './profile-view-page-host.directive';
 import { SharedModule } from 'app/shared/shared.module';
 import { ProfileViewPageRoutes } from './profile-view-page.routing';
 import { CreateyourhumanityMindmapProfileModule } from 'app/createyourhumanity-mindmap-profile/createyourhumanity-mindmap-profile.module';
+import { CalculatePercentOfProfileModule } from 'app/views/calculate-percent-of-profile/calculate-percent-of-profile.module';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { CreateyourhumanityMindmapProfileModule } from 'app/createyourhumanity-m
     SharedModule,
     TabViewModule,
     ProfileViewPageRoutes,
-    CreateyourhumanityMindmapProfileModule
+    CreateyourhumanityMindmapProfileModule,
+    CalculatePercentOfProfileModule
   ],
   declarations: [ProfileViewPageComponent, ProfileViewPageHostDirective]
 })

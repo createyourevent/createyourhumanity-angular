@@ -10,6 +10,7 @@ import dayjs from 'dayjs/esm';
 import { AccountService } from 'app/core/auth/account.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { UserService } from 'app/entities/user/user.service';
+import { DesignerGlobalService } from 'app/designer-global.service';
 
 @Component({
   selector: 'jhi-createyourhumanity-mindmap-profile',
@@ -38,7 +39,8 @@ export class CreateyourhumanityMindmapProfileComponent implements OnInit {
               private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
               private userService: UserService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute,
+              private designerGlobalService: DesignerGlobalService) {
                 this.router.routeReuseStrategy.shouldReuseRoute = () => false;
                 this.mySubscription = this.router.events.subscribe((event) => {
                   if (event instanceof NavigationEnd) {
@@ -91,6 +93,10 @@ export class CreateyourhumanityMindmapProfileComponent implements OnInit {
         });
 
       });
+  }
+
+  setDesigner(e: any) {
+    this.designerGlobalService.setDesigner(e);
   }
 }
 

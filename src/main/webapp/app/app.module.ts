@@ -1,5 +1,5 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import locale from '@angular/common/locales/en';
 import { BrowserModule, Title } from '@angular/platform-browser';
@@ -38,9 +38,22 @@ import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { TreeModule } from 'primeng/tree';
 import { DesignerGlobalService } from './designer-global.service';
+import { ProfileComponent } from './profile/profile.component';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TabViewModule } from 'primeng/tabview';
+import { ProfileRoutes } from './profile/profile.routing';
+import { TreeProfileMenuModule } from './tree-profile-menu/tree-profile-menu.module';
+import { CalculatePercentOfProfileModule } from './views/calculate-percent-of-profile/calculate-percent-of-profile.module';
 
 @NgModule({
   imports: [
+    InputTextareaModule,
+    CommonModule,
+    TabViewModule,
+    SharedModule,
+    CreateyourhumanityMindmapModule,
+    TreeProfileMenuModule,
+    CalculatePercentOfProfileModule,
     FormsModule,
     ReactiveFormsModule,
     CreateyourhumanityMindmapModule,
@@ -73,7 +86,7 @@ import { DesignerGlobalService } from './designer-global.service';
     httpInterceptorProviders,
     DesignerGlobalService,
   ],
-  declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
+  declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent, ProfileComponent],
   bootstrap: [MainComponent],
 })
 export class AppModule {

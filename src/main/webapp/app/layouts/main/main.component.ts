@@ -12,8 +12,8 @@ import { UserMindmap } from 'app/entities/user-mindmap/user-mindmap.model';
 import { UserMindmapService } from 'app/entities/user-mindmap/service/user-mindmap.service';
 import { UserService } from 'app/entities/user/user.service';
 import { IUser } from 'app/entities/user/user.model';
-import { Subscription } from 'rxjs';
 import { DesignerGlobalService } from 'app/designer-global.service';
+import { Designer, Topic } from '@wisemapping/mindplot';
 
 
 @Component({
@@ -32,6 +32,7 @@ export class MainComponent implements OnInit {
   private user: IUser;
   private userMindmap: UserMindmap;
   private mindmap: Mindmap;
+  private designer: Designer;
   designerLoaded = false;
 
   constructor(
@@ -44,12 +45,16 @@ export class MainComponent implements OnInit {
     private userMindmapService: UserMindmapService,
     private userService: UserService,
     private mindmapService: MindmapService,
+    private designerGlobalService: DesignerGlobalService,
   ) {
     this.renderer = rootRenderer.createRenderer(document.querySelector('html'), null);
 
   }
 
   ngOnInit(): void {
+    this.designerGlobalService.getDesigner().subscribe(d => {
+      this.designer = d;
+    });
     this.mindmapService.query().subscribe(res => {
       if(res.body.length === 1) {
         this.mindmap = res.body[0];

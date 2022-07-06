@@ -1,0 +1,15 @@
+.star_filled {
+  background: url('../../../content/images/star_filled.png') no-repeat;
+  width: 125px;
+  height: 125px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* Centering y-axis */
+  align-items :center; /* Centering x-axis */
+  color: red;
+  font-weight: bold;
+}
+
+.title {
+  font-weight: bold;
+}

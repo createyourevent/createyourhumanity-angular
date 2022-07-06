@@ -8,6 +8,7 @@ import { AccountService } from 'app/core/auth/account.service'
 import { MaincontrollerService } from 'app/maincontroller.service'
 import { Designer, Topic} from '@wisemapping/mindplot';
 import { IFriends } from 'app/entities/friends/friends.model'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
   selector: 'jhi-profile-view',
@@ -41,6 +42,7 @@ export class ProfileViewComponent implements OnInit {
 
   constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
+              private route: ActivatedRoute,
               ) {}
 
   ngOnInit(): void {
@@ -54,6 +56,7 @@ export class ProfileViewComponent implements OnInit {
 
   initComponent(): Promise<void> {
     return new Promise<void>((resolve) => {
+      const profileId = this.route.snapshot.queryParamMap.get('userId');
       this.fields = [];
       this.accountService.identity().subscribe(account => {
         this.account = account;
@@ -61,7 +64,7 @@ export class ProfileViewComponent implements OnInit {
           this.maincontrollerService.findFriendsByFriendIdAndUser(this.userId, this.account.id).subscribe(fr => {
             this.friend = fr.body[0];
           });
-            this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+            this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {
               const fd = res.body;
               this.model = JSON.parse(fd.map);
               this.grant = JSON.parse(fd.grant);
@@ -85,7 +88,8 @@ export class ProfileViewComponent implements OnInit {
 
   reloadData(): void {
     this.fields = [];
-    this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+    const profileId = this.route.snapshot.queryParamMap.get('userId');
+    this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {
       const fd = res.body;
       this.model = JSON.parse(fd.map);
       this.grant = JSON.parse(fd.grant);

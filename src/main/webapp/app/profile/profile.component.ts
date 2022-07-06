@@ -1,7 +1,7 @@
 import { FormComponent } from './../form/form.component';
 import { FormulaData, IFormulaData } from './../entities/formula-data/formula-data.model';
 import { Mindmap } from 'app/entities/mindmap/mindmap.model';
-import { Component, Input, AfterViewInit, ViewChildren, QueryList, OnInit, ViewChild, ElementRef, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChildren, QueryList, OnInit, ViewChild, ElementRef, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef, ContentChildren } from '@angular/core';
 import { AccountService } from 'app/core/auth/account.service';
 import { FormulaDataService } from 'app/entities/formula-data/service/formula-data.service';
 import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
@@ -45,10 +45,14 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   description: string;
   path: number[];
   index = 0;
+  init = false;
+
+
 
 
 
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
+
   @ViewChild('mainTabView') mainTabView: MatTabGroup;
   @ViewChild('profileTabView') profileTabView: MatTabGroup;
   @ViewChildren('matexpansionpanel', {read: ViewContainerRef}) matExpansionPanels: QueryList<MatExpansionPanel>;
@@ -91,6 +95,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
           this.description = this.user.description;
         });
         this.processData().then(() => {
+          this.init = true;
           this.profileHosts.changes.subscribe(() => {
             this.profileHosts.map((vcr: ProfileHostDirective, i: number) => {
               const component: typeof FormComponent = FormComponent;
@@ -99,11 +104,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
               this.refs[i].instance.mapId = this.mindmap.id;
               this.refs[i].instance.topic = this.topics[i];
               this.refs[i].instance.initComponent().then(() => {
-                for(let y = 0; y++; y <= this.refs.length - 1) {
+              for(let y = 0; y++; y <= this.refs.length - 1) {
                   this.refs[y].instance.cloneFields();
                 }
               });
-            });
+             });
             this.route.queryParams.subscribe((queryParams:any) => {
               const a = queryParams.q;
               if(a !== undefined) {
@@ -115,10 +120,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
               }
              });
         });
-      });
+       });
       }
     });
   }
+
 
   openPath(arr_path: number[]): void {
     arr_path.reverse();

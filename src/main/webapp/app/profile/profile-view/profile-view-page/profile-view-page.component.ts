@@ -16,6 +16,7 @@ import { ProfileViewComponent } from '../profile-view.component';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel, MatAccordion } from '@angular/material/expansion';
 import { MatTabGroup } from '@angular/material/tabs';
+import { DesignerGlobalService } from 'app/designer-global.service';
 
 interface Item {
   id: string,
@@ -63,7 +64,8 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
               private mindmapService: MindmapService,
               private formulaDataService: FormulaDataService,
               private loginService: LoginService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute,
+              private designerGlobalService: DesignerGlobalService) {
                 window.addEventListener('LinkData', (e: CustomEvent) => {
                   if (e.detail.path.length > 0 && this.mainTabView.selectedIndex === 0) {
                     this.path = e.detail.path;
@@ -86,20 +88,21 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
           this.profileUser = users.body.find(x => x.id === profileId);
           this.user = users.body.find(x => x.id === this.account.id);
         });
-        this.processData().then(() => {
-          this.profileHosts.changes.subscribe(ph => {
-            let i = 0;
-            ph.forEach(p => {
+        this.processData().then(i => {
+          this.items = i;
+          this.profileHosts.changes.subscribe(() => {
+            this.profileHosts.map((vcr: ProfileViewPageHostDirective, i: number) => {
               const component: typeof ProfileViewComponent = ProfileViewComponent;
-              this.refs.push(p.viewContainerRef.createComponent(component));
-              this.refs[i].instance.userId = this.profileUser.id;
+              this.refs.push(vcr.viewContainerRef.createComponent(component));
+              this.refs[i].instance.userId = this.userId;
               this.refs[i].instance.mapId = this.mindmap.id;
               this.refs[i].instance.topic = this.topics[i];
               this.refs[i].instance.initComponent().then(() => {
-                this.refs[i].instance.cloneFields();
+              for(let y = 0; y++; y <= this.refs.length - 1) {
+                  this.refs[y].instance.cloneFields();
+                }
               });
-              i++;
-            });
+             });
           });
         });
       }
@@ -140,13 +143,6 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  handleChange(event): void {
-    this.refs.forEach(r => {
-      r.instance.cloneFields();
-      r.instance.reloadData();
-    });
-  }
-
   processData(): Promise<Item[]> {
     return new Promise<Item[]>((resolve) => {
       this.mindmapService.query().subscribe(umm => {
@@ -158,18 +154,23 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
           const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
           this.pages = xml.querySelectorAll('[id="form"]');
           let index = 0;
+          const i = [];
           this.pages.forEach(page => {
             this.forms.push(page.parentElement);
-            this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+            i.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
             index++;
           });
-          this.designer = global.designer;
-          const root = this.designer.getMindmap().findNodeById(1);
-          const children = root.getChildren();
-          children.forEach(child => {
-            this.topics.push(child);
+          this.designerGlobalService.getDesigner().subscribe(designer => {
+            this.designer = designer;
+            if(this.designer) {
+              const root = this.designer.getMindmap().findNodeById(1);
+              const children = root.getChildren();
+              children.forEach(child => {
+                this.topics.push(child);
+              });
+              resolve(i);
+            }
           });
-          resolve(this.items);
         });
       });
     });

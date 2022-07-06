@@ -64,6 +64,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ExpansionPanelComponent } from 'app/formly/expansion-panel.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MindmapComponent } from 'app/mindmap/mindmap.component';
+import ProfileHostDirective from 'app/profile/profile-host.directive';
 
 @NgModule({
   imports: [SharedLibsModule,
@@ -133,6 +134,7 @@ import { MindmapComponent } from 'app/mindmap/mindmap.component';
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     SortByDirective,
+    ProfileHostDirective,
     SortDirective,
     ItemCountComponent,
     XmlPipe,
@@ -171,6 +173,7 @@ import { MindmapComponent } from 'app/mindmap/mindmap.component';
     ReactiveFormsModule,
     SharedLibsModule,
     FindLanguageFromKeyPipe,
+    ProfileHostDirective,
     TranslateDirective,
     AlertComponent,
     AlertErrorComponent,

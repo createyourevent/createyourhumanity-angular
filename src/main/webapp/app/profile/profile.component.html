@@ -3,7 +3,7 @@
 </div>
 
 <div class="row profile-banner">
-  <div class="col-md-6">
+  <div class="col-md-4">
     <div class="row">
       <div class="col-md-12  profile-title">
         <h1>{{ 'form.my-profile' | translate }}</h1>
@@ -24,7 +24,10 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6 profile-image">
+  <div class="col-md-4 profile-image" *ngIf="user && user.id">
+    <jhi-calculate-percent-of-profile [userId]="user.id"></jhi-calculate-percent-of-profile>
+  </div>
+  <div class="col-md-4 profile-image">
     <div class="div-user" *ngIf="user && user.imageUrl">
       <img class="user-image" src="{{ user.imageUrl }}">
     </div>
@@ -38,7 +41,7 @@
   <mat-tab label="Profile">
     <mat-tab-group #profileTabView>
       <mat-tab [label]="item.header" *ngFor="let item of items; let i = index">
-        <ng-container appProfileHost></ng-container>
+        <div appProfileHost></div>
       </mat-tab>
     </mat-tab-group>
   </mat-tab>

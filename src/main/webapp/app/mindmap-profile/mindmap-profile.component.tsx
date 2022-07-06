@@ -3,7 +3,9 @@ import {
   OnChanges,
   AfterViewInit,
   Input,
-  SimpleChanges
+  SimpleChanges,
+  EventEmitter,
+  Output
 } from '@angular/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -31,6 +33,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   @Input() grants: Map<string, string>;
   @Input() isFriendString: string;
   @Input() map: any;
+  @Output() setDesigner = new EventEmitter<Designer>();
   isFriend: boolean;
   public rootId = 'rootId';
   private hasViewLoaded = false;
@@ -81,7 +84,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
       this.renderComponent();
     }
 
-    if(changes['map'].currentValue !== undefined) {
+    if(changes['map'] && changes['map'].currentValue && changes['map'].currentValue !== undefined) {
       this.hasXMLLoaded = true;
       this.map = changes['map'].currentValue;
       this.pm = new MongoStorageManager(this.map, false, true ,this.mindmapService, this.maincontrollerService);
@@ -142,7 +145,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
           const elem = document.getElementById('mindplot');
           if (elem) {
             elem.classList.add('ready');
-
+            this.setDesigner.emit(designer);
           }
         });
       };
