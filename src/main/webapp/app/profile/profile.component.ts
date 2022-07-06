@@ -16,6 +16,7 @@ import { LoginService } from 'app/login/login.service';
 import { UserService } from 'app/entities/user/user.service';
 import { MatTabGroup } from '@angular/material/tabs';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
+import { ActivatedRoute } from '@angular/router';
 
 interface Item {
   id: string,
@@ -46,6 +47,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   index = 0;
 
 
+
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @ViewChild('mainTabView') mainTabView: MatTabGroup;
   @ViewChild('profileTabView') profileTabView: MatTabGroup;
@@ -64,6 +66,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
               private formulaDataService: FormulaDataService,
               private loginService: LoginService,
               private userService: UserService,
+              private route: ActivatedRoute
               ) {
                 window.addEventListener('LinkData', (e: CustomEvent) => {
                   if (e.detail.path.length > 0 && this.mainTabView.selectedIndex === 0) {
@@ -96,11 +99,21 @@ export class ProfileComponent implements OnInit, AfterViewInit {
               this.refs[i].instance.mapId = this.mindmap.id;
               this.refs[i].instance.topic = this.topics[i];
               this.refs[i].instance.initComponent().then(() => {
-                for(let y = this.refs.length - 1; y--; y >= 0) {
+                for(let y = 0; y++; y <= this.refs.length - 1) {
                   this.refs[y].instance.cloneFields();
                 }
               });
             });
+            this.route.queryParams.subscribe((queryParams:any) => {
+              const a = queryParams.q;
+              if(a !== undefined) {
+                const c: number[] = [];
+                a.split(',').forEach(el => {
+                  c.push(Number(el));
+                });
+                this.openPath(c);
+              }
+             });
         });
       });
       }

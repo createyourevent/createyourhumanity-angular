@@ -98,7 +98,6 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
     let currentUrl = this.router.url;
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
         this.router.navigate([currentUrl]);
-        console.log(currentUrl);
         this._routerSub.unsubscribe();
     });
   }
@@ -107,16 +106,6 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
     if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasValuesLoaded || !this.hasGrantsLoaded || !this.isFriendLoaded || !this.hasXMLLoaded) {
       return;
     }
-
-    const initialization = (designer: Designer) => {
-
-      designer.addEvent('loadSuccess', () => {
-        const elem = document.getElementById('mindplot');
-        if (elem) {
-          elem.classList.add('ready');
-        }
-      });
-    };
 
     this.accountService.identity().subscribe(account => {
       this.account = account
@@ -147,6 +136,16 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
       }
 
       */
+
+      const initialization = (designer: Designer) => {
+        designer.addEvent('loadSuccess', () => {
+          const elem = document.getElementById('mindplot');
+          if (elem) {
+            elem.classList.add('ready');
+
+          }
+        });
+      };
 
     if(global.PersistenceManager) {
       this.pm = global.PersistenceManager;

@@ -1,3 +1,3 @@
 <div classs="mindmap" *ngIf="mindmap">
-  <jhi-mindmap [map]="mindmap.text" [mapId]="xmlId"></jhi-mindmap>
+  <jhi-mindmap [map]="mindmap.text" [mapId]="xmlId" [readOnly]="false" [isProfile]="false" [admin]="isAdmin" [values]="values" [grants]="grants" [isFriend]="isFriend" (setDesigner)="setDesigner($event)"></jhi-mindmap>
 </div>

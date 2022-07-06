@@ -1,3 +1,7 @@
+<div *jhiHasAnyAuthority="'ROLE_USER'" >
+  <jhi-tree-profile-menu></jhi-tree-profile-menu>
+</div>
+
 <div class="row profile-banner">
   <div class="col-md-6">
     <div class="row">
@@ -27,7 +31,7 @@
   </div>
 </div>
 
-<mat-tab-group #mainTabView  (selectedTabChange)="handleChange($event)">
+<mat-tab-group #mainTabView   (selectedTabChange)="handleChange($event)">
   <mat-tab label="Mindmap">
     <jhi-createyourhumanity-mindmap></jhi-createyourhumanity-mindmap>
   </mat-tab>

@@ -63,6 +63,7 @@ import { FormlyWrapperProfileField } from 'app/formly/profile-field/profile-fiel
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ExpansionPanelComponent } from 'app/formly/expansion-panel.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MindmapComponent } from 'app/mindmap/mindmap.component';
 
 @NgModule({
   imports: [SharedLibsModule,
@@ -162,7 +163,8 @@ import { MatSelectModule } from '@angular/material/select';
     FormlyFieldMultiselectComponent,
     MultiselectSummaryComponent,
     FormlyWrapperProfileField,
-    ExpansionPanelComponent
+    ExpansionPanelComponent,
+    MindmapComponent
   ],
   exports: [
     FormsModule,
@@ -207,7 +209,8 @@ import { MatSelectModule } from '@angular/material/select';
     MultiselectSummaryComponent,
     FormlyWrapperProfileField,
     MatExpansionModule,
-    MatSelectModule
+    MatSelectModule,
+    MindmapComponent,
   ],
 })
 export class SharedModule {}

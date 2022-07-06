@@ -8,7 +8,7 @@ import { CreateyourhumanityMindmapRoute } from './createyourhumanity-mindmap.rou
 
 @NgModule({
   imports: [SharedModule, CreateyourhumanityMindmapRoute],
-  declarations: [CreateyourhumanityMindmapComponent, MindmapComponent],
+  declarations: [CreateyourhumanityMindmapComponent],
   exports: [CreateyourhumanityMindmapComponent]
 })
 export class CreateyourhumanityMindmapModule {}

@@ -1,6 +1,17 @@
 {
   "main": {
     "register-sign-up": "Register / Sign up",
-    "intro": "From a mind map using brainstorming to a form generator, everything is included with Create Your Humanity, with which we would like to make a kind of world map in the near future. The idea is that we capture the earth and all its values using a mind map diagram. You can easily expand, change and delete this mind map in the future. These topics are then assigned to a control element using the mind map editor so that a web form can be generated from this mind map. You can now use this web form to write down all your personal values and characteristics and then save them. You can then view the profiles of our members, depending on which permissions have been set. Everyone can define for themselves whether and who is allowed to view or read through this topic. In this way you can develop a personal profile for yourself, so that you can be found on the Internet, so to speak, with your CV."
+    "intro": "From a mind map using brainstorming to a form generator, everything is included with Create Your Humanity, with which we would like to make a kind of world map in the near future. The idea is that we capture the earth and all its values using a mind map diagram. You can easily expand, change and delete this mind map in the future. These topics are then assigned to a control element using the mind map editor so that a web form can be generated from this mind map. You can now use this web form to write down all your personal values and characteristics and then save them. You can then view the profiles of our members, depending on which permissions have been set. Everyone can define for themselves whether and who is allowed to view or read through this topic. In this way you can develop a personal profile for yourself, so that you can be found on the Internet, so to speak, with your CV.",
+    "intro-title": "From a mind map to a web form to your own personal profile...your own CV on the internet",
+    "logical-profile": "Create a logical profile about yourself...",
+    "relations": "Useful for any kind of relationships...",
+    "approach-platform": "Great place to go for:",
+    "dating": "Dating",
+    "job": "Jobs",
+    "learning-groups": "Learning groups",
+    "societies": "Societies",
+    "churches": "Churches",
+    "etc": "Etc.",
+    "mindmap-title": "Current mind map for your personal web profile"
   }
 }

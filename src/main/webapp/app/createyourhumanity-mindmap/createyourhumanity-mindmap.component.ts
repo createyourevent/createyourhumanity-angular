@@ -14,6 +14,7 @@ import { IUser } from 'app/entities/user/user.model';
 import dayjs from 'dayjs/esm';
 import { MindmapComponent } from 'app/mindmap/mindmap.component';
 import LayoutManager, { LayoutManager_getInstance } from '@wisemapping/mindplot';
+import { DesignerGlobalService } from 'app/designer-global.service';
 
 @Component({
   selector: 'jhi-createyourhumanity-mindmap',
@@ -33,10 +34,16 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
   xmlId: any;
   mySubscription;
   layoutManager: LayoutManager;
+  isAdmin: boolean;
+  values: any;
+  grants: any;
+  isFriend: any;
 
   constructor(private router:Router,
               private mindmapService: MindmapService,
-              private changeDetector: ChangeDetectorRef) {
+              private accountService: AccountService,
+              private maincontrollerService: MaincontrollerService,
+              private designerGlobalService: DesignerGlobalService) {
                 this.router.routeReuseStrategy.shouldReuseRoute = () => false;
                 this.mySubscription = this.router.events.subscribe((event) => {
                   if (event instanceof NavigationEnd) {
@@ -45,7 +52,29 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
                 });
               }
 
+  setDesigner(e: any) {
+    this.designerGlobalService.setDesigner(e);
+  }
+
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(r => {
+        const fd = r.body;
+        this.values = JSON.parse(fd.map);
+        this.grants = JSON.parse(fd.grant);
+        this.isFriend = true;
+      });
+
+      this.account.authorities.forEach(el => {
+        if(el === "ROLE_ADMIN") {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
+        }
+      });
+    });
         this.mindmapService.query().subscribe(res => {
             this.mindmap = res.body[0];
             if(!this.mindmap) {

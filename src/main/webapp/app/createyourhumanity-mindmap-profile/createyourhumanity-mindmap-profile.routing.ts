@@ -1,5 +1,7 @@
 import { RouterModule, Route } from '@angular/router';
 import { Authority } from 'app/config/authority.constants';
+import { CreateyourhumanityMindmapComponent } from 'app/createyourhumanity-mindmap/createyourhumanity-mindmap.component';
+import { ProfileComponent } from 'app/profile/profile.component';
 import { CreateyourhumanityMindmapProfileComponent } from './createyourhumanity-mindmap-profile.component';
 
 const CREATEYOURHUMANITY_MINDMAP_PROFILE_ROUTE: Route = {

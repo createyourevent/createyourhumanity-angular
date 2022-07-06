@@ -32,11 +32,18 @@ import { DockerAppsModule } from './docker-apps/docker-apps.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormModule } from './form/form.module';
 import { ProfileViewModule } from './profile/profile-view/profile-view.module';
+import { ButtonModule } from 'primeng/button';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { TreeModule } from 'primeng/tree';
+import { DesignerGlobalService } from './designer-global.service';
 
 @NgModule({
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    CreateyourhumanityMindmapModule,
     SharedModule,
     FormModule,
     ProfileViewModule,
@@ -45,6 +52,11 @@ import { ProfileViewModule } from './profile/profile-view/profile-view.module';
     DockerAppsModule,
     BrowserModule,
     BrowserAnimationsModule,
+    TreeModule,
+    ContextMenuModule,
+    ToastModule,
+    ButtonModule,
+    DialogModule,
     HomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
@@ -56,9 +68,10 @@ import { ProfileViewModule } from './profile/profile-view/profile-view.module';
   ],
   providers: [
     Title,
-    { provide: LOCALE_ID, useValue: 'en' },
+    { provide: LOCALE_ID, useValue: 'de' },
     { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
     httpInterceptorProviders,
+    DesignerGlobalService,
   ],
   declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
   bootstrap: [MainComponent],

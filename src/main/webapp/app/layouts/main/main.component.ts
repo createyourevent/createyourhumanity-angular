@@ -11,7 +11,9 @@ import { MaincontrollerService } from 'app/maincontroller.service';
 import { UserMindmap } from 'app/entities/user-mindmap/user-mindmap.model';
 import { UserMindmapService } from 'app/entities/user-mindmap/service/user-mindmap.service';
 import { UserService } from 'app/entities/user/user.service';
-import { IUser, User } from 'app/entities/user/user.model';
+import { IUser } from 'app/entities/user/user.model';
+import { Subscription } from 'rxjs';
+import { DesignerGlobalService } from 'app/designer-global.service';
 
 
 @Component({
@@ -30,6 +32,7 @@ export class MainComponent implements OnInit {
   private user: IUser;
   private userMindmap: UserMindmap;
   private mindmap: Mindmap;
+  designerLoaded = false;
 
   constructor(
     private accountService: AccountService,
@@ -43,6 +46,7 @@ export class MainComponent implements OnInit {
     private mindmapService: MindmapService,
   ) {
     this.renderer = rootRenderer.createRenderer(document.querySelector('html'), null);
+
   }
 
   ngOnInit(): void {
@@ -54,7 +58,6 @@ export class MainComponent implements OnInit {
     error => {
       if(error.status === 404) {
         const mindmap = new Mindmap();
-        // mindmap.id = '625631aa67a303687227eb94';
         mindmap.text = '<map name="6261bd1386b9921666c144da" version="tango"><topic central="true" text="Create Your Humanity" id="1" fontStyle="Perpetua;;#ffffff;;;"><topic position="137,-29" order="0" text="form" shape="rounded rectagle" id="2" fontStyle="Perpetua;;rgb(0, 0, 0);;;" bgColor="rgb(0, 255, 0)"><htmlForm id="form"/><topic position="211,-24" order="0" text="tf" shape="rounded rectagle" id="4" fontStyle="Perpetua;;rgb(0, 0, 0);;;" bgColor="rgb(0, 255, 0)"><textfield key=" " required="false"><![CDATA[textfield]]></textfield></topic></topic><topic position="151,19" order="2" shape="rounded rectagle" id="5" fontStyle="Perpetua;;rgb(0, 0, 0);;;" bgColor="rgb(0, 255, 0)"><htmlForm id="tabs_form"/><topic position="239,5" order="0" text="t1" shape="rounded rectagle" id="3" fontStyle="Perpetua;;rgb(0, 0, 0);;;" bgColor="rgb(0, 255, 0)"><htmlFormTab/><topic position="305,5" order="0" text="test" shape="elipse" id="7" fontStyle="Perpetua;;#ffffff;;;" bgColor="rgb(0, 0, 255)"><textarea key=" " required="false"><![CDATA[textarea]]></textarea></topic></topic><topic position="239,34" order="1" text="t2" shape="rounded rectagle" id="6" fontStyle="Perpetua;;rgb(0, 0, 0);;;" bgColor="rgb(0, 255, 0)"><htmlFormTab/><topic position="308,34" order="0" text="super" shape="elipse" id="8" fontStyle="Perpetua;;#ffffff;;;" bgColor="rgb(0, 0, 255)"><checkbox key=" " required="false"><![CDATA[checkbox]]></checkbox></topic></topic></topic></topic></map>';
         mindmap.modified = dayjs();
         this.mindmapService.create(mindmap).subscribe();

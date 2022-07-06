@@ -25,11 +25,10 @@ import { DesignerGlobalService } from 'app/designer-global.service';
 
 
 @Component({
-  selector: 'jhi-mindmap',
+  selector: 'jhi-mindmap-start',
   template: '<div [id]="rootId"></div>',
-  providers: [DesignerGlobalService],
 })
-export class MindmapComponent implements OnChanges, AfterViewInit{
+export class MindmapStartComponent implements OnChanges, AfterViewInit{
 
   @Input() mapId: any;
   @Input() map: any;
@@ -39,12 +38,11 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   @Input() values: any;
   @Input() grants: any;
   @Input() isFriend: any;
-  @Output() setDesigner = new EventEmitter<Designer>();
   public rootId = 'rootId';
   private hasViewLoaded = false;
   private hasDataLoaded = false;
   private hasXMLLoaded = false;
-  private location = 'en';
+  private location = 'de';
   private pm: PersistenceManager;
   private account: Account;
   private isAdmin = false;
@@ -100,7 +98,6 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     }
 
     const initialization = (designer: Designer) => {
-      this.setDesigner.emit(designer);
       designer.addEvent('loadSuccess', () => {
         const elem = document.getElementById('mindplot');
         if (elem) {

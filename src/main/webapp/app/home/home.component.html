@@ -1,22 +1,70 @@
 <h1>Welcome on Create Your Humanity</h1>
 
-<ng-container *ngIf="account">
-  <div class="alert alert-success" role="alert">
-    You are logged in as {{account.lastName}} {{account.firstName}}
+<div class="row">
+  <div class="col-md-4 box-green">
+    <div class="row">
+      <div class="col-md-6">
+        <ul class="list-first">
+          <li jhiTranslate="main.logical-profile">Create your own logically profile</li>
+          <li jhiTranslate="main.relations">Useful for any kind of relationship</li>
+          <li>
+            <span jhiTranslate="main.approach-platform">Great place to go for:</span>
+            <ul class="list-seccond">
+              <li jhiTranslate="main.dating">Dating</li>
+              <li jhiTranslate="main.job">Job and work</li>
+              <li jhiTranslate="main.learning-groups">Learning groups</li>
+              <li jhiTranslate="main.societies">Societies</li>
+              <li jhiTranslate="main.churches">Churches</li>
+              <li jhiTranslate="main.etc">Etc.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <img width="230px" src="../../content/images/home/humanity-network.png"/>
+      </div>
+    </div>
   </div>
-</ng-container>
-
-<ng-container *ngIf="!account">
-  <div class="alert alert-danger" role="alert">
-    You are logged off. Do you like to register a user account on Create Your Humanity.
-    <hr>
-    <p-button (click)="login()">
-      <fa-icon icon="right-from-bracket"></fa-icon>
-      <span class="d-none d-md-inline" jhiTranslate="main.register-sign-up">Register / Sign up</span>
-    </p-button>
+  <div class="col-md-4">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box-yellow center">
+          <img class="logo-createyourhumanity" src="../../content/images/home/createyourhumanity.png"/>
+        </div>
+      </div>
+    </div>
+    <div class="row margin-10">
+      <div class="col-md-12">
+        <ng-container *ngIf="!account">
+          <div class="alert alert-danger" role="alert">
+            You are logged off. Do you like to register a user account on Create Your Humanity.
+            <hr>
+            <p-button (click)="login()">
+              <fa-icon icon="right-from-bracket"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="main.register-sign-up">Register / Sign up</span>
+            </p-button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
   </div>
-</ng-container>
+  <div class="col-md-4 box-aqua">
+    <h2 class="mindmap-to-webform" jhiTranslate="main.intro-title">From a mind map to a web form to your own personal profile...your own CV on the internet</h2>
+    <div jhiTranslate="main.intro">
+      Intro_Text
+    </div>
+  </div>
+</div>
 <hr/>
-<div jhiTranslate="main.intro">
-  Intro_Text
+<div class="row">
+  <div class="col-md-12 margin-40">
+    <h2 class="mindmap-title" jhiTranslate="main.mindmap-title"></h2>
+    <jhi-mindmap-home-component></jhi-mindmap-home-component>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+  </div>
+  <div class="col-md-6">
+  </div>
 </div>
