@@ -38,6 +38,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   @Input() admin: any;
   @Input() values: any;
   @Input() grants: any;
+  @Input() visible: any;
   @Input() isFriend: any;
   @Output() setDesigner = new EventEmitter<Designer>();
   public rootId = 'rootId';
@@ -146,6 +147,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
             options: options,
             values: {v},
             grants: {n},
+            visible: this.visible,
             isFriend: {iff},
             persistenceManager: this.pm,
             onAction: (action: any) => console.log('action called:', action),

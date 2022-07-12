@@ -103,7 +103,7 @@
     "@popperjs/core": "2.11.2",
     "@types/bootstrap": "^5.1.9",
     "@types/jquery": "^3.5.14",
-    "@wisemapping/editor": "1.10.2",
+    "@wisemapping/editor": "1.10.11",
     "ajv": "^8.11.0",
     "bootstrap": "5.1.3",
     "dayjs": "1.10.7",

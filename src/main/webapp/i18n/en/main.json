@@ -12,6 +12,9 @@
     "societies": "Societies",
     "churches": "Churches",
     "etc": "Etc.",
-    "mindmap-title": "Current mind map for your personal web profile"
+    "mindmap-title": "Current mind map for your personal web profile",
+    "instruction": "Welcome to the first online profile that is structurally built. Actually, it's more of a library that we want to create, which defines questions for many of our answers that have never been asked before. Complete this mind map fairly, honestly, and openly so it can get the maximum output from your input. You can easily form new colleges, new workers, new family members and many other interest groups. Due to the fact that it is structured logically, anyone can now easily find you in whatever fields you have published due to this structure. All of the fields seen on the mind map above are separate separate controls on an HTML form. Depending on how much you want to publish, you can do that too. It's up to you how much that is...furthermore you can publish this to everyone, only to friends or not at all. In this way, you can further narrow down the group that needs to find this information. We hope you enjoy creating your online CV.",
+    "instruction-ps": "PS: We will neither pass on the data to third parties nor do we analyze them for advertising. Our aim is to create a platform that can be used to quickly find virtual contacts in a specific area, in order to then make real contacts and create something real, real value.",
+    "instruction-title": "Welcome to the Internet's first open, transparent and friendly logical network profile."
   }
 }

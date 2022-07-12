@@ -76,8 +76,34 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
                     this.path = [];
                   }
                 });
+                window.addEventListener('VisibleRepaint', (e: CustomEvent) => {
+                  if (e.detail.topic && e.detail.iconType && e.detail.formulaData) {
+                    const n = this.designer.getMindmap().findNodeById(e.detail.topic);
+                    this.domWalker(n);
+                    this.domParentWalker(n);
+                    e.stopPropagation();
+                  }
+                });
               }
 
+  ngOnInit() {
+    this.accountService.identity().subscribe(account => {
+      this.account = account
+      if(this.account) {
+          this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
+            this.user = u.body;
+            this.checkFormulaDataFromUser(this.account);
+          });
+        } else {
+          this.loginService.login()
+        }
+      },
+      error => {
+        if(error.status === 401) {
+          this.loginService.login()
+        }
+      });
+  }
 
   ngAfterViewInit(): void {
     const profileId = this.route.snapshot.queryParamMap.get('userId');
@@ -87,27 +113,100 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
         this.maincontrollerService.findAllUsersWithFormulaDataAndFriends().subscribe(users => {
           this.profileUser = users.body.find(x => x.id === profileId);
           this.user = users.body.find(x => x.id === this.account.id);
-        });
-        this.processData().then(i => {
-          this.items = i;
-          this.profileHosts.changes.subscribe(() => {
-            this.profileHosts.map((vcr: ProfileViewPageHostDirective, i: number) => {
-              const component: typeof ProfileViewComponent = ProfileViewComponent;
-              this.refs.push(vcr.viewContainerRef.createComponent(component));
-              this.refs[i].instance.userId = this.userId;
-              this.refs[i].instance.mapId = this.mindmap.id;
-              this.refs[i].instance.topic = this.topics[i];
-              this.refs[i].instance.initComponent().then(() => {
-              for(let y = 0; y++; y <= this.refs.length - 1) {
-                  this.refs[y].instance.cloneFields();
+          this.maincontrollerService.findFormulaDataByUserId(this.profileUser.id).subscribe(pu => {
+          this.processData().then(i => {
+            this.items = i;
+            this.profileHosts.changes.subscribe(() => {
+              //this.profileHosts.map((vcr: ProfileViewPageHostDirective, i: number, arr: []) => {
+              let index = 0;
+              for(let i = 0; i < this.pages.length; i++) {
+                const a = JSON.parse(pu.body.visible);
+                const b = a[Number(this.pages[i].parentElement.id)];
+                const c = this.pages[i].parentElement.getAttribute('text');
+                const d = this.items.findIndex(x => x.header === c);
+                if(b === 'visible_visible' &&  d >= 0) {
+                  const component: typeof ProfileViewComponent = ProfileViewComponent;
+                  this.refs.push(this.profileHosts.toArray()[index].viewContainerRef.createComponent(component));
+                  this.refs[index].instance.userId = this.userId;
+                  this.refs[index].instance.mapId = this.mindmap.id;
+                  this.refs[index].instance.topic = this.topics[i];
+                  this.refs[index].instance.visible = this.profileUser.formulaData.visible;
+                  this.refs[index].instance.initComponent().then(() => {
+                  for(let y = 0; y++; y <= this.refs.length - 1) {
+                      this.refs[y].instance.cloneFields();
+                    }
+                  });
+                  index++;
                 }
-              });
-             });
+               };
+            });
           });
+         });
         });
       }
     });
   }
+
+  processData(): Promise<Item[]> {
+    return new Promise<Item[]>((resolve) => {
+      this.mindmapService.query().subscribe(umm => {
+        const mindmaps = umm.body;
+        this.mindmap = mindmaps[0];
+        this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+          this.maincontrollerService.findFormulaDataByUserId(this.profileUser.id).subscribe(pu => {
+            const fdpu = pu.body;
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
+          this.pages = xml.querySelectorAll('[id="form"]');
+          let index = 0;
+          const i = [];
+          this.pages.forEach(page => {
+            const a = JSON.parse(fdpu.visible);
+            const b = a[Number(page.parentElement.id)];
+            if(b === 'visible_visible') {
+              this.forms.push(page.parentElement);
+              i.push({id: page.parentElement.getAttribute('id'), header: page.parentElement.getAttribute('text')});
+              index++;
+            }
+
+
+          });
+          this.designerGlobalService.getDesigner().subscribe(designer => {
+            this.designer = designer;
+            if(this.designer) {
+              const root = this.designer.getMindmap().findNodeById(1);
+              const children = root.getChildren();
+              children.forEach(child => {
+                this.topics.push(child);
+              });
+              resolve(i);
+            }
+          });
+         });
+        });
+      });
+    });
+  }
+
+  domWalker(node) {
+    this.repaintTopic(node);
+    if (node.getChildren().length > 0) {
+      node.getChildren().forEach(childNode => {
+        this.domWalker(childNode);
+      });
+    }
+}
+
+domParentWalker(node) {
+  this.repaintTopic(node);
+  if (node.getParent() != null) {
+      this.domParentWalker(node.getParent());
+  }
+}
+
+repaintTopic(node) {
+  node.adjustShapes();
+}
 
   openPath(arr_path: number[]): void {
     arr_path.reverse();
@@ -141,58 +240,6 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
         }
       }
     });
-  }
-
-  processData(): Promise<Item[]> {
-    return new Promise<Item[]>((resolve) => {
-      this.mindmapService.query().subscribe(umm => {
-        const mindmaps = umm.body;
-        this.mindmap = mindmaps[0];
-        this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
-          this.formulaData = res.body;
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
-          this.pages = xml.querySelectorAll('[id="form"]');
-          let index = 0;
-          const i = [];
-          this.pages.forEach(page => {
-            this.forms.push(page.parentElement);
-            i.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-            index++;
-          });
-          this.designerGlobalService.getDesigner().subscribe(designer => {
-            this.designer = designer;
-            if(this.designer) {
-              const root = this.designer.getMindmap().findNodeById(1);
-              const children = root.getChildren();
-              children.forEach(child => {
-                this.topics.push(child);
-              });
-              resolve(i);
-            }
-          });
-        });
-      });
-    });
-  }
-
-  ngOnInit() {
-    this.accountService.identity().subscribe(account => {
-      this.account = account
-      if(this.account) {
-          this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
-            this.user = u.body;
-            this.checkFormulaDataFromUser(this.account);
-          });
-        } else {
-          this.loginService.login()
-        }
-      },
-      error => {
-        if(error.status === 401) {
-          this.loginService.login()
-        }
-      });
   }
 
   private checkFormulaDataFromUser(account: Account): void {

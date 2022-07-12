@@ -26,6 +26,9 @@ public class FormulaData implements Serializable {
     @Field("grant")
     private String grant;
 
+    @Field("visible")
+    private String visible;
+
     @Field("created")
     private ZonedDateTime created;
 
@@ -34,6 +37,7 @@ public class FormulaData implements Serializable {
 
     @DBRef
     @Field("user")
+    @JsonBackReference
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -77,6 +81,19 @@ public class FormulaData implements Serializable {
         this.grant = grant;
     }
 
+    public String getVisible() {
+        return this.visible;
+    }
+
+    public FormulaData visible(String visible) {
+        this.setVisible(visible);
+        return this;
+    }
+
+    public void setVisible(String visible) {
+        this.visible = visible;
+    }
+
     public ZonedDateTime getCreated() {
         return this.created;
     }
@@ -103,7 +120,6 @@ public class FormulaData implements Serializable {
         this.modified = modified;
     }
 
-    @JsonBackReference
     public User getUser() {
         return this.user;
     }
@@ -143,6 +159,7 @@ public class FormulaData implements Serializable {
             "id=" + getId() +
             ", map='" + getMap() + "'" +
             ", grant='" + getGrant() + "'" +
+            ", visible='" + getVisible() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +
             "}";

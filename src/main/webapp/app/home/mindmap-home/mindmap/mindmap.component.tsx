@@ -37,6 +37,7 @@ export class MindmapStartComponent implements OnChanges, AfterViewInit{
   @Input() admin: any;
   @Input() values: any;
   @Input() grants: any;
+  @Input() visible: any;
   @Input() isFriend: any;
   public rootId = 'rootId';
   private hasViewLoaded = false;
@@ -136,6 +137,7 @@ export class MindmapStartComponent implements OnChanges, AfterViewInit{
 
           const v = this.values;
           const n = this.grants;
+          const vi = this.visible;
           const iff = this.isFriend;
 
           const props: EditorProps = {
@@ -143,6 +145,7 @@ export class MindmapStartComponent implements OnChanges, AfterViewInit{
             options: options,
             values: {v},
             grants: {n},
+            visible: {vi},
             isFriend: {iff},
             persistenceManager: this.pm,
             onAction: (action: any) => console.log('action called:', action),

@@ -28,6 +28,7 @@ public class Friends implements Serializable {
 
     @DBRef
     @Field("user")
+    @JsonBackReference
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -71,7 +72,6 @@ public class Friends implements Serializable {
         this.friendId = friendId;
     }
 
-    @JsonBackReference
     public User getUser() {
         return this.user;
     }
@@ -80,7 +80,6 @@ public class Friends implements Serializable {
         this.user = user;
     }
 
-    @JsonBackReference
     public Friends user(User user) {
         this.setUser(user);
         return this;

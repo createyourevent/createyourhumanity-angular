@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
@@ -13,7 +13,7 @@ import dayjs from 'dayjs/esm'
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements AfterViewInit {
   account: Account | null = null;
 
   constructor(private accountService: AccountService,
@@ -21,23 +21,41 @@ export class HomeComponent implements OnInit {
               private maincontrollerService: MaincontrollerService,
               private formulaDataService: FormulaDataService) {}
 
-  ngOnInit(): void {
+
+  ngAfterViewInit(): void {
     this.accountService.identity().subscribe(account => {
       this.account = account;
       this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
         const user = u.body;
+        const designer = global.designer;
         if(user.formulaData === null) {
           const formulaData = new FormulaData();
           const now = dayjs();
           formulaData.created = now;
           formulaData.grant = "{}";
           formulaData.map = "{}";
+          formulaData.visible = "{}";
+          const visible = new Map<string, unknown>();
+          formulaData.visible = JSON.stringify(Object.fromEntries(this.domWalker(designer.getModel().findTopicById(1), visible)));
           formulaData.modified = now;
           formulaData.user = user;
           this.formulaDataService.create(formulaData).subscribe();
         }
       });
     });
+  }
+
+  domWalker(node, map) {
+    const vis = map.get(node.getId() + '');
+    if(!vis) {
+      map.set(node.getId()+'', 'visible_visible');
+    }
+    if (node.getChildren().length > 0) {
+      node.getChildren().forEach(childNode => {
+        this.domWalker(childNode, map);
+      });
+    }
+    return map;
   }
 
   login(): void {

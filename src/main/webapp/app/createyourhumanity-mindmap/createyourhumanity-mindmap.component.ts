@@ -37,6 +37,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
   isAdmin: boolean;
   values: any;
   grants: any;
+  visible: any;
   isFriend: any;
 
   constructor(private router:Router,
@@ -64,6 +65,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
         const fd = r.body;
         this.values = JSON.parse(fd.map);
         this.grants = JSON.parse(fd.grant);
+        this.visible = JSON.parse(fd.visible);
         this.isFriend = true;
       });
 

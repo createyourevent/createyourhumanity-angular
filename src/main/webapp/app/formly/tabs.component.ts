@@ -6,7 +6,7 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
   selector: 'jhi-formly-field-tabs',
   template: `
   <mat-tab-group #matTabGroup>
-    <mat-tab *ngFor="let tab of field.fieldGroup; let i = index; let last = last;"
+    <mat-tab [class]="tab.templateOptions.className" *ngFor="let tab of field.fieldGroup; let i = index; let last = last;"
       [label]="tab.templateOptions.label">
       <formly-field [field]="tab"></formly-field>
     </mat-tab>

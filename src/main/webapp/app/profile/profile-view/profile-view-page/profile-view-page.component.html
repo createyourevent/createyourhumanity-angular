@@ -1,7 +1,16 @@
   <ng-container *ngIf="profileUser">
   <div class="row profile-banner">
-    <div class="col-md-4 profile-title">
-      <h1>{{ 'form.profile-from' | translate }} {{profileUser.lastName}} {{profileUser.firstName}}</h1>
+    <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-12 profile-title">
+          <h1>{{ 'form.profile-from' | translate }} {{profileUser.lastName}} {{profileUser.firstName}}</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {{ profileUser.description }}
+        </div>
+      </div>
     </div>
     <div class="col-md-4 center">
       <jhi-calculate-percent-of-profile [userId]="profileUser.id"></jhi-calculate-percent-of-profile>

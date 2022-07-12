@@ -14,6 +14,10 @@
       "fieldType": "String"
     },
     {
+      "fieldName": "visible",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "created",
       "fieldType": "ZonedDateTime"
     },

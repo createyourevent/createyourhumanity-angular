@@ -61,4 +61,24 @@ public class FormulaDataExtResource {
         return r;
     }
 
+    @GetMapping("/formula-data/{userId}/{key}/getVisible")
+    public String getVisible(@PathVariable String userId, @PathVariable String key) {
+        log.debug("REST request to get grant by UserId : {}", userId);
+        FormulaData fd = formulaDataExtRepository.findByUser(userId);
+        String jsonGrant = fd.getVisible();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String r = null;
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonGrant);
+            r = rootNode.path(key).asText();
+            if(r == null || r == "") {
+                r = "visible_visible";
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return r;
+    }
+
 }

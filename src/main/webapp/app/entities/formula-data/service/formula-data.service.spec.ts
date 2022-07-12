@@ -27,6 +27,7 @@ describe('FormulaData Service', () => {
       id: 'AAAAAAA',
       map: 'AAAAAAA',
       grant: 'AAAAAAA',
+      visible: 'AAAAAAA',
       created: currentDate,
       modified: currentDate,
     };
@@ -80,6 +81,7 @@ describe('FormulaData Service', () => {
           id: 'BBBBBB',
           map: 'BBBBBB',
           grant: 'BBBBBB',
+          visible: 'BBBBBB',
           created: currentDate.format(DATE_TIME_FORMAT),
           modified: currentDate.format(DATE_TIME_FORMAT),
         },
@@ -132,6 +134,7 @@ describe('FormulaData Service', () => {
           id: 'BBBBBB',
           map: 'BBBBBB',
           grant: 'BBBBBB',
+          visible: 'BBBBBB',
           created: currentDate.format(DATE_TIME_FORMAT),
           modified: currentDate.format(DATE_TIME_FORMAT),
         },
@@ -191,7 +194,7 @@ describe('FormulaData Service', () => {
       });
 
       it('should add only unique FormulaData to an array', () => {
-        const formulaDataArray: IFormulaData[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '69782351-9067-4d45-9174-207091a2ab10' }];
+        const formulaDataArray: IFormulaData[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '97823519-067d-445d-9742-07091a2ab102' }];
         const formulaDataCollection: IFormulaData[] = [{ id: 'ABC' }];
         expectedResult = service.addFormulaDataToCollectionIfMissing(formulaDataCollection, ...formulaDataArray);
         expect(expectedResult).toHaveLength(3);

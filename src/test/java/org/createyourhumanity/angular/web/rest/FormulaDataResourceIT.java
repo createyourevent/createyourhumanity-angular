@@ -38,6 +38,9 @@ class FormulaDataResourceIT {
     private static final String DEFAULT_GRANT = "AAAAAAAAAA";
     private static final String UPDATED_GRANT = "BBBBBBBBBB";
 
+    private static final String DEFAULT_VISIBLE = "AAAAAAAAAA";
+    private static final String UPDATED_VISIBLE = "BBBBBBBBBB";
+
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
@@ -65,6 +68,7 @@ class FormulaDataResourceIT {
         FormulaData formulaData = new FormulaData()
             .map(DEFAULT_MAP)
             .grant(DEFAULT_GRANT)
+            .visible(DEFAULT_VISIBLE)
             .created(DEFAULT_CREATED)
             .modified(DEFAULT_MODIFIED);
         return formulaData;
@@ -80,6 +84,7 @@ class FormulaDataResourceIT {
         FormulaData formulaData = new FormulaData()
             .map(UPDATED_MAP)
             .grant(UPDATED_GRANT)
+            .visible(UPDATED_VISIBLE)
             .created(UPDATED_CREATED)
             .modified(UPDATED_MODIFIED);
         return formulaData;
@@ -110,6 +115,7 @@ class FormulaDataResourceIT {
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(DEFAULT_MAP);
         assertThat(testFormulaData.getGrant()).isEqualTo(DEFAULT_GRANT);
+        assertThat(testFormulaData.getVisible()).isEqualTo(DEFAULT_VISIBLE);
         assertThat(testFormulaData.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(DEFAULT_MODIFIED);
     }
@@ -149,6 +155,7 @@ class FormulaDataResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(formulaData.getId())))
             .andExpect(jsonPath("$.[*].map").value(hasItem(DEFAULT_MAP)))
             .andExpect(jsonPath("$.[*].grant").value(hasItem(DEFAULT_GRANT)))
+            .andExpect(jsonPath("$.[*].visible").value(hasItem(DEFAULT_VISIBLE)))
             .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))))
             .andExpect(jsonPath("$.[*].modified").value(hasItem(sameInstant(DEFAULT_MODIFIED))));
     }
@@ -166,6 +173,7 @@ class FormulaDataResourceIT {
             .andExpect(jsonPath("$.id").value(formulaData.getId()))
             .andExpect(jsonPath("$.map").value(DEFAULT_MAP))
             .andExpect(jsonPath("$.grant").value(DEFAULT_GRANT))
+            .andExpect(jsonPath("$.visible").value(DEFAULT_VISIBLE))
             .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)))
             .andExpect(jsonPath("$.modified").value(sameInstant(DEFAULT_MODIFIED)));
     }
@@ -185,7 +193,12 @@ class FormulaDataResourceIT {
 
         // Update the formulaData
         FormulaData updatedFormulaData = formulaDataRepository.findById(formulaData.getId()).get();
-        updatedFormulaData.map(UPDATED_MAP).grant(UPDATED_GRANT).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        updatedFormulaData
+            .map(UPDATED_MAP)
+            .grant(UPDATED_GRANT)
+            .visible(UPDATED_VISIBLE)
+            .created(UPDATED_CREATED)
+            .modified(UPDATED_MODIFIED);
 
         restFormulaDataMockMvc
             .perform(
@@ -202,6 +215,7 @@ class FormulaDataResourceIT {
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(UPDATED_MAP);
         assertThat(testFormulaData.getGrant()).isEqualTo(UPDATED_GRANT);
+        assertThat(testFormulaData.getVisible()).isEqualTo(UPDATED_VISIBLE);
         assertThat(testFormulaData.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(UPDATED_MODIFIED);
     }
@@ -277,7 +291,7 @@ class FormulaDataResourceIT {
         FormulaData partialUpdatedFormulaData = new FormulaData();
         partialUpdatedFormulaData.setId(formulaData.getId());
 
-        partialUpdatedFormulaData.created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        partialUpdatedFormulaData.visible(UPDATED_VISIBLE).created(UPDATED_CREATED);
 
         restFormulaDataMockMvc
             .perform(
@@ -294,8 +308,9 @@ class FormulaDataResourceIT {
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(DEFAULT_MAP);
         assertThat(testFormulaData.getGrant()).isEqualTo(DEFAULT_GRANT);
+        assertThat(testFormulaData.getVisible()).isEqualTo(UPDATED_VISIBLE);
         assertThat(testFormulaData.getCreated()).isEqualTo(UPDATED_CREATED);
-        assertThat(testFormulaData.getModified()).isEqualTo(UPDATED_MODIFIED);
+        assertThat(testFormulaData.getModified()).isEqualTo(DEFAULT_MODIFIED);
     }
 
     @Test
@@ -309,7 +324,12 @@ class FormulaDataResourceIT {
         FormulaData partialUpdatedFormulaData = new FormulaData();
         partialUpdatedFormulaData.setId(formulaData.getId());
 
-        partialUpdatedFormulaData.map(UPDATED_MAP).grant(UPDATED_GRANT).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        partialUpdatedFormulaData
+            .map(UPDATED_MAP)
+            .grant(UPDATED_GRANT)
+            .visible(UPDATED_VISIBLE)
+            .created(UPDATED_CREATED)
+            .modified(UPDATED_MODIFIED);
 
         restFormulaDataMockMvc
             .perform(
@@ -326,6 +346,7 @@ class FormulaDataResourceIT {
         FormulaData testFormulaData = formulaDataList.get(formulaDataList.size() - 1);
         assertThat(testFormulaData.getMap()).isEqualTo(UPDATED_MAP);
         assertThat(testFormulaData.getGrant()).isEqualTo(UPDATED_GRANT);
+        assertThat(testFormulaData.getVisible()).isEqualTo(UPDATED_VISIBLE);
         assertThat(testFormulaData.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testFormulaData.getModified()).isEqualTo(UPDATED_MODIFIED);
     }

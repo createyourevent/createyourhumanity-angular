@@ -39,6 +39,15 @@ export class MaincontrollerService {
     return res;
   }
 
+  getVisibleFromUser(userId: string, key: string): Observable<string>{
+    const options = {
+      responseType: 'text' as const,
+    };
+    const res = this.http.get(`${this.resourceUrl_formula_datas}/${userId}/${key}/getVisible`, options)
+              .pipe(map((response: string) => response));
+    return res;
+  }
+
   findFriendrequestByRequestedUserIdAndUser(friendId: string, userId: string): Observable<HttpResponse<IFriendrequest[]>> {
     return this.http
     .get<IFriendrequest[]>(`${this.resourceUrl_friendrequests}/${friendId}/${userId}/findByFriendIdAndUserId`, { observe: 'response' });

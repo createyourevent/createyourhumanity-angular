@@ -6,6 +6,7 @@ entity Mindmap {
 entity FormulaData {
     map String
     grant String
+    visible String
     created ZonedDateTime
     modified ZonedDateTime
 }

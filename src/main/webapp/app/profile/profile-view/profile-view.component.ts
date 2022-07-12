@@ -39,6 +39,7 @@ export class ProfileViewComponent implements OnInit {
   @Input() userId: string;
   @Input() mapId: string;
   @Input() topic: string;
+  @Input() visible: string;
 
   constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
@@ -114,17 +115,26 @@ export class ProfileViewComponent implements OnInit {
       const c = node.getControls()[0];
       const l = node.getLayout()[0];
 
+      const a = JSON.parse(this.visible);
+      const b = a[Number(node.getProperty('id'))];
+      let m = '';
+      if(b === null || b === undefined || b === 'visible_visible') {
+        m = 'visible_visible';
+      } else {
+        m = 'visible_not-visible';
+      }
+
       if(f) {
         if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'form') {
           this.addDynamicFormlyPage(n);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'multi_step_form') {
-          this.convertMultistepForm(n);
+          this.convertMultistepForm(n, m);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'tabs_form') {
-          this.convertTabsForm(n);
+          this.convertTabsForm(n, m);
         } else if (f.getType() === 'htmlFormStep') {
-          this.convertStep(n);
+          this.convertStep(n, m);
         } else if (f.getType() === 'htmlFormTab') {
-          this.convertTab(n);
+          this.convertTab(n, m);
         }
       }
       else if(c) {
@@ -209,7 +219,13 @@ export class ProfileViewComponent implements OnInit {
     );
   }
 
-  convertMultistepForm(node: any) {
+  convertMultistepForm(node: any, id: string) {
+    let visibleClass = 'multistep';
+    if(id === 'visible_visible') {
+      visibleClass = 'multistep';
+    } else {
+      visibleClass = 'multistep-off';
+    }
     let selectedIndex: number;
     let expanded = 'false';
     if(this.path.length > 1) {
@@ -232,6 +248,7 @@ export class ProfileViewComponent implements OnInit {
     eval(this.getFieldGroup(node)).push(
           {
             type: 'stepper',
+            className: visibleClass,
             id: node.getProperty('id'),
             wrappers: ['expansion'],
             selectedIndex: selectedIndex,
@@ -246,7 +263,13 @@ export class ProfileViewComponent implements OnInit {
     );
   }
 
-  convertStep(node: any) {
+  convertStep(node: any, id: string) {
+    let visibleClass = 'multistep';
+    if(id === 'visible_visible') {
+      visibleClass = 'multistep';
+    } else {
+      visibleClass = 'multistep-off';
+    }
     if(this.path[0] === node.getParent().getId()) {
       this.path.splice(0, 2);
     }
@@ -255,12 +278,19 @@ export class ProfileViewComponent implements OnInit {
       {
         id: node.getProperty('id'),
         templateOptions: { label: node.getProperty('text') },
-        fieldGroup: []
+        fieldGroup: [],
+        className: visibleClass,
       }
     );
   }
 
-  convertTabsForm(node: any) {
+  convertTabsForm(node: any, id: string) {
+    let visibleClass = 'multistep';
+    if(id === 'visible_visible') {
+      visibleClass = 'multistep';
+    } else {
+      visibleClass = 'multistep-off';
+    }
     let selectedIndex: number;
     let expanded = 'false';
     if(this.path.length > 1) {
@@ -286,18 +316,26 @@ export class ProfileViewComponent implements OnInit {
         type: 'tabs',
         selectedIndex: selectedIndex,
         wrappers: ['expansion'],
+        className: visibleClass,
         templateOptions: {
           label: node.getProperty('text'),
           bgColor: node.getProperty('backgroundColor'),
           color: node.getProperty('fontColor'),
-          expanded: expanded
+          expanded: expanded,
+          className: visibleClass
         },
         fieldGroup: []
       }
     );
   }
 
-  convertTab(node: any) {
+  convertTab(node: any, id: string) {
+    let visibleClass = 'multistep';
+    if(id === 'visible_visible') {
+      visibleClass = 'multistep';
+    } else {
+      visibleClass = 'multistep-off';
+    }
     if(this.path[0] === node.getParent().getId()) {
       this.path.splice(0, 2);
     }
@@ -305,7 +343,8 @@ export class ProfileViewComponent implements OnInit {
     eval(fg).push(
       {
         templateOptions: { label: node.getProperty('text') },
-        fieldGroup: []
+        fieldGroup: [],
+        className: visibleClass,
       }
     );
   }

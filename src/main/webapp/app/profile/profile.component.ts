@@ -46,6 +46,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   path: number[];
   index = 0;
   init = false;
+  visible: Map<string, unknown> = new Map();
+
 
 
 
@@ -84,7 +86,45 @@ export class ProfileComponent implements OnInit, AfterViewInit {
                 });
                }
 
+    ngOnInit() {
+        window.addEventListener('VisibleData', (e: CustomEvent) => {
+        const topic = e.detail.topic;
+        const iconType = e.detail.iconType;
+        this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
+          this.user = u.body;
+          const vo = JSON.parse(this.user.formulaData.visible);
+          this.visible = new Map(Object.entries(vo));
+          this.domWalker(this.designer.getModel().findTopicById(topic), iconType);
+          this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(r => {
+            const fd = r.body;
+            const vis = JSON.stringify(Object.fromEntries(this.visible));
+            fd.visible = vis;
+            fd.user = this.user;
+            fd.modified = dayjs();
+            this.formulaDataService.update(fd).subscribe();
+          });
 
+        });
+        e.stopPropagation();
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+      if(this.account) {
+          this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
+            this.user = u.body;
+            this.checkFormulaDataFromUser(this.account);
+            this.visible = JSON.parse(this.user.formulaData.visible);
+          });
+        } else {
+          this.loginService.login()
+        }
+      },
+      error => {
+        if(error.status === 401) {
+          this.loginService.login()
+        }
+      });
+  }
 
   ngAfterViewInit(): void {
     this.accountService.identity().subscribe(account => {
@@ -93,34 +133,35 @@ export class ProfileComponent implements OnInit, AfterViewInit {
         this.maincontrollerService.findAuthenticatedUserWithDescription().subscribe(u => {
           this.user = u.body;
           this.description = this.user.description;
-        });
-        this.processData().then(() => {
-          this.init = true;
-          this.profileHosts.changes.subscribe(() => {
-            this.profileHosts.map((vcr: ProfileHostDirective, i: number) => {
-              const component: typeof FormComponent = FormComponent;
-              this.refs.push(vcr.viewContainerRef.createComponent(component));
-              this.refs[i].instance.userId = this.userId;
-              this.refs[i].instance.mapId = this.mindmap.id;
-              this.refs[i].instance.topic = this.topics[i];
-              this.refs[i].instance.initComponent().then(() => {
-              for(let y = 0; y++; y <= this.refs.length - 1) {
-                  this.refs[y].instance.cloneFields();
-                }
-              });
-             });
-            this.route.queryParams.subscribe((queryParams:any) => {
-              const a = queryParams.q;
-              if(a !== undefined) {
-                const c: number[] = [];
-                a.split(',').forEach(el => {
-                  c.push(Number(el));
+
+          this.processData().then(() => {
+            this.init = true;
+            this.profileHosts.changes.subscribe(() => {
+              this.profileHosts.map((vcr: ProfileHostDirective, i: number) => {
+                const component: typeof FormComponent = FormComponent;
+                this.refs.push(vcr.viewContainerRef.createComponent(component));
+                this.refs[i].instance.userId = this.userId;
+                this.refs[i].instance.mapId = this.mindmap.id;
+                this.refs[i].instance.topic = this.topics[i];
+                this.refs[i].instance.initComponent().then(() => {
+                for(let y = 0; y++; y <= this.refs.length - 1) {
+                    this.refs[y].instance.cloneFields();
+                  }
                 });
-                this.openPath(c);
-              }
-             });
+               });
+              this.route.queryParams.subscribe((queryParams:any) => {
+                const a = queryParams.q;
+                if(a !== undefined) {
+                  const c: number[] = [];
+                  a.split(',').forEach(el => {
+                    c.push(Number(el));
+                  });
+                  this.openPath(c);
+                }
+               });
+          });
+         });
         });
-       });
       }
     });
   }
@@ -174,7 +215,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
       this.mindmapService.query().subscribe(umm => {
         const mindmaps = umm.body;
         this.mindmap = mindmaps[0];
-        this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+        this.maincontrollerService.findFormulaDataByUserId(this.user.id).subscribe(res => {
           this.formulaData = res.body;
           const parser = new DOMParser();
           const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
@@ -191,30 +232,49 @@ export class ProfileComponent implements OnInit, AfterViewInit {
           children.forEach(child => {
             this.topics.push(child);
           });
+          const vo = JSON.parse(this.formulaData.visible);
+          if(!vo) {
+            this.visible = new Map();
+          } else {
+            this.visible = new Map(Object.entries(vo));
+          }
+
+          this.designer = global.designer;
+          this.domWalker(this.designer.getMindmap().findNodeById(1));
+          this.formulaData.visible = JSON.stringify(Object.fromEntries(this.visible));
+          this.formulaData.modified = dayjs();
+          this.formulaData.user = this.user;
+          this.formulaDataService.update(this.formulaData).subscribe();
           resolve(this.items);
         });
       });
     });
   }
 
-  ngOnInit() {
-    this.accountService.identity().subscribe(account => {
-      this.account = account
-      if(this.account) {
-          this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
-            this.user = u.body;
-            this.checkFormulaDataFromUser(this.account);
-          });
+
+  domWalker(node: Topic, t?: string) {
+    if(t) {
+      this.visible.set(node.getId()+'', t);
+    } else {
+      this.setVisible(node);
+    }
+    if (node.getChildren().length > 0) {
+      node.getChildren().forEach(childNode => {
+        if(t) {
+          this.domWalker(childNode, t);
         } else {
-          this.loginService.login()
-        }
-      },
-      error => {
-        if(error.status === 401) {
-          this.loginService.login()
+          this.domWalker(childNode);
         }
       });
+    }
   }
+
+setVisible(node: Topic) {
+  const vis = this.visible.get(node.getId() + '');
+  if(!vis) {
+    this.visible.set(node.getId()+'', 'visible_visible');
+  }
+}
 
   private checkFormulaDataFromUser(account: Account): void {
     this.maincontrollerService.findFormulaDataByUserId(account.id).subscribe(fd => {

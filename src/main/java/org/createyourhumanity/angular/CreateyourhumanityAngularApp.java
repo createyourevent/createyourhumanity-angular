@@ -73,7 +73,7 @@ public class CreateyourhumanityAngularApp {
         String protocol = Optional.ofNullable(env.getProperty("server.ssl.key-store")).map(key -> "https").orElse("http");
         String serverPort = env.getProperty("server.port");
         String contextPath = Optional
-            .ofNullable(env.getProperty("server.servlet.context-path"))
+            .ofNullable(env.getProperty("serv   er.servlet.context-path"))
             .filter(StringUtils::isNotBlank)
             .orElse("/");
         String hostAddress = "localhost";

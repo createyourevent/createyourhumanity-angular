@@ -12,6 +12,9 @@
     "societies": "Vereine",
     "churches": "Kirchen",
     "etc": "Usw.",
-    "mindmap-title": "Aktuelles Mindmap für Ihr persönliches Webprofil"
+    "mindmap-title": "Aktuelles Mindmap für Ihr persönliches Webprofil",
+    "instruction": "Willkommen auf dem ersten Online-Profil welches strukturell Aufgebaut ist. Eigentlich ist es mehr eine Bibliothek, welche wir erstellen möchten, welche auf viele unserer Antworten einmal fragen definiert, welche so eigenlich noch nie gestellt wurden. Füllen Sie dieses Mindmap fair, ehrlich und offen aus, damit es den maximalen Output aufgrund Ihres Inputs bringen kann. Sie können so einfach neue Kollegschaften, neue Arbeiter, neue Familienmitglieder und viele andere Interessengruppen einfach bilden. Aufgrund das es logisch aufgebaut ist, kann jeder Sie nun aufgrund dieser Struktur einfach finden in welchen Feldern Sie auch immer veröffentlicht haben. All die Felder, die man auf dem oberen Mindmap sieht, sind einzelne verschiedene Kontrollelemente in einem HTML-Formular. So können Sie je nach dem wie viel sie veröffentlich möchten, auch tun. Es ist Ihnen überlassen wie viel das ist...weiter kann man dies sowohl unter Allen, nur unter Freunden oder gar nicht veröffentlichen. Somit kann man den Kreis, welche diese Informationene finden müssen noch weiter einschränken.Nun wünschen wir viel Freude beim erstellen Ihres Online-Lebenslaufes.",
+    "instruction-ps": "PS: Wir werden die Daten  weder an dritte weitergeben noch analysieren wir sie für Werbung. Uns geht es darum, eine Plattform zu bilden, mittels welcher man schnell virtuelle Kontakte in einem bestimmten Bereich finden, um dann reale Kontakte zu knüpfen und real etwas zu schaffen, einen realen Wert.",
+    "instruction-title": "Willkommen auf dem ersten offenen, transparenten und freundlichem logischen Netzwerk-Profil im Internet."
   }
 }
