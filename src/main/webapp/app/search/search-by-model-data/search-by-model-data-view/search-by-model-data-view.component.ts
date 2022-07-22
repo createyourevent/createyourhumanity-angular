@@ -102,6 +102,54 @@ export class SearchByModelDataViewComponent implements AfterViewInit {
                 map.forEach((value: string, key: string) => {
                   const v =  '__' + key;
                   const gf = grant.get(key);
+                  const topic = this.designer.getModel().findTopicById(Number(key));
+                  if(topic && topic.getModel()) {
+                    const dt = topic.getModel().getControls()[0].getType();
+                    if(dt === 'radiogroup' || dt === 'multicheckbox' || dt === 'multiselectbox') {
+                      switch(dt) {
+                        case 'radiogroup': {
+                          const v = value;
+                          const children = topic.getChildren();
+                          value = children[v].getModel().getProperty('text');
+                          break;
+                        }
+                        case 'multicheckbox': {
+                          const v = value;
+                          const children = topic.getChildren();
+                          const m = Object.keys(value);
+                          let i = 0;
+                          value = '';
+                          m.forEach(el => {
+                            if(v[el]) {
+                              value += children[el].getModel().getProperty('text');
+                              if(i < m.length - 1) {
+                                value += ',';
+                              }
+                            }
+                            i++;
+                          });
+                          break;
+                        }
+                        case 'mulstiselectbox': {
+                          const v = value;
+                          const children = topic.getChildren();
+                          const m = Object.keys(value);
+                          let i = 0;
+                          value = '';
+                          m.forEach(el => {
+                            if(v[el]) {
+                              value += children[el].getModel().getProperty('text');
+                              if(i < m.length - 1) {
+                                value += ',';
+                              }
+                            }
+                            i++;
+                          });
+                          break;
+                        }
+                      }
+                    }
+                  }
                   const isFriend = u.friends.find(f => f.friendId === this.account.id);
                   if(!value) {
                     u[v] = this.translateService.instant('search.not-filled');
