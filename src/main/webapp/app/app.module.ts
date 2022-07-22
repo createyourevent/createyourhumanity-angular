@@ -44,9 +44,13 @@ import { TabViewModule } from 'primeng/tabview';
 import { ProfileRoutes } from './profile/profile.routing';
 import { TreeProfileMenuModule } from './tree-profile-menu/tree-profile-menu.module';
 import { CalculatePercentOfProfileModule } from './views/calculate-percent-of-profile/calculate-percent-of-profile.module';
+import { QuillModule } from 'ngx-quill';
+
+
 
 @NgModule({
   imports: [
+    QuillModule.forRoot(),
     InputTextareaModule,
     CommonModule,
     TabViewModule,

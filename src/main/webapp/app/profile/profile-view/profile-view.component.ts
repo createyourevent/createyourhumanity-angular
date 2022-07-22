@@ -62,7 +62,8 @@ export class ProfileViewComponent implements OnInit {
       this.accountService.identity().subscribe(account => {
         this.account = account;
         if(this.account) {
-          this.maincontrollerService.findFriendsByFriendIdAndUser(this.userId, this.account.id).subscribe(fr => {
+
+          this.maincontrollerService.findFriendsByFriendIdAndUser(profileId, this.account.id).subscribe(fr => {
             this.friend = fr.body[0];
           });
             this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {

@@ -287,6 +287,11 @@ public class UserExtService {
         return usersWithFormulaData;
     }
 
+    public User getUserWithUserId(String userId) {
+        User u = this.userExtRepository.findByIdAndActivatedIsTrue(userId);
+        return u;
+    }
+
     public User findUserByLoginAndActivatedIsTrue() {
         User u = userExtRepository.findByLoginAndActivatedIsTrue(SecurityUtils.getCurrentUserLogin().get());
         return u;

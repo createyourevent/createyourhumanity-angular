@@ -1,0 +1,70 @@
+<ng-container *ngIf="!userId || account">
+  <p-carousel [value]="users" [numVisible]="3" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+    <ng-template let-user pTemplate="item">
+      <p-card header="{{user.firstName}} {{user.lastName}}" subheader="" [style]="{width: '360px', display: 'inline-block', margin: '15px'}" styleClass="p-card user-box">
+        <ng-template pTemplate="header">
+          <div class="div-user" *ngIf="!user.imageUrl">
+            <img class="user-image" src="../../content/images/userlist/user.png">
+          </div>
+          <div class="div-user" *ngIf="user.imageUrl">
+            <img class="user-image" src="{{ user.imageUrl }}">
+          </div>
+        </ng-template>
+        <div [innerHTML]="user.description | safeHtml"></div>
+        <ng-template pTemplate="footer">
+          <div class="add-request">
+            <p-button (click)="addFriendRequest(user.id)">
+              <fa-icon icon="user-plus"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="userlist.addFriendRequest">Friendrequest</span>
+            </p-button>
+            <hr/>
+            <p-button (click)="showProfile(user.id)">
+              <fa-icon icon="id-card-clip"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="userlist.showProfile">Show Profile</span>
+            </p-button>
+            <!--
+            <p-button (click)="showMindmapProfile(user.id)">
+              <fa-icon icon="diagram-project"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="userlist.showMindmapProfile">Show Mindmap Profile</span>
+            </p-button>
+            -->
+          </div>
+        </ng-template>
+    </p-card>
+    </ng-template>
+  </p-carousel>
+</ng-container>
+<ng-container *ngIf="userId">
+  <p-card header="{{user.firstName}} {{user.lastName}}" subheader="" [style]="{width: '360px', display: 'inline-block', margin: '15px'}" styleClass="p-card user-box">
+    <ng-template pTemplate="header">
+      <div class="div-user" *ngIf="!user.imageUrl">
+        <img class="user-image" src="../../content/images/userlist/user.png">
+      </div>
+      <div class="div-user" *ngIf="user.imageUrl">
+        <img class="user-image" src="{{ user.imageUrl }}">
+      </div>
+    </ng-template>
+    <div [innerHTML]="user.description | safeHtml"></div>
+    <ng-template pTemplate="footer">
+      <div class="add-request">
+        <!--
+        <p-button (click)="addFriendRequest(user.id)">
+          <fa-icon icon="user-plus"></fa-icon>
+          <span class="d-none d-md-inline" jhiTranslate="userlist.addFriendRequest">Friendrequest</span>
+        </p-button>
+        <hr/>
+        -->
+        <p-button (click)="showProfile(user.id)">
+          <fa-icon icon="id-card-clip"></fa-icon>
+          <span class="d-none d-md-inline" jhiTranslate="userlist.showProfile">Show Profile</span>
+        </p-button>
+        <!--
+        <p-button (click)="showMindmapProfile(user.id)">
+          <fa-icon icon="diagram-project"></fa-icon>
+          <span class="d-none d-md-inline" jhiTranslate="userlist.showMindmapProfile">Show Mindmap Profile</span>
+        </p-button>
+        -->
+      </div>
+    </ng-template>
+</p-card>
+</ng-container>

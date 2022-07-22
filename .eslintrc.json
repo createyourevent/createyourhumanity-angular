@@ -95,7 +95,7 @@
     "no-bitwise": "error",
     "no-caller": "error",
     "no-console": ["off", { "allow": ["warn", "error"] }],
-    "no-eval": "error",
+    "no-eval": "warn",
     "no-labels": "error",
     "no-var": "off",
     "no-new": "error",

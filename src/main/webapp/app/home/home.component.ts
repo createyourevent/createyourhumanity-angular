@@ -7,6 +7,7 @@ import { MaincontrollerService } from 'app/maincontroller.service';
 import { FormulaData } from 'app/entities/formula-data/formula-data.model';
 import { FormulaDataService } from 'app/entities/formula-data/service/formula-data.service';
 import dayjs from 'dayjs/esm'
+import { DesignerGlobalService } from 'app/designer-global.service';
 
 @Component({
   selector: 'jhi-home',
@@ -19,7 +20,8 @@ export class HomeComponent implements AfterViewInit {
   constructor(private accountService: AccountService,
               private loginService: LoginService,
               private maincontrollerService: MaincontrollerService,
-              private formulaDataService: FormulaDataService) {}
+              private formulaDataService: FormulaDataService,
+              private designerGlobalService: DesignerGlobalService,) {}
 
 
   ngAfterViewInit(): void {
@@ -28,6 +30,7 @@ export class HomeComponent implements AfterViewInit {
       this.maincontrollerService.findAuthenticatedUserWithFormulaData().subscribe(u => {
         const user = u.body;
         const designer = global.designer;
+        this.designerGlobalService.setDesigner(designer);
         if(user.formulaData === null) {
           const formulaData = new FormulaData();
           const now = dayjs();

@@ -1,0 +1,11 @@
+{
+  "search": {
+    "search": "Suche in Profilen",
+    "global-search": "Suche Global in allen Usern und Feldern",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "search-for": "Bitte wählen Sie aus der unten stehenden Tabelle alle Felder aus, nach denen Sie gerne Suchen möchten.",
+    "not-filled": "Nicht ausgefüllt vom User",
+    "not-visible": "Nicht sichtbar"
+  }
+}

@@ -7,6 +7,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ProfileRoutes } from './profile.routing';
 import { TreeProfileMenuModule } from 'app/tree-profile-menu/tree-profile-menu.module';
 import { CalculatePercentOfProfileModule } from 'app/views/calculate-percent-of-profile/calculate-percent-of-profile.module';
+import { EditorModule } from 'primeng/editor';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { CalculatePercentOfProfileModule } from 'app/views/calculate-percent-of-
     InputTextareaModule,
     CommonModule,
     TabViewModule,
+    EditorModule,
     ProfileRoutes,
     CreateyourhumanityMindmapModule,
     TreeProfileMenuModule,

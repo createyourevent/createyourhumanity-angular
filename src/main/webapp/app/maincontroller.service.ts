@@ -16,6 +16,7 @@ import { map } from 'rxjs';
 })
 export class MaincontrollerService {
 
+  public resourceUrl_users = this.applicationConfigService.getEndpointFor('api/users');
   public resourceUrl_user_mindmaps = this.applicationConfigService.getEndpointFor('api/user-mindmaps');
   public resourceUrl_formula_datas = this.applicationConfigService.getEndpointFor('api/formula-data');
   public resourceUrl_key_tables = this.applicationConfigService.getEndpointFor('api/key-tables');
@@ -100,6 +101,10 @@ export class MaincontrollerService {
 
   findAllUsersWithFormulaData() {
     return this.http.get<IUser[]>(`${this.resourceUrl_users_formuladata}`, { observe: 'response' });
+  }
+
+  findUserWithUserId(userId: string) {
+    return this.http.get<IUser>(`${this.resourceUrl_users}/${userId}/getUserWithUserId`, { observe: 'response' });
   }
 
   findAllUsersWithFormulaDataAndFriends() {

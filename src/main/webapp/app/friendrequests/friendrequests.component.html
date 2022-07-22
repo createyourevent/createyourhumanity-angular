@@ -20,9 +20,7 @@
       <img class="user-image" src="{{ user.imageUrl }}">
     </div>
   </ng-template>
-    <p class="user-description">
-      {{user.description}}
-    </p>
+  <div [innerHTML]="user.description | safeHtml"></div>
   <ng-template pTemplate="footer">
     <div class="add-request">
         <p-button (click)="addUser(user.id)">

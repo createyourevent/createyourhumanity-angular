@@ -48,6 +48,11 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'search',
           loadChildren: () => import('./search/search-by-user/search-by-user.module').then(m => m.SearchByUserModule)
         },
+        {
+          path: 'search-profiles',
+          loadChildren: () => import('./search/search-by-model-data/search-by-model-data-view/search-by-model-data-view.module').then(m => m.SearchByModelDataViewModule)
+        },
+
         /*
         {
           path: 'form-generator',

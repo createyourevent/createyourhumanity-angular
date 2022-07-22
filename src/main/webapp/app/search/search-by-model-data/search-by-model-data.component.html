@@ -1,0 +1,5 @@
+<mat-accordion #accordion [multi]="false" displayMode="default">
+  <form [formGroup]="form">
+      <formly-form [model]="checkboxes" [fields]="fields" [options]="options" [form]="form" (change)="changeEvent($event)" (modelChange)="modelChange($event)"></formly-form>
+  </form>
+</mat-accordion>

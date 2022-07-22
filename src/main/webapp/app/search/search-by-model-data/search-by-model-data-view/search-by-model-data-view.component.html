@@ -1,0 +1,58 @@
+<div class="alert alert-info" role="alert">
+ <span jhiTranslate="search.search-for">Please select from the table below all the fields you would like to search for. </span>
+</div>
+<mat-tab-group #profileTabView>
+  <mat-tab [label]="item.header" *ngFor="let item of items; let i = index">
+    <div searchByModelDataViewHost></div>
+  </mat-tab>
+</mat-tab-group>
+<hr/>
+<p-table #table [value]="users" dataKey="id" [rowHover]="true"
+            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
+            [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [filterDelay]="0">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 3rem"></th>
+                    <ng-container *ngFor="let col of cols">
+                      <th pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                    </ng-container>
+                </tr>
+                <tr>
+                    <th style="width: 3rem"></th>
+                    <th *ngFor="let col of cols; index as i">
+                      <p-columnFilter type="text" [field]="col.field"></p-columnFilter>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+                <tr class="p-selectable-row">
+                    <td>
+                      <div class="div-user" *ngIf="!user.imageUrl">
+                        <img class="user-image" src="../../content/images/userlist/user.png">
+                      </div>
+                      <div class="div-user" *ngIf="user.imageUrl">
+                        <img class="user-image" src="{{ user.imageUrl }}">
+                      </div>
+                    </td>
+                    <ng-container *ngFor="let col of cols">
+                      <ng-container *ngIf="user[col.field]">
+                      <td>
+                        {{ user[col.field] }}
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="!user[col.field]">
+                      <td>
+                        {{ 'search.not-filled' | translate }}
+                      </td>
+                    </ng-container>
+                  </ng-container>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cs">No users found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+

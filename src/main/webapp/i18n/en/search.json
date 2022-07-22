@@ -1,0 +1,11 @@
+{
+  "search": {
+    "search": "Search in profiles",
+    "global-search": "Search globally in all users and fields",
+    "firstname": "Firstname",
+    "lastname": "Lastname",
+    "search-for": "Please select from the table below all the fields you would like to search for.",
+    "not-filled": "Not filled from customer",
+    "not-visible": "Not visible"
+  }
+}

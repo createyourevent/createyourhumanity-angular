@@ -18,7 +18,8 @@
         </div>
         <div class="row">
           <div class="col-md-12  align-center">
-            <textarea id="desc" name="desc" [rows]="5" [cols]="50" pInputTextarea [autoResize]="true" [(ngModel)]="description" (change)="saveUserDescription()"></textarea>
+            <quill-editor class="quill-profile" [(ngModel)]="description" [style]="{'height':'400px'}" [modules]="modules" (onContentChanged)="saveUserDescription()"></quill-editor>
+            <input type="file" style="display: none" id="fileInputField"/>
           </div>
         </div>
       </div>

@@ -47,6 +47,11 @@ public class UserExtResource {
         return users;
     }
 
+    @GetMapping("/users/{userId}/getUserWithUserId")
+    public User getUserWithUserId(@PathVariable String userId) {
+        return this.userExtService.getUserWithUserId(userId);
+    }
+
 
     @GetMapping("/authenticatedUserWithDescription")
     public User getUserWithDescription() {

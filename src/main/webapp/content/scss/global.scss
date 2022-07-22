@@ -403,3 +403,24 @@ div#toolbar {
 .multistep-off {
   display: none;
 }
+
+.profile-banner .ql-toolbar.ql-snow {
+  background: #fff;
+}
+
+.profile-banner .ql-editor {
+  background: #fff;
+}
+
+.profile-banner {
+  height: 475px;
+  padding: 15px;
+}
+
+.quill-profile {
+  display: table-row;
+}
+
+.ql-editor {
+  height: 280px;
+}

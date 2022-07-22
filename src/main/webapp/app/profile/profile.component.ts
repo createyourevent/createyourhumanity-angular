@@ -18,7 +18,7 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
 
-interface Item {
+export interface Item {
   id: string,
   header: string
 }
@@ -47,6 +47,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   index = 0;
   init = false;
   visible: Map<string, unknown> = new Map();
+
+  modules = {};
 
 
 
@@ -84,6 +86,31 @@ export class ProfileComponent implements OnInit, AfterViewInit {
                     this.path = [];
                   }
                 });
+
+                this.modules = {
+                  toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+                    ['blockquote', 'code-block'],
+
+                    [{ header: 1 }, { header: 2 }], // custom button values
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+                    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+                    [{ direction: 'rtl' }], // text direction
+
+                    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+                    [{ header: [2, 3, 4, 5, 6, false] }],
+
+                    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                    [{ font: [] }],
+                    [{ align: [] }],
+
+                    ['clean'], // remove formatting button
+
+                    ['link', 'image', 'video'], // link and image, video
+                  ]
+                };
+
                }
 
     ngOnInit() {

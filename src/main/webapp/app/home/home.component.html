@@ -77,5 +77,20 @@
     <h1 jhiTranslate="main.instruction-title"></h1>
     <div jhiTranslate="main.instruction"></div>
     <div jhiTranslate="main.instruction-ps"></div>
+    <hr/>
+    <ng-container *ngIf="!account">
+      <div class="developer">
+        <h3 jhiTranslate="main.developer-title">Developer from www.createyourhumanity.org</h3>
+        <span jhiTranslate="main.developer">
+          I am the developer of www.createyourhumanity.org. Our motto should be clear and unambiguous: "Open, transparent and logical" for everyone. With www.createyourhumanity.org we would like to build a kind of family tree on which we try to logically depict the connections of our earth with a mind map and then on this basis open a web form for everyone in which, depending on how much one wants to announce, fill out this form for yourself. We at www.createyourhuamnity.org then try to map logical relationships in reality based on this information. According to the motto: "Connect virtual enjoy it real..."
+          With this approach, we hope to make the Internet a little more what it was originally intended for. Just to connect virtually but to implement this connection in reality.
+          I hope you enjoy filling out your personal profile.
+        </span>
+      </div>
+      <jhi-user-box-slider [userId]="'46305811-b73f-45ec-9dd6-b4939543ea23'"></jhi-user-box-slider>
+    </ng-container>
+    <ng-container *ngIf="account">
+      <jhi-user-box-slider></jhi-user-box-slider>
+    </ng-container>
   </div>
 </div>
