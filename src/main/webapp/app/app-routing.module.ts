@@ -52,6 +52,14 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'search-profiles',
           loadChildren: () => import('./search/search-by-model-data/search-by-model-data-view/search-by-model-data-view.module').then(m => m.SearchByModelDataViewModule)
         },
+        {
+          path: 'groups',
+          loadChildren: () => import('./groups/groups.module').then(m => m.GroupsModule)
+        },
+        {
+          path: 'instructions',
+          loadChildren: () => import('./instructions/instructions.module').then(m => m.InstructionsModule)
+        },
 
         /*
         {

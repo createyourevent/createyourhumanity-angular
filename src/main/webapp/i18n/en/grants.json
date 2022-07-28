@@ -1,5 +1,6 @@
 {
   "grants": {
-    "grant": "Grant"
+    "grant": "Grant",
+    "group": "Group"
   }
 }

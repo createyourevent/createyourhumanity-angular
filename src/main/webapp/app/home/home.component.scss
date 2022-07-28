@@ -45,48 +45,6 @@ h1 {
   font-weight: normal;
 }
 
-.box-green {
-  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b4ddb4+0,83c783+17,52b152+33,008a00+67,005700+83,002400+100;Green+3D+%231 */
-  background: rgb(180,221,180); /* Old browsers */
-  background: -moz-linear-gradient(top,  rgba(180,221,180,1) 0%, rgba(131,199,131,1) 17%, rgba(82,177,82,1) 33%, rgba(0,138,0,1) 67%, rgba(0,87,0,1) 83%, rgba(0,36,0,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  rgba(180,221,180,1) 0%,rgba(131,199,131,1) 17%,rgba(82,177,82,1) 33%,rgba(0,138,0,1) 67%,rgba(0,87,0,1) 83%,rgba(0,36,0,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  rgba(180,221,180,1) 0%,rgba(131,199,131,1) 17%,rgba(82,177,82,1) 33%,rgba(0,138,0,1) 67%,rgba(0,87,0,1) 83%,rgba(0,36,0,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b4ddb4', endColorstr='#002400',GradientType=0 ); /* IE6-9 */
-  border: 4px solid #fff;
-  border-radius: 10px;
-  padding: 10px;
-  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
-  box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
-}
-
-.box-aqua {
-  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b3dced+0,29b8e5+50,bce0ee+100;Blue+Pipe */
-  background: rgb(179,220,237); /* Old browsers */
-  background: -moz-linear-gradient(top,  rgba(179,220,237,1) 0%, rgba(41,184,229,1) 50%, rgba(188,224,238,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  rgba(179,220,237,1) 0%,rgba(41,184,229,1) 50%,rgba(188,224,238,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  rgba(179,220,237,1) 0%,rgba(41,184,229,1) 50%,rgba(188,224,238,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3dced', endColorstr='#bce0ee',GradientType=0 ); /* IE6-9 */
-  border: 4px solid #fff;
-  border-radius: 10px;
-  padding: 10px;
-  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
-  box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
-}
-
-.box-yellow {
-    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#fefcea+0,f1da36+100;Gold+3D */
-  background: rgb(254,252,234); /* Old browsers */
-  background: -moz-linear-gradient(top,  rgba(254,252,234,1) 0%, rgba(241,218,54,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 ); /* IE6-9 */
-  border: 4px solid #fff;
-  border-radius: 10px;
-  padding: 10px;
-  -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
-  box-shadow: 0px 10px 13px -7px #000000, 0px -3px 15px -3px rgba(0,0,0,0);
-}
-
 .margin-40 {
   margin-top: 40px;
 }

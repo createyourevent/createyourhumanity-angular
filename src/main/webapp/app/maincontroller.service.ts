@@ -1,3 +1,4 @@
+import { IGroup } from './entities/group/group.model';
 import { IUser } from 'app/entities/user/user.model';
 import { IFormulaData } from './entities/formula-data/formula-data.model';
 import { IUserMindmap } from './entities/user-mindmap/user-mindmap.model';
@@ -22,6 +23,7 @@ export class MaincontrollerService {
   public resourceUrl_key_tables = this.applicationConfigService.getEndpointFor('api/key-tables');
   public resourceUrl_friends = this.applicationConfigService.getEndpointFor('api/friends');
   public resourceUrl_friendrequests = this.applicationConfigService.getEndpointFor('api/friendrequests');
+  public resourceUrl_groups = this.applicationConfigService.getEndpointFor('api/groups');
 
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/authenticatedUser');
   public resourceUrl_user_formuladata = this.applicationConfigService.getEndpointFor('api/authenticatedUserWidthFormulaData');
@@ -30,6 +32,17 @@ export class MaincontrollerService {
   public resourceUrl_desc = this.applicationConfigService.getEndpointFor('api/authenticatedUserWithDescription');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
+
+
+  findGroupsFromUserId(userId: string): Observable<HttpResponse<IGroup[]>> {
+    return this.http
+    .get<IGroup[]>(`${this.resourceUrl_groups}/${userId}/findAllByUser`, { observe: 'response' });
+  }
+
+  findGroupsByOwnerId(ownerId: string): Observable<HttpResponse<IGroup[]>> {
+    return this.http
+    .get<IGroup[]>(`${this.resourceUrl_groups}/${ownerId}/findByOwner`, { observe: 'response' });
+  }
 
   getGrantFromUser(userId: string, key: string): Observable<string>{
     const options = {

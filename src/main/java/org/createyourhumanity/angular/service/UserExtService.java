@@ -7,11 +7,14 @@ import org.createyourhumanity.angular.config.Constants;
 import org.createyourhumanity.angular.domain.Authority;
 import org.createyourhumanity.angular.domain.FormulaData;
 import org.createyourhumanity.angular.domain.Friends;
+import org.createyourhumanity.angular.domain.Group;
 import org.createyourhumanity.angular.domain.User;
 import org.createyourhumanity.angular.repository.AuthorityRepository;
 import org.createyourhumanity.angular.repository.FormulaDataExtRepository;
 import org.createyourhumanity.angular.repository.FormulaDataRepository;
 import org.createyourhumanity.angular.repository.FriendsExtRepository;
+import org.createyourhumanity.angular.repository.GroupExtRepository;
+import org.createyourhumanity.angular.repository.GroupRepository;
 import org.createyourhumanity.angular.repository.UserExtRepository;
 import org.createyourhumanity.angular.repository.UserRepository;
 import org.createyourhumanity.angular.security.SecurityUtils;
@@ -49,13 +52,16 @@ public class UserExtService {
 
     private final FriendsExtRepository friendsExtRepository;
 
-    public UserExtService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, FormulaDataExtRepository formulaDataExtRepository, UserExtRepository userExtRepository, FriendsExtRepository friendsExtRepository) {
+    private final GroupExtRepository groupExtRepository;
+
+    public UserExtService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, FormulaDataExtRepository formulaDataExtRepository, UserExtRepository userExtRepository, FriendsExtRepository friendsExtRepository, GroupExtRepository groupExtRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
         this.formulaDataExtRepository = formulaDataExtRepository;
         this.userExtRepository = userExtRepository;
         this.friendsExtRepository = friendsExtRepository;
+        this.groupExtRepository = groupExtRepository;
     }
 
     /**

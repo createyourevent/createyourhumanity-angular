@@ -1,0 +1,79 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedGroups()" [disabled]="!selectedGroups|| !selectedGroups.length"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="groups" [rows]="10" [paginator]="true" [globalFilterFields]="['name']" responsiveLayout="scroll"
+        [(selection)]="selectedGroups" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Manage Groups</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal(this.getValue($event), 'contains')" placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-group>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="group"></p-tableCheckbox>
+                </td>
+                <td>{{group.name}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editGroup(group)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteGroup(group)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                In total there are {{groups ? groups.length : 0 }} groups.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="groupDialog" [style]="{width: '450px'}" header="Group Details" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="name">Name</label>
+            <input type="text" pInputText id="name" [(ngModel)]="group.name" required autofocus />
+            <small class="p-error" *ngIf="submitted && !group.name">Name is required.</small>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+<hr/>
+<p-dropdown [options]="groupItems" [(ngModel)]="selectedGroupItem" optionLabel="name" (onChange)="changeGroup($event)"></p-dropdown>
+<hr/>
+<ng-container *ngIf="selectedGroupItem">
+  <p-pickList *ngIf="allFriends" [source]="allFriends" [target]="selectedUsers" (onMoveToTarget)="moveToTarget($event)" (onMoveToSource)="moveToSource($event)">
+    <ng-template let-user pTemplate="item">
+      <span>{{user.lastName}} {{user.firstName}}</span>
+    </ng-template>
+  </p-pickList>
+</ng-container>

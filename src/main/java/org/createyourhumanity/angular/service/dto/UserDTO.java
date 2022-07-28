@@ -1,9 +1,11 @@
 package org.createyourhumanity.angular.service.dto;
 
 import java.util.List;
+import java.util.Set;
 
 import org.createyourhumanity.angular.domain.FormulaData;
 import org.createyourhumanity.angular.domain.Friends;
+import org.createyourhumanity.angular.domain.Group;
 import org.createyourhumanity.angular.domain.User;
 
 /**
@@ -25,6 +27,8 @@ public class UserDTO {
 
     private List<Friends> friends;
 
+    private Set<Group> groups;
+
     private String description;
 
     public UserDTO() {
@@ -41,6 +45,7 @@ public class UserDTO {
         this.formulaData = new FormulaData();
         this.friends = user.getFriends();
         this.description = user.getDescription();
+        this.groups = user.getGroups();
     }
 
     public String getId() {
@@ -97,6 +102,15 @@ public class UserDTO {
 
     public void setFriends(List<Friends> friends) {
         this.friends = friends;
+    }
+
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 
     public String getDescription() {

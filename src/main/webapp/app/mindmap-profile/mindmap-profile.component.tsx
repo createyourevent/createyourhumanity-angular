@@ -31,6 +31,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   @Input() mapId: any;
   @Input() values: Map<string, string>;
   @Input() grants: Map<string, string>;
+  @Input() groups: Map<string, string>;
   @Input() isFriendString: string;
   @Input() map: any;
   @Output() setDesigner = new EventEmitter<Designer>();
@@ -40,6 +41,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   private hasDataLoaded = false;
   private hasValuesLoaded = false;
   private hasGrantsLoaded = false;
+  private hasGroupsLoaded = false;
   private isFriendLoaded = false;
   private location = 'en';
   private pm: PersistenceManager;
@@ -78,6 +80,11 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
       this.grants = changes['grants'].currentValue;
       this.renderComponent();
     }
+    if(changes['groups'] && changes['groups'].currentValue && changes['groups'].currentValue !== undefined) {
+      this.hasGroupsLoaded = true;
+      this.groups = changes['groups'].currentValue;
+      this.renderComponent();
+    }
     if(changes['isFriendString'] && changes['isFriendString'].currentValue && changes['isFriendString'].currentValue !== undefined) {
       this.isFriendLoaded = true;
       this.isFriend = Boolean(JSON.parse(changes['isFriendString'].currentValue));
@@ -106,7 +113,7 @@ export class MindmapProfileComponent implements OnChanges, AfterViewInit{
   }
 
   private renderComponent() {
-    if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasValuesLoaded || !this.hasGrantsLoaded || !this.isFriendLoaded || !this.hasXMLLoaded) {
+    if (!this.hasViewLoaded || !this.hasDataLoaded || !this.hasValuesLoaded || !this.hasGrantsLoaded || !this.hasGroupsLoaded  || !this.isFriendLoaded || !this.hasXMLLoaded) {
       return;
     }
 

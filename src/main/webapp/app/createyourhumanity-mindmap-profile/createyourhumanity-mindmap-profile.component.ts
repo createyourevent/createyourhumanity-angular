@@ -31,6 +31,7 @@ export class CreateyourhumanityMindmapProfileComponent implements OnInit {
   @Input() xmlId: any;
   @Input() values: Map<string, string>;
   @Input() grants: Map<string, string>;
+  @Input() groups: Map<string, string>;
   @Input() isFriend: string;
   mySubscription;
 
@@ -63,8 +64,10 @@ export class CreateyourhumanityMindmapProfileComponent implements OnInit {
         const formulaData = fd.body;
         const map = formulaData.map;
         const grant = formulaData.grant;
+        const group = formulaData.group;
         this.values = JSON.parse(map);
         this.grants = JSON.parse(grant);
+        this.groups = JSON.parse(group);
 
         this.maincontrollerService.findFriendsFromUser(this.account.id).subscribe(res => {
           const friends = res.body;

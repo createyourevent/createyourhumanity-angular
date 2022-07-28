@@ -38,6 +38,7 @@ export class HomeComponent implements AfterViewInit {
           formulaData.grant = "{}";
           formulaData.map = "{}";
           formulaData.visible = "{}";
+          formulaData.group = "{}";
           const visible = new Map<string, unknown>();
           formulaData.visible = JSON.stringify(Object.fromEntries(this.domWalker(designer.getModel().findTopicById(1), visible)));
           formulaData.modified = now;

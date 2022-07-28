@@ -127,6 +127,9 @@ public class FormulaDataResource {
                 if (formulaData.getGrant() != null) {
                     existingFormulaData.setGrant(formulaData.getGrant());
                 }
+                if (formulaData.getGroup() != null) {
+                    existingFormulaData.setGroup(formulaData.getGroup());
+                }
                 if (formulaData.getVisible() != null) {
                     existingFormulaData.setVisible(formulaData.getVisible());
                 }

@@ -26,6 +26,9 @@ public class FormulaData implements Serializable {
     @Field("grant")
     private String grant;
 
+    @Field("group")
+    private String group;
+
     @Field("visible")
     private String visible;
 
@@ -79,6 +82,19 @@ public class FormulaData implements Serializable {
 
     public void setGrant(String grant) {
         this.grant = grant;
+    }
+
+    public String getGroup() {
+        return this.group;
+    }
+
+    public FormulaData group(String group) {
+        this.setGroup(group);
+        return this;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public String getVisible() {
@@ -159,6 +175,7 @@ public class FormulaData implements Serializable {
             "id=" + getId() +
             ", map='" + getMap() + "'" +
             ", grant='" + getGrant() + "'" +
+            ", group='" + getGroup() + "'" +
             ", visible='" + getVisible() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +

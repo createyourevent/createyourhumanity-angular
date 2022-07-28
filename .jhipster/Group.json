@@ -1,0 +1,32 @@
+{
+  "applications": "*",
+  "changelogDate": "20220723083947",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "group",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Group",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "group",
+      "ownerSide": true,
+      "relationshipName": "owner",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "service": "no"
+}

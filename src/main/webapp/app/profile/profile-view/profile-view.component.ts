@@ -9,21 +9,24 @@ import { MaincontrollerService } from 'app/maincontroller.service'
 import { Designer, Topic} from '@wisemapping/mindplot';
 import { IFriends } from 'app/entities/friends/friends.model'
 import { ActivatedRoute } from '@angular/router'
+import { GroupService } from 'app/entities/group/service/group.service'
 
 @Component({
   selector: 'jhi-profile-view',
   templateUrl: './profile-view.component.html',
   styleUrls: ['./profile-view.component.scss'],
 })
-export class ProfileViewComponent implements OnInit {
+export class ProfileViewComponent{
 
   form = new FormGroup({})
   model: any = {}
   grant: any = {}
+  group: any = {}
   options: FormlyFormOptions = {}
   json: {};
   account: Account | null = null;
   user: IUser;
+  profileUser: IUser;
   formId: string;
   designer: Designer;
   fields: FormlyFieldConfig[] = [];
@@ -44,16 +47,9 @@ export class ProfileViewComponent implements OnInit {
   constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
               private route: ActivatedRoute,
+              private groupService: GroupService
               ) {}
 
-  ngOnInit(): void {
-    this.accountService.identity().subscribe(account => {
-      this.account = account;
-      this.maincontrollerService.findAuthenticatedUser().subscribe(u => {
-        this.user = u.body;
-      });
-    });
-  }
 
   initComponent(): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -62,18 +58,23 @@ export class ProfileViewComponent implements OnInit {
       this.accountService.identity().subscribe(account => {
         this.account = account;
         if(this.account) {
+          this.maincontrollerService.findAllUsersWithFormulaDataAndFriends().subscribe(res => {
+            this.profileUser = res.body.find(x => x.id === profileId);
+            this.user = res.body.find(x => x.id === this.account.id);
 
-          this.maincontrollerService.findFriendsByFriendIdAndUser(profileId, this.account.id).subscribe(fr => {
-            this.friend = fr.body[0];
-          });
             this.maincontrollerService.findFormulaDataByUserId(profileId).subscribe(res => {
               const fd = res.body;
               this.model = JSON.parse(fd.map);
               this.grant = JSON.parse(fd.grant);
+              this.group = JSON.parse(fd.group);
               this.domWalker(this.topic);
               this.path = [];
               resolve();
             });
+          });
+          this.maincontrollerService.findFriendsByFriendIdAndUser(profileId, this.account.id).subscribe(fr => {
+            this.friend = fr.body[0];
+          });
         }
       });
     });
@@ -95,6 +96,7 @@ export class ProfileViewComponent implements OnInit {
       const fd = res.body;
       this.model = JSON.parse(fd.map);
       this.grant = JSON.parse(fd.grant);
+      this.group = JSON.parse(fd.group);
       this.domWalker(this.topic);
       this.path = [];
     });
@@ -152,32 +154,44 @@ export class ProfileViewComponent implements OnInit {
           f = true;
         }
 
+        let gr = this.group[node.getId()];
+        if(gr === null || gr === undefined || gr === 'ALLFRIENDS') {
+          gr = 'ALLFRIENDS';
+        } else if(this.user.groups) {
+            const group = this.user.groups.find(x => x.id === gr);
+            if(group){
+              gr = 'ALLFRIENDS';
+            } else {
+              gr = 'HIDDEN';
+            }
+        }
+
         if (c.getType() === 'textfield') {
-          this.convertTextfield(n, req, f);
+          this.convertTextfield(n, req, f, gr);
         } else if (c.getType() === 'textarea') {
-          this.convertTextarea(n, req, f);
+          this.convertTextarea(n, req, f, gr);
         } else if (c.getType() === 'select') {
-          this.convertSelect(n, req, f);
+          this.convertSelect(n, req, f, gr);
         } else if (c.getType() === 'radiogroup') {
-          this.convertRadiogroup(n, req, f);
+          this.convertRadiogroup(n, req, f, gr);
         } else if (c.getType() === 'checkbox') {
-          this.convertCheckbox(n, req, f);
+          this.convertCheckbox(n, req, f, gr);
         } else if (c.getType() === 'calendar') {
-          this.convertCalendar(n, req, f);
+          this.convertCalendar(n, req, f, gr);
         } else if (c.getType() === 'editor') {
-          this.convertEditor(n, req, f);
+          this.convertEditor(n, req, f, gr);
         } else if (c.getType() === 'time') {
-          this.convertTime(n, req, f);
+          this.convertTime(n, req, f, gr);
         } else if (c.getType() === 'address') {
-          this.convertAddress(n, req, f);
+          this.convertAddress(n, req, f, gr);
         } else if (c.getType() === 'keywords') {
-          this.convertKeywords(n, req, f);
+          this.convertKeywords(n, req, f, gr);
         } else if (c.getType() === 'ratings') {
-          this.convertRating(n, req, f);
+          this.convertRating(n, req, f, gr);
         } else if (c.getType() === 'multicheckbox') {
-          this.convertMulticheckbox(n, req, f);
+          this.convertMulticheckbox(n, req, f, gr);
         } else if (c.getType() === 'multiselectbox') {
-          this.convertMultiselect(n, req, f);
+          this.convertMultiselect(n, req, f, gr);
         }
       }
       else if(l) {
@@ -350,7 +364,7 @@ export class ProfileViewComponent implements OnInit {
     );
   }
 
-  convertTextfield(node: any, req: boolean, isFriend: boolean) {
+  convertTextfield(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -358,6 +372,7 @@ export class ProfileViewComponent implements OnInit {
     if(gra === null || gra === undefined) {
       gra = 'ALL';
     }
+
 
     if(val === null || val === undefined || val === '') {
       eval(fg).push(
@@ -371,7 +386,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
           {
             key: node.getId(),
@@ -401,7 +416,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertTextarea(node: any, req: boolean, isFriend: boolean) {
+  convertTextarea(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -422,7 +437,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -453,7 +468,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertSelect(node: any, req: boolean, isFriend: boolean) {
+  convertSelect(node: any, req: boolean, isFriend: boolean, gr: string) {
     const os = node.getChildren();
     const options = [];
     for(let i = 0; i < os.length; i++) {
@@ -480,7 +495,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -511,7 +526,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertRadiogroup(node: any, req: boolean, isFriend: boolean) {
+  convertRadiogroup(node: any, req: boolean, isFriend: boolean, gr: string) {
     const os = node.getChildren();
     const options: { label: string; value: string; }[] = [];
     for(let i = 0; i < os.length; i++) {
@@ -538,7 +553,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getProperty('text'),
@@ -568,7 +583,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertCheckbox(node: any, req: boolean, isFriend: boolean) {
+  convertCheckbox(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -589,7 +604,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -619,7 +634,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertKeywords(node: any, req: boolean, isFriend: boolean) {
+  convertKeywords(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -640,7 +655,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -670,7 +685,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertTime(node: any, req: boolean, isFriend: boolean) {
+  convertTime(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -691,7 +706,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -721,7 +736,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertAddress(node: any, req: boolean, isFriend: boolean) {
+  convertAddress(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -742,7 +757,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -772,7 +787,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertEditor(node: any, req: boolean, isFriend: boolean) {
+  convertEditor(node: any, req: boolean, isFriend: boolean, gr: string) {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -793,7 +808,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -823,7 +838,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertCalendar(node: any, req: boolean, isFriend: boolean): void {
+  convertCalendar(node: any, req: boolean, isFriend: boolean, gr: string): void {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -844,7 +859,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -874,7 +889,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertRating(node: any, req: boolean, isFriend: boolean): void {
+  convertRating(node: any, req: boolean, isFriend: boolean, gr: string): void {
     const fg = this.getFieldGroup(node);
     const val = this.model[node.getId()];
 
@@ -895,7 +910,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -924,7 +939,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertMulticheckbox(node: any, req: boolean, isFriend: boolean) {
+  convertMulticheckbox(node: any, req: boolean, isFriend: boolean, gr: string) {
     const os = node.getChildren();
     const options = [];
     for(let i = 0; i < os.length; i++) {
@@ -952,7 +967,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),
@@ -983,7 +998,7 @@ export class ProfileViewComponent implements OnInit {
     }
   }
 
-  convertMultiselect(node: any, req: boolean, isFriend: boolean) {
+  convertMultiselect(node: any, req: boolean, isFriend: boolean, gr: string) {
     const os = node.getChildren();
     const options = [];
     for(let i = 0; i < os.length; i++) {
@@ -1011,7 +1026,7 @@ export class ProfileViewComponent implements OnInit {
           fieldGroup: []
       }
       );
-    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend) || (gra === 'NONE' && (this.user.id === this.userId))) {
+    } else if(gra === 'ALL' || (gra === 'FRIENDS' && isFriend && gr === 'ALLFRIENDS') || (gra === 'NONE' && (this.user.id === this.userId))) {
       eval(fg).push(
         {
           key: node.getId(),

@@ -5,6 +5,7 @@ export interface IFormulaData {
   id?: string;
   map?: string | null;
   grant?: string | null;
+  group?: string | null;
   visible?: string | null;
   created?: dayjs.Dayjs | null;
   modified?: dayjs.Dayjs | null;
@@ -16,6 +17,7 @@ export class FormulaData implements IFormulaData {
     public id?: string,
     public map?: string | null,
     public grant?: string | null,
+    public group?: string | null,
     public visible?: string | null,
     public created?: dayjs.Dayjs | null,
     public modified?: dayjs.Dayjs | null,

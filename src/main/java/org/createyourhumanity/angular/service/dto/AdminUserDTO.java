@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.*;
 import org.createyourhumanity.angular.config.Constants;
 import org.createyourhumanity.angular.domain.Authority;
+import org.createyourhumanity.angular.domain.Group;
 import org.createyourhumanity.angular.domain.User;
 
 /**
@@ -50,6 +51,8 @@ public class AdminUserDTO {
 
     private String description;
 
+    private Set<Group> groups;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -69,6 +72,7 @@ public class AdminUserDTO {
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
         this.description = user.getDescription();
+        this.groups = user.getGroups();
     }
 
     public String getId() {
@@ -183,6 +187,13 @@ public class AdminUserDTO {
         this.description = description;
     }
 
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
     // prettier-ignore
     @Override
     public String toString() {

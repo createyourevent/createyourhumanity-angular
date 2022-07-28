@@ -250,6 +250,7 @@ repaintTopic(node) {
           const formulaData: IFormulaData = new FormulaData();
           formulaData.map = '{}';
           formulaData.grant = '{}';
+          formulaData.group = '{}';
           formulaData.created = dayjs();
           formulaData.modified = dayjs();
           formulaData.user = user;

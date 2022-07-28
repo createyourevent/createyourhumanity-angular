@@ -22,6 +22,7 @@ export class FormComponent implements OnInit {
   form = new FormGroup({})
   model: any = {}
   grant: any = {}
+  group: any = {}
   options: FormlyFormOptions = {}
   json: {};
   account: Account | null = null;
@@ -59,6 +60,7 @@ export class FormComponent implements OnInit {
               const fd = res.body;
               this.model = JSON.parse(fd.map);
               this.grant = JSON.parse(fd.grant);
+              this.group = JSON.parse(fd.group);
               this.domWalker(this.topic);
               this.path = [];
               resolve();
@@ -83,6 +85,7 @@ export class FormComponent implements OnInit {
       const fd = res.body;
       this.model = JSON.parse(fd.map);
       this.grant = JSON.parse(fd.grant);
+      this.group = JSON.parse(fd.group);
       this.domWalker(this.topic);
       this.path = [];
     });
@@ -632,6 +635,17 @@ export class FormComponent implements OnInit {
       const fd = res.body;
       const b = {...JSON.parse(fd.grant), ...this.grant};
       fd.grant = JSON.stringify(b);
+      fd.modified = dayjs();
+      fd.user = this.user;
+      this.formulaDataService.update(fd).subscribe();
+    })
+  }
+
+  groupChange(event: any) {
+    this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
+      const fd = res.body;
+      const b = {...JSON.parse(fd.group), ...this.group};
+      fd.group = JSON.stringify(b);
       fd.modified = dayjs();
       fd.user = this.user;
       this.formulaDataService.update(fd).subscribe();

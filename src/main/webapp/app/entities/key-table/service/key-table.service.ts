@@ -73,14 +73,14 @@ export class KeyTableService {
     return keyTableCollection;
   }
 
-  convertDateFromClient(keyTable: IKeyTable): IKeyTable {
+  public convertDateFromClient(keyTable: IKeyTable): IKeyTable {
     return Object.assign({}, keyTable, {
       created: keyTable.created?.isValid() ? keyTable.created.toJSON() : undefined,
       modified: keyTable.modified?.isValid() ? keyTable.modified.toJSON() : undefined,
     });
   }
 
-  convertDateFromServer(res: EntityResponseType): EntityResponseType {
+  public convertDateFromServer(res: EntityResponseType): EntityResponseType {
     if (res.body) {
       res.body.created = res.body.created ? dayjs(res.body.created) : undefined;
       res.body.modified = res.body.modified ? dayjs(res.body.modified) : undefined;
@@ -88,7 +88,7 @@ export class KeyTableService {
     return res;
   }
 
-  convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+  public convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((keyTable: IKeyTable) => {
         keyTable.created = keyTable.created ? dayjs(keyTable.created) : undefined;

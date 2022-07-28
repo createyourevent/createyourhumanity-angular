@@ -6,6 +6,7 @@ entity Mindmap {
 entity FormulaData {
     map String
     grant String
+    group String
     visible String
     created ZonedDateTime
     modified ZonedDateTime
@@ -38,11 +39,18 @@ entity Friendrequest {
     requestUserId String
     info TextBlob
 }
+
+entity Group {
+    name String
+    created ZonedDateTime
+}
+
 /**
  * One to one relationship.
  */
 relationship OneToOne {
     UserDetails{user} to User
+    Group{owner} to User
 }
 
 /**
@@ -54,3 +62,5 @@ relationship ManyToOne {
     Friends{user} to User
     Friendrequest{user} to User
 }
+
+

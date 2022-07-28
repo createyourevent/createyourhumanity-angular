@@ -27,6 +27,7 @@ describe('FormulaData Service', () => {
       id: 'AAAAAAA',
       map: 'AAAAAAA',
       grant: 'AAAAAAA',
+      group: 'AAAAAAA',
       visible: 'AAAAAAA',
       created: currentDate,
       modified: currentDate,
@@ -81,6 +82,7 @@ describe('FormulaData Service', () => {
           id: 'BBBBBB',
           map: 'BBBBBB',
           grant: 'BBBBBB',
+          group: 'BBBBBB',
           visible: 'BBBBBB',
           created: currentDate.format(DATE_TIME_FORMAT),
           modified: currentDate.format(DATE_TIME_FORMAT),
@@ -107,6 +109,7 @@ describe('FormulaData Service', () => {
       const patchObject = Object.assign(
         {
           grant: 'BBBBBB',
+          modified: currentDate.format(DATE_TIME_FORMAT),
         },
         new FormulaData()
       );
@@ -134,6 +137,7 @@ describe('FormulaData Service', () => {
           id: 'BBBBBB',
           map: 'BBBBBB',
           grant: 'BBBBBB',
+          group: 'BBBBBB',
           visible: 'BBBBBB',
           created: currentDate.format(DATE_TIME_FORMAT),
           modified: currentDate.format(DATE_TIME_FORMAT),
@@ -194,7 +198,7 @@ describe('FormulaData Service', () => {
       });
 
       it('should add only unique FormulaData to an array', () => {
-        const formulaDataArray: IFormulaData[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '97823519-067d-445d-9742-07091a2ab102' }];
+        const formulaDataArray: IFormulaData[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '78235190-67d4-45d1-b420-7091a2ab1023' }];
         const formulaDataCollection: IFormulaData[] = [{ id: 'ABC' }];
         expectedResult = service.addFormulaDataToCollectionIfMissing(formulaDataCollection, ...formulaDataArray);
         expect(expectedResult).toHaveLength(3);

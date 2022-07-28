@@ -16,7 +16,9 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.createyourhumanity.angular.config.Constants;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
@@ -70,6 +72,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     private FormulaData formulaData  = new FormulaData();
 
+    private Set<Group> groups;
+
     @JsonManagedReference
     public FormulaData getFormulaData() {
         return formulaData;
@@ -86,6 +90,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonManagedReference
     public void setFriends(List<Friends> friends) {
         this.friends = friends;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 
     public String getId() {
