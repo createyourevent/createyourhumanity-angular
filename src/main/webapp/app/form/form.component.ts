@@ -35,6 +35,7 @@ export class FormComponent implements OnInit {
   @Input() userId: string;
   @Input() mapId: string;
   @Input() topic: string;
+  @Input() relations: Map <string, string>;
 
   constructor(private accountService: AccountService,
               private formulaDataService: FormulaDataService,

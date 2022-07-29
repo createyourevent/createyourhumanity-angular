@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   index = 0;
   init = false;
   visible: Map<string, unknown> = new Map();
-
+  relations: Map<string, string> = new Map();
   modules = {};
 
 
@@ -170,6 +170,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
                 this.refs[i].instance.userId = this.userId;
                 this.refs[i].instance.mapId = this.mindmap.id;
                 this.refs[i].instance.topic = this.topics[i];
+                this.refs[i].instance.relations = this.relations;
                 this.refs[i].instance.initComponent().then(() => {
                 for(let y = 0; y++; y <= this.refs.length - 1) {
                     this.refs[y].instance.cloneFields();
@@ -246,6 +247,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
           this.formulaData = res.body;
           const parser = new DOMParser();
           const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
+
+          const relations = xml.querySelectorAll('relationship');
+          relations.forEach(el => {
+            this.relations.set(el.getAttribute('srcTopicId'),el.getAttribute('destTopicId'));
+          });
+
           this.pages = xml.querySelectorAll('[id="form"]');
           let index = 0;
           this.pages.forEach(page => {
