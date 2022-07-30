@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   index = 0;
   init = false;
   visible: Map<string, unknown> = new Map();
-  relations: Map<string, string> = new Map();
+  relations: any[] = [];
   modules = {};
 
 
@@ -250,7 +250,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
           const relations = xml.querySelectorAll('relationship');
           relations.forEach(el => {
-            this.relations.set(el.getAttribute('srcTopicId'),el.getAttribute('destTopicId'));
+            this.relations.push({ src: el.getAttribute('srcTopicId'), dest: el.getAttribute('destTopicId')});
           });
 
           this.pages = xml.querySelectorAll('[id="form"]');

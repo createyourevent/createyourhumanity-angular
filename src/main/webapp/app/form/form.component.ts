@@ -35,7 +35,7 @@ export class FormComponent implements OnInit {
   @Input() userId: string;
   @Input() mapId: string;
   @Input() topic: string;
-  @Input() relations: Map <string, string>;
+  @Input() relations: any[];
 
   constructor(private accountService: AccountService,
               private formulaDataService: FormulaDataService,
@@ -102,19 +102,38 @@ export class FormComponent implements OnInit {
       }
   }
 
+  domWalkerParent(node): number[] {
+    const path = [];
+    while(node) {
+      path.push(node.getProperty('id'));
+      node = node.getParent();
+    }
+    console.log(path);
+    return path;
+  }
+
   parseJSON(node) {
       const n = node;
       const f = node.getFeatures()[0];
       const c = node.getControls()[0];
       const l = node.getLayout()[0];
 
+      let p: number[];
+      if(this.relations) {
+        this.relations.forEach(el => {
+          if(Number(el.src) === node.getProperty('id')) {
+            p = this.domWalkerParent(node);
+          }
+        });
+      }
+
       if(f) {
         if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'form') {
-          this.addDynamicFormlyPage(n);
+          this.addDynamicFormlyPage(n, p);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'multi_step_form') {
-          this.convertMultistepForm(n);
+          this.convertMultistepForm(n, p);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'tabs_form') {
-          this.convertTabsForm(n);
+          this.convertTabsForm(n, p);
         } else if (f.getType() === 'htmlFormStep') {
           this.convertStep(n);
         } else if (f.getType() === 'htmlFormTab') {
@@ -193,8 +212,9 @@ export class FormComponent implements OnInit {
     return arr[arr.length - 1];
   }
 
+  //Forms.....................................................
 
-  addDynamicFormlyPage(node: any): void {
+  addDynamicFormlyPage(node: any, path: number[]): void {
     const n = node.getParent().getProperty('id');
     if(n !== 1) {
       eval(this.getFieldGroup(node)).push(
@@ -215,7 +235,7 @@ export class FormComponent implements OnInit {
     }
   }
 
-  convertMultistepForm(node: any) {
+  convertMultistepForm(node: any, path: number[]) {
     let selectedIndex: number;
     let expanded = 'false';
     if(this.path.length > 1) {
@@ -246,6 +266,7 @@ export class FormComponent implements OnInit {
               bgColor: node.getProperty('backgroundColor'),
               color: node.getProperty('fontColor'),
               expanded: expanded,
+              path: path
             },
             fieldGroup: []
          }
@@ -266,7 +287,7 @@ export class FormComponent implements OnInit {
     );
   }
 
-  convertTabsForm(node: any) {
+  convertTabsForm(node: any, path: number[]) {
     let selectedIndex: number;
     let expanded = 'false';
     if(this.path.length > 1) {
@@ -296,7 +317,8 @@ export class FormComponent implements OnInit {
           label: node.getProperty('text'),
           bgColor: node.getProperty('backgroundColor'),
           color: node.getProperty('fontColor'),
-          expanded: expanded
+          expanded: expanded,
+          path: path
         },
         fieldGroup: []
       }
@@ -315,6 +337,8 @@ export class FormComponent implements OnInit {
       }
     );
   }
+
+  //Controls......................
 
   convertTextfield(node: any, req: boolean, f: boolean) {
     const fg = this.getFieldGroup(node);

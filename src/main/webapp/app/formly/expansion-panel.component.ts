@@ -10,6 +10,9 @@ import { FieldWrapper } from '@ngx-formly/core';
       <mat-panel-title>
       {{ to.label }}
       </mat-panel-title>
+      <mat-panel-description *ngIf="to.path">
+          <a>Aehnliche Kategorie</a>
+      </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-accordion #accordion_field [multi]="false" displayMode="default">
       <ng-container #fieldComponent></ng-container>
