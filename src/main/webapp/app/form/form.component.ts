@@ -73,7 +73,7 @@ export class FormComponent implements OnInit {
 
   setPath(path: number[]) {
     this.path = path;
-    this.reloadData();
+    //this.reloadData();
   }
 
   cloneFields(): void {
@@ -108,7 +108,6 @@ export class FormComponent implements OnInit {
       path.push(node.getProperty('id'));
       node = node.getParent();
     }
-    console.log(path);
     return path;
   }
 
@@ -222,7 +221,10 @@ export class FormComponent implements OnInit {
           id: node.getProperty('id'),
           type: ['container'],
           wrappers: ['expansion'],
-          fieldGroup: []
+          fieldGroup: [],
+          templateOptions: {
+            relations: this.relations
+          },
         }
       );
     } else {
@@ -266,7 +268,8 @@ export class FormComponent implements OnInit {
               bgColor: node.getProperty('backgroundColor'),
               color: node.getProperty('fontColor'),
               expanded: expanded,
-              path: path
+              path: path,
+              relations: this.relations
             },
             fieldGroup: []
          }
@@ -281,8 +284,11 @@ export class FormComponent implements OnInit {
     eval(fg).push(
       {
         id: node.getProperty('id'),
-        templateOptions: { label: node.getProperty('text') },
-        fieldGroup: []
+        templateOptions: {
+          label: node.getProperty('text'),
+          relations: this.relations
+        },
+        fieldGroup: [],
       }
     );
   }
@@ -313,12 +319,14 @@ export class FormComponent implements OnInit {
         type: 'tabs',
         selectedIndex: selectedIndex,
         wrappers: ['expansion'],
+        id: node.getProperty('id'),
         templateOptions: {
           label: node.getProperty('text'),
           bgColor: node.getProperty('backgroundColor'),
           color: node.getProperty('fontColor'),
           expanded: expanded,
-          path: path
+          path: path,
+          relations: this.relations
         },
         fieldGroup: []
       }
@@ -332,8 +340,11 @@ export class FormComponent implements OnInit {
     const fg = this.getFieldGroup(node);
     eval(fg).push(
       {
-        templateOptions: { label: node.getProperty('text') },
-        fieldGroup: []
+        templateOptions: {
+          label: node.getProperty('text'),
+          relations: this.relations
+        },
+        fieldGroup: [],
       }
     );
   }

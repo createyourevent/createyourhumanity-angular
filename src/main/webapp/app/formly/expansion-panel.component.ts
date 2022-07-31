@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { FieldWrapper } from '@ngx-formly/core';
+import { PathService } from 'app/path.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'jhi-formly-wrapper-panel',
@@ -11,7 +13,7 @@ import { FieldWrapper } from '@ngx-formly/core';
       {{ to.label }}
       </mat-panel-title>
       <mat-panel-description *ngIf="to.path">
-          <a>Aehnliche Kategorie</a>
+          <button class="path-button" (click)="setPath($event, id_link)">{{ 'profile.button' | translate }}</button>
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-accordion #accordion_field [multi]="false" displayMode="default">
@@ -28,8 +30,9 @@ export class ExpansionPanelComponent extends FieldWrapper implements AfterViewIn
   color: string;
   id_link: string;
   expanded = 'false';
+  relations:any[] = [];
 
-  constructor() {
+  constructor(private pathService: PathService) {
     super();
   }
 
@@ -38,6 +41,7 @@ export class ExpansionPanelComponent extends FieldWrapper implements AfterViewIn
     this.color = this.field.templateOptions.color;
     this.id_link = this.field.id;
     this.expanded = this.field.templateOptions.expanded;
+    this.relations = this.field.templateOptions.relations;
     this.setExpandet();
   }
 
@@ -46,5 +50,11 @@ export class ExpansionPanelComponent extends FieldWrapper implements AfterViewIn
         this.matExpansionPanel.expanded = true;
         this.matExpansionPanel.open();
     }
+  }
+
+  setPath(event: any, path: string) {
+    const s = this.relations.find(x => x.src === path + '');
+    this.pathService.setPath(Number(s.dest));
+    event.stopPropagation();
   }
 }

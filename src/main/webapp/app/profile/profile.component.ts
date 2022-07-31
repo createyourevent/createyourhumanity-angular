@@ -17,6 +17,7 @@ import { UserService } from 'app/entities/user/user.service';
 import { MatTabGroup } from '@angular/material/tabs';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
+import { PathService } from 'app/path.service';
 
 export interface Item {
   id: string,
@@ -74,7 +75,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
               private formulaDataService: FormulaDataService,
               private loginService: LoginService,
               private userService: UserService,
-              private route: ActivatedRoute
+              private route: ActivatedRoute,
+              private pathService: PathService
               ) {
                 window.addEventListener('LinkData', (e: CustomEvent) => {
                   if (e.detail.path.length > 0 && this.mainTabView.selectedIndex === 0) {
@@ -133,6 +135,16 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
         });
         e.stopPropagation();
+    });
+    this.pathService.path.subscribe(path_id => {
+      const arr = [];
+      const designer = global.designer;
+      let topic = designer.getMindmap().findNodeById(path_id);
+      while(topic ) {
+        arr.push(topic.getId());
+        topic = topic.getParent();
+      }
+      this.openPath(arr);
     });
     this.accountService.identity().subscribe(account => {
       this.account = account;
@@ -197,11 +209,43 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
   openPath(arr_path: number[]): void {
     arr_path.reverse();
-    this.mainTabView.selectedIndex = arr_path[0];
-    this.mainTabView.focusTab(arr_path[0]);
-    this.mainTabView.realignInkBar();
-    arr_path.splice(0,1);
-    this.mainTabView.animationDone.subscribe(() => {
+
+    if(this.mainTabView.selectedIndex === 0) {
+      this.mainTabView.selectedIndex = arr_path[0];
+      this.mainTabView.focusTab(arr_path[0]);
+      this.mainTabView.realignInkBar();
+      arr_path.splice(0,1);
+      this.mainTabView.animationDone.subscribe(() => {
+        const designer = global.designer;
+        if(arr_path && arr_path.length > 0) {
+          const fieldSearched: Topic = designer.getMindmap().findNodeById(arr_path[0]);
+          let index = 0;
+          const arr = this.profileTabView._allTabs.toArray();
+          const t = fieldSearched.getText();
+          for(let i = 0; i < this.profileTabView._allTabs.length; i++) {
+            if(arr[i].textLabel === t) {
+              index = i;
+              break;
+            }
+          }
+          this.profileTabView.selectedIndex = index;
+          this.profileTabView.focusTab(index);
+          this.profileTabView.realignInkBar();
+          arr_path.splice(0,1);
+          if(index === 0) {
+            this.refs[index].instance.setPath(arr_path);
+          } else {
+            this.profileTabView.animationDone.subscribe(() => {
+              this.refs[index].instance.setPath(arr_path);
+            });
+          }
+        }
+      });
+    } else {
+      this.mainTabView.selectedIndex = arr_path[0];
+      this.mainTabView.focusTab(arr_path[0]);
+      this.mainTabView.realignInkBar();
+      arr_path.splice(0,1);
       const designer = global.designer;
       if(arr_path && arr_path.length > 0) {
         const fieldSearched: Topic = designer.getMindmap().findNodeById(arr_path[0]);
@@ -226,7 +270,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
           });
         }
       }
-    });
+    }
   }
 
   handleChange(event): void {
