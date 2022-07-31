@@ -90,7 +90,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
             } else {
               const url = document.location.href;
               if(url.includes('localhost:9000')) {
-                this.xmlId = '6281b488c02b8d7b528278f3';
+                this.xmlId = '62bb05af4e6db14d6dc56357';
               } else {
                 this.xmlId = '62bb05af4e6db14d6dc56357';
               }

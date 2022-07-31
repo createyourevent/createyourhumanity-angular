@@ -225,7 +225,7 @@ export class FormComponent implements OnInit {
           wrappers: ['expansion'],
           fieldGroup: [],
           templateOptions: {
-            relations: this.rels
+            relations: this.relations
           },
         }
       );
@@ -247,7 +247,7 @@ export class FormComponent implements OnInit {
     for(let j = 0; j < children.length; j++) {
       const foundRel = this.relations.find(x => x.src === children[j].getProperty('id') + '');
       if(foundRel) {
-        this.rels.push({src: foundRel.src, dest: foundRel.dest, label: children[j].getProperty('text')});
+        this.rels.push({src: foundRel.dest, dest: foundRel.src, label: children[j].getProperty('text')});
       }
       const foundRelDest = this.relations.find(x => x.dest === children[j].getProperty('id') + '');
       if(foundRelDest) {
@@ -316,7 +316,7 @@ export class FormComponent implements OnInit {
     for(let j = 0; j < children.length; j++) {
       const foundRel = this.relations.find(x => x.src === children[j].getProperty('id') + '');
       if(foundRel) {
-        this.rels.push({src: foundRel.src, dest: foundRel.dest, label: children[j].getProperty('text')});
+        this.rels.push({src: foundRel.dest, dest: foundRel.src, label: children[j].getProperty('text')});
       }
       const foundRelDest = this.relations.find(x => x.dest === children[j].getProperty('id') + '');
       if(foundRelDest) {

@@ -209,12 +209,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
   openPath(arr_path: number[]): void {
     arr_path.reverse();
-
     if(this.mainTabView.selectedIndex === 0) {
       this.mainTabView.selectedIndex = arr_path[0];
       this.mainTabView.focusTab(arr_path[0]);
       this.mainTabView.realignInkBar();
       arr_path.splice(0,1);
+
       this.mainTabView.animationDone.subscribe(() => {
         const designer = global.designer;
         if(arr_path && arr_path.length > 0) {
