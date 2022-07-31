@@ -12,8 +12,8 @@ import { BehaviorSubject } from 'rxjs';
       <mat-panel-title>
       {{ to.label }}
       </mat-panel-title>
-      <mat-panel-description *ngIf="to.path">
-          <button class="path-button" (click)="setPath($event, id_link)">{{ 'profile.button' | translate }}</button>
+      <mat-panel-description *ngIf="rels">
+          <ng-container *ngFor="let r of rels"><button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button>&nbsp;</ng-container>
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-accordion #accordion_field [multi]="false" displayMode="default">
@@ -22,7 +22,7 @@ import { BehaviorSubject } from 'rxjs';
   </mat-expansion-panel>
   `,
 })
-export class ExpansionPanelComponent extends FieldWrapper implements AfterViewInit {
+export class ExpansionPanelComponent extends FieldWrapper implements OnInit, AfterViewInit {
 
   @ViewChild('matExpansionPanel') matExpansionPanel: MatExpansionPanel;
 
@@ -31,17 +31,27 @@ export class ExpansionPanelComponent extends FieldWrapper implements AfterViewIn
   id_link: string;
   expanded = 'false';
   relations:any[] = [];
+  rels: any[] = [];
 
   constructor(private pathService: PathService) {
     super();
   }
-
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.bgColor = this.field.templateOptions.bgColor;
     this.color = this.field.templateOptions.color;
     this.id_link = this.field.id;
     this.expanded = this.field.templateOptions.expanded;
     this.relations = this.field.templateOptions.relations;
+    this.relations.forEach(el => {
+      if(el.src === this.id_link + '') {
+        this.rels.push({src: el.src, dest: el.dest});
+      }else if(el.dest === this.id_link + '') {
+        this.rels.push({src: el.dest, dest: el.src});
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
     this.setExpandet();
   }
 
@@ -53,8 +63,7 @@ export class ExpansionPanelComponent extends FieldWrapper implements AfterViewIn
   }
 
   setPath(event: any, path: string) {
-    const s = this.relations.find(x => x.src === path + '');
-    this.pathService.setPath(Number(s.dest));
+    this.pathService.setPath(Number(path));
     event.stopPropagation();
   }
 }

@@ -8,7 +8,7 @@ import { PathService } from 'app/path.service';
   template: `
   <mat-horizontal-stepper #matHorizontalStepper [selectedIndex]="selectedIndex">
     <mat-step [id]="id_link" *ngFor="let step of field.fieldGroup; let index = index; let last = last;">
-      <ng-template matStepLabel>{{ step.templateOptions.label }}&nbsp;<ng-container *ngIf="hasRelation(step.id)"><button class="path-button" (click)="setPath($event, id_link)">{{ 'profile.button' | translate }}</button></ng-container></ng-template>
+      <ng-template matStepLabel>{{ step.templateOptions.label }}&nbsp;<ng-container *ngFor="let r of rels"><ng-container *ngIf="r.label === step.templateOptions.label"><button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button></ng-container></ng-container></ng-template>
       <formly-field [field]="step"></formly-field>
 
       <div>
@@ -36,6 +36,7 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
   index: number;
   currentStep: number;
   relations:any[] = [];
+  rels: any[] = [];
 
 
   constructor(private pathService: PathService) {
@@ -45,20 +46,13 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
   ngOnInit(): void {
     this.id_link = this.field.id;
     this.relations = this.field.templateOptions.relations;
+    this.rels = this.field.templateOptions.rels;
   }
 
   ngAfterViewInit(): void {
     if(Number(this.field.selectedIndex) >= 0) {
       this.setStep(Number(this.field.selectedIndex));
     }
-  }
-
-  hasRelation(id: string): boolean {
-    const c = this.relations.find(x => x.src === id + '');
-    if(c) {
-      return true;
-    }
-    return false;
   }
 
   isValid(field: FormlyFieldConfig) {
@@ -88,8 +82,7 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
   }
 
   setPath(event: any, path: string) {
-    const s = this.relations.find(x => x.src === path + '');
-    this.pathService.setPath(Number(s.dest));
+    this.pathService.setPath(Number(path));
     event.stopPropagation();
   }
 
