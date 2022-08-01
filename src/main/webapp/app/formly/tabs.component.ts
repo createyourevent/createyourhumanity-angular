@@ -7,11 +7,13 @@ import { PathService } from 'app/path.service';
   selector: 'jhi-formly-field-tabs',
   template: `
   <mat-tab-group #matTabGroup>
-    <mat-tab [class]="tab.templateOptions.className" *ngFor="let tab of field.fieldGroup; let i = index; let last = last;">
-      <ng-template mat-tab-label>
-        {{ tab.templateOptions.label }}&nbsp;<ng-container *ngFor="let r of rels"><ng-container *ngIf="r.label === tab.templateOptions.label"><button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button></ng-container></ng-container>
-      </ng-template>
-      <formly-field [field]="tab"></formly-field>
+    <mat-tab *ngFor="let tab of field.fieldGroup; let i = index; let last = last;">
+      <div [class]="tab.templateOptions.className">
+        <ng-template mat-tab-label>
+          {{ tab.templateOptions.label }}&nbsp;<ng-container *ngFor="let r of rels"><ng-container *ngIf="r.label === tab.templateOptions.label"><button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button></ng-container></ng-container>
+        </ng-template>
+        <formly-field [field]="tab"></formly-field>
+      </div>
     </mat-tab>
   </mat-tab-group>
 `,

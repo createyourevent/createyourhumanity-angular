@@ -149,9 +149,9 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
                   });
                   index++;
                 } else {
-                  const child: Topic = this.designer.getModel().findTopicById(Number(this.pages[i].parentElement.id));
-                  child.setVisibility(false);
-                  this.repaintTopic(child);
+                  const child: Topic =  this.designer.getModel().findTopicById(Number(this.pages[i].parentElement.id));
+                  this.deleteRelations(child);
+                  this.deleteTopic(child);
                 }
                };
             });
@@ -160,6 +160,33 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+  
+  deleteTopic(child) {
+    const rs = child.getRelationships();
+    rs.forEach(element => {
+      this.designer.deleteRelationship(element);
+    });
+    child.removeFromWorkspace(this.designer.getWorkSpace());
+    child.setVisibility(false);
+    child.adjustShapes();
+    if (child.getChildren().length > 0) {
+      child.getChildren().forEach(childNode => {
+        this.deleteTopic(childNode);
+      });
+    }
+  }
+
+  deleteRelations(child) {
+    const rs = child.getRelationships();
+    rs.forEach(element => {
+      this.designer.deleteRelationship(element);
+    });
+    if (child.getChildren().length > 0) {
+      child.getChildren().forEach(childNode => {
+        this.deleteRelations(childNode);
+      });
+    }
   }
 
   processData(): Promise<Item[]> {
@@ -182,10 +209,6 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
               this.forms.push(page.parentElement);
               i.push({id: page.parentElement.getAttribute('id'), header: page.parentElement.getAttribute('text')});
               index++;
-            } else {
-              const child: Topic =  this.designer.getModel().findTopicById(Number(page.parentElement.getAttribute('id')));
-              child.setVisibility(false);
-              this.repaintTopic(child);
             }
           });
           resolve(i);

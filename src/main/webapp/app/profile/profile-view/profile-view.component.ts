@@ -131,7 +131,12 @@ export class ProfileViewComponent{
       } else {
         m = 'visible_not-visible';
         const child: Topic = this.designer.getModel().findTopicById(Number(node.getProperty('id')));
+        child.removeFromWorkspace(this.designer.getWorkSpace());
         child.setVisibility(false);
+        const rs = child.getRelationships();
+        rs.forEach(element => {
+          this.designer.deleteRelationship(element);
+        });
         child.adjustShapes();
       }
 
@@ -272,6 +277,7 @@ export class ProfileViewComponent{
           {
             type: 'stepper',
             className: visibleClass,
+            fieldGroupClassName: visibleClass,
             id: node.getProperty('id'),
             wrappers: ['expansion'],
             selectedIndex: selectedIndex,
@@ -299,10 +305,11 @@ export class ProfileViewComponent{
     const fg = this.getFieldGroup(node);
     eval(fg).push(
       {
+        className: visibleClass,
+        fieldGroupClassName: visibleClass,
         id: node.getProperty('id'),
         templateOptions: { label: node.getProperty('text') },
         fieldGroup: [],
-        className: visibleClass,
       }
     );
   }
@@ -340,12 +347,12 @@ export class ProfileViewComponent{
         selectedIndex: selectedIndex,
         wrappers: ['expansion'],
         className: visibleClass,
+        fieldGroupClassName: visibleClass,
         templateOptions: {
           label: node.getProperty('text'),
           bgColor: node.getProperty('backgroundColor'),
           color: node.getProperty('fontColor'),
           expanded: expanded,
-          className: visibleClass
         },
         fieldGroup: []
       }
@@ -366,8 +373,9 @@ export class ProfileViewComponent{
     eval(fg).push(
       {
         templateOptions: { label: node.getProperty('text') },
-        fieldGroup: [],
         className: visibleClass,
+        fieldGroupClassName: visibleClass,
+        fieldGroup: [],
       }
     );
   }
