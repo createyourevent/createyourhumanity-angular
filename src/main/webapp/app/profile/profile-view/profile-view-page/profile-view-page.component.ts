@@ -87,6 +87,17 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
               }
 
   ngOnInit() {
+    this.designerGlobalService.getDesigner().subscribe(designer => {
+      this.designer = designer;
+      if(this.designer) {
+        const root = this.designer.getMindmap().findNodeById(1);
+        const children = root.getChildren();
+        children.forEach(child => {
+          this.topics.push(child);
+        });
+
+      }
+    });
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -137,6 +148,10 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
                     }
                   });
                   index++;
+                } else {
+                  const child: Topic = this.designer.getModel().findTopicById(Number(this.pages[i].parentElement.id));
+                  child.setVisibility(false);
+                  this.repaintTopic(child);
                 }
                };
             });
@@ -167,21 +182,13 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
               this.forms.push(page.parentElement);
               i.push({id: page.parentElement.getAttribute('id'), header: page.parentElement.getAttribute('text')});
               index++;
-            }
-
-
-          });
-          this.designerGlobalService.getDesigner().subscribe(designer => {
-            this.designer = designer;
-            if(this.designer) {
-              const root = this.designer.getMindmap().findNodeById(1);
-              const children = root.getChildren();
-              children.forEach(child => {
-                this.topics.push(child);
-              });
-              resolve(i);
+            } else {
+              const child: Topic =  this.designer.getModel().findTopicById(Number(page.parentElement.getAttribute('id')));
+              child.setVisibility(false);
+              this.repaintTopic(child);
             }
           });
+          resolve(i);
          });
         });
       });

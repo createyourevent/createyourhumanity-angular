@@ -10,6 +10,7 @@ import { Designer, Topic} from '@wisemapping/mindplot';
 import { IFriends } from 'app/entities/friends/friends.model'
 import { ActivatedRoute } from '@angular/router'
 import { GroupService } from 'app/entities/group/service/group.service'
+import { DesignerGlobalService } from 'app/designer-global.service'
 
 @Component({
   selector: 'jhi-profile-view',
@@ -39,6 +40,7 @@ export class ProfileViewComponent{
   _topics: Topic[];
   path: number[] = [];
 
+
   @Input() userId: string;
   @Input() mapId: string;
   @Input() topic: string;
@@ -47,12 +49,15 @@ export class ProfileViewComponent{
   constructor(private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
               private route: ActivatedRoute,
-              private groupService: GroupService
+              private designerGlobalService: DesignerGlobalService
               ) {}
 
 
   initComponent(): Promise<void> {
     return new Promise<void>((resolve) => {
+      this.designerGlobalService.getDesigner().subscribe(designer => {
+        this.designer = designer;
+      });
       const profileId = this.route.snapshot.queryParamMap.get('userId');
       this.fields = [];
       this.accountService.identity().subscribe(account => {
@@ -125,6 +130,9 @@ export class ProfileViewComponent{
         m = 'visible_visible';
       } else {
         m = 'visible_not-visible';
+        const child: Topic = this.designer.getModel().findTopicById(Number(node.getProperty('id')));
+        child.setVisibility(false);
+        child.adjustShapes();
       }
 
       if(f) {
