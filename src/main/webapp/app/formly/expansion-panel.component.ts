@@ -12,8 +12,15 @@ import { BehaviorSubject } from 'rxjs';
       <mat-panel-title>
       {{ to.label }}
       </mat-panel-title>
-      <mat-panel-description *ngIf="rels">
-          <ng-container *ngFor="let r of rels"><button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button>&nbsp;</ng-container>
+      <mat-panel-description *ngIf="relations">
+        <ng-container *ngFor="let r of relations">
+          <ng-container *ngIf="r.srcLabel === label">
+            <button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button>&nbsp;
+          </ng-container>
+          <ng-container *ngIf="r.destLabel === label">
+            <button class="path-button" (click)="setPath($event, r.src)">{{ 'profile.button' | translate }}</button>&nbsp;
+          </ng-container>
+        </ng-container>
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-accordion #accordion_field [multi]="false" displayMode="default">
@@ -32,6 +39,7 @@ export class ExpansionPanelComponent extends FieldWrapper implements OnInit, Aft
   expanded = 'false';
   relations:any[] = [];
   rels: any[] = [];
+  label: string;
 
   constructor(private pathService: PathService) {
     super();
@@ -42,13 +50,7 @@ export class ExpansionPanelComponent extends FieldWrapper implements OnInit, Aft
     this.id_link = this.field.id;
     this.expanded = this.field.templateOptions.expanded;
     this.relations = this.field.templateOptions.relations;
-    this.relations.forEach(el => {
-      if(el.src === this.id_link + '') {
-        this.rels.push({src: el.src, dest: el.dest});
-      }else if(el.dest === this.id_link + '') {
-        this.rels.push({src: el.dest, dest: el.src});
-      }
-    });
+    this.label = this.field.templateOptions.label;
   }
 
   ngAfterViewInit(): void {
@@ -61,6 +63,8 @@ export class ExpansionPanelComponent extends FieldWrapper implements OnInit, Aft
         this.matExpansionPanel.open();
     }
   }
+
+
 
   setPath(event: any, path: string) {
     this.pathService.setPath(Number(path));

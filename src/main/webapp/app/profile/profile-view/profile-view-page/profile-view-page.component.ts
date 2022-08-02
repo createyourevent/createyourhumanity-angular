@@ -17,6 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel, MatAccordion } from '@angular/material/expansion';
 import { MatTabGroup } from '@angular/material/tabs';
 import { DesignerGlobalService } from 'app/designer-global.service';
+import { PathService } from 'app/path.service';
 
 interface Item {
   id: string,
@@ -46,6 +47,7 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
   refs: any[] = [];
   path: number[];
   index = 0;
+  relations: any[] = [];
 
 
   @ViewChildren(ProfileViewPageHostDirective) profileHosts: QueryList<ProfileViewPageHostDirective>;
@@ -65,7 +67,8 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
               private formulaDataService: FormulaDataService,
               private loginService: LoginService,
               private route: ActivatedRoute,
-              private designerGlobalService: DesignerGlobalService) {
+              private designerGlobalService: DesignerGlobalService,
+              private pathService: PathService) {
                 window.addEventListener('LinkData', (e: CustomEvent) => {
                   if (e.detail.path.length > 0 && this.mainTabView.selectedIndex === 0) {
                     this.path = e.detail.path;
@@ -98,6 +101,17 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
 
       }
     });
+    this.pathService.path.subscribe(path_id => {
+      const arr = [];
+      const designer = global.designer;
+      let topic = designer.getMindmap().findNodeById(path_id);
+      while(topic ) {
+        arr.push(topic.getId());
+        topic = topic.getParent();
+      }
+      this.openPath(arr);
+    });
+
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -142,6 +156,7 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
                   this.refs[index].instance.mapId = this.mindmap.id;
                   this.refs[index].instance.topic = this.topics[i];
                   this.refs[index].instance.visible = this.profileUser.formulaData.visible;
+                  this.refs[index].instance.relations = this.relations;
                   this.refs[index].instance.initComponent().then(() => {
                   for(let y = 0; y++; y <= this.refs.length - 1) {
                       this.refs[y].instance.cloneFields();
@@ -161,7 +176,7 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  
+
   deleteTopic(child) {
     const rs = child.getRelationships();
     rs.forEach(element => {
@@ -199,6 +214,12 @@ export class ProfileViewPageComponent implements OnInit, AfterViewInit {
             const fdpu = pu.body;
           const parser = new DOMParser();
           const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
+
+          const relations = xml.querySelectorAll('relationship');
+          relations.forEach(el => {
+            this.relations.push({ src: el.getAttribute('srcTopicId'), dest: el.getAttribute('destTopicId')});
+          });
+
           this.pages = xml.querySelectorAll('[id="form"]');
           let index = 0;
           const i = [];
@@ -238,12 +259,14 @@ repaintTopic(node) {
   node.adjustShapes();
 }
 
-  openPath(arr_path: number[]): void {
-    arr_path.reverse();
+openPath(arr_path: number[]): void {
+  arr_path.reverse();
+  if(this.mainTabView.selectedIndex === 0) {
     this.mainTabView.selectedIndex = arr_path[0];
     this.mainTabView.focusTab(arr_path[0]);
     this.mainTabView.realignInkBar();
     arr_path.splice(0,1);
+
     this.mainTabView.animationDone.subscribe(() => {
       const designer = global.designer;
       if(arr_path && arr_path.length > 0) {
@@ -270,7 +293,37 @@ repaintTopic(node) {
         }
       }
     });
+  } else {
+    this.mainTabView.selectedIndex = arr_path[0];
+    this.mainTabView.focusTab(arr_path[0]);
+    this.mainTabView.realignInkBar();
+    arr_path.splice(0,1);
+    const designer = global.designer;
+    if(arr_path && arr_path.length > 0) {
+      const fieldSearched: Topic = designer.getMindmap().findNodeById(arr_path[0]);
+      let index = 0;
+      const arr = this.profileTabView._allTabs.toArray();
+      const t = fieldSearched.getText();
+      for(let i = 0; i < this.profileTabView._allTabs.length; i++) {
+        if(arr[i].textLabel === t) {
+          index = i;
+          break;
+        }
+      }
+      this.profileTabView.selectedIndex = index;
+      this.profileTabView.focusTab(index);
+      this.profileTabView.realignInkBar();
+      arr_path.splice(0,1);
+      if(index === 0) {
+        this.refs[index].instance.setPath(arr_path);
+      } else {
+        this.profileTabView.animationDone.subscribe(() => {
+          this.refs[index].instance.setPath(arr_path);
+        });
+      }
+    }
   }
+}
 
   private checkFormulaDataFromUser(account: Account): void {
     this.maincontrollerService.findFormulaDataByUserId(account.id).subscribe(fd => {

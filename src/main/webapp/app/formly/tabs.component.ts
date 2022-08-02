@@ -8,12 +8,16 @@ import { PathService } from 'app/path.service';
   template: `
   <mat-tab-group #matTabGroup>
     <mat-tab *ngFor="let tab of field.fieldGroup; let i = index; let last = last;">
-      <div [class]="tab.templateOptions.className">
-        <ng-template mat-tab-label>
-          {{ tab.templateOptions.label }}&nbsp;<ng-container *ngFor="let r of rels"><ng-container *ngIf="r.label === tab.templateOptions.label"><button class="path-button" (click)="setPath($event, r.dest)">{{ 'profile.button' | translate }}</button></ng-container></ng-container>
+        <ng-template mat-tab-label *ngIf="getRelationSrc(tab.id)">
+          {{ tab.templateOptions.label }}&nbsp;<button class="path-button" (click)="setPath($event, getRelationSrc(tab.id).dest)">{{ 'profile.button' | translate }}</button>
+        </ng-template>
+        <ng-template mat-tab-label *ngIf="getRelationDest(tab.id)">
+          {{ tab.templateOptions.label }}&nbsp;<button class="path-button" (click)="setPath($event, getRelationDest(tab.id).src)">{{ 'profile.button' | translate }}</button>
+        </ng-template>
+        <ng-template mat-tab-label *ngIf="!getRelationSrc(tab.id) && !getRelationDest(tab.id)">
+          {{ tab.templateOptions.label }}
         </ng-template>
         <formly-field [field]="tab"></formly-field>
-      </div>
     </mat-tab>
   </mat-tab-group>
 `,
@@ -25,21 +29,29 @@ export class FormlyFieldTabsComponent extends FieldType implements OnInit, After
   index: number;
   relations:any[] = [];
   id_link: string;
-  rels: any[] = [];
+  label: string;
 
   constructor(private pathService: PathService) {
     super();
   }
 
   ngOnInit(): void {
-    this.id_link = this.field.id;
+    this.id_link = this.field.id + '';
     this.relations = this.field.templateOptions.relations;
-    this.rels = this.field.templateOptions.rels;
+    this.label = this.field.templateOptions.label.trim();
+  }
+
+  getRelationSrc(id: string): any {
+    const a = this.relations.find(x => x.src === id + '');
+    return (a);
+  }
+
+  getRelationDest(id: string): any {
+    const b = this.relations.find(x => x.dest === id + '');
+    return (b);
   }
 
   ngAfterViewInit(): void {
-    this.id_link = this.field.id;
-    this.relations = this.field.templateOptions.relations;
     if(Number(this.field.selectedIndex) >= 0) {
       this.index = Number(this.field.selectedIndex);
       this.focusTab(this.index);

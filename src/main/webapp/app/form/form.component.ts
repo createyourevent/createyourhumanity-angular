@@ -11,6 +11,7 @@ import { AccountService } from 'app/core/auth/account.service'
 import { MaincontrollerService } from 'app/maincontroller.service'
 import { Designer, Topic} from '@wisemapping/mindplot';
 import { MatAccordion } from '@angular/material/expansion';
+import { PathService } from 'app/path.service';
 
 @Component({
   selector: 'jhi-form',
@@ -31,7 +32,6 @@ export class FormComponent implements OnInit {
   designer: Designer;
   fields: FormlyFieldConfig[] = [];
   path: number[] = [];
-  rels: any[] = [];
 
   @Input() userId: string;
   @Input() mapId: string;
@@ -74,7 +74,6 @@ export class FormComponent implements OnInit {
 
   setPath(path: number[]) {
     this.path = path;
-    //this.reloadData();
   }
 
   cloneFields(): void {
@@ -101,7 +100,6 @@ export class FormComponent implements OnInit {
           this.domWalker(childNode);
         });
       }
-      this.rels = [];
   }
 
   domWalkerParent(node): number[] {
@@ -119,22 +117,13 @@ export class FormComponent implements OnInit {
       const c = node.getControls()[0];
       const l = node.getLayout()[0];
 
-      let p: number[];
-      if(this.relations) {
-        this.relations.forEach(el => {
-          if(Number(el.src) === node.getProperty('id')) {
-            p = this.domWalkerParent(node);
-          }
-        });
-      }
-
       if(f) {
         if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'form') {
-          this.addDynamicFormlyPage(n, p);
+          this.addDynamicFormlyPage(n);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'multi_step_form') {
-          this.convertMultistepForm(n, p);
+          this.convertMultistepForm(n);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'tabs_form') {
-          this.convertTabsForm(n, p);
+          this.convertTabsForm(n);
         } else if (f.getType() === 'htmlFormStep') {
           this.convertStep(n);
         } else if (f.getType() === 'htmlFormTab') {
@@ -215,7 +204,7 @@ export class FormComponent implements OnInit {
 
   //Forms.....................................................
 
-  addDynamicFormlyPage(node: any, path: number[]): void {
+  addDynamicFormlyPage(node: any): void {
     const n = node.getParent().getProperty('id');
     if(n !== 1) {
       eval(this.getFieldGroup(node)).push(
@@ -225,7 +214,8 @@ export class FormComponent implements OnInit {
           wrappers: ['expansion'],
           fieldGroup: [],
           templateOptions: {
-            relations: this.relations
+            relations: this.relations,
+            path: this.path
           },
         }
       );
@@ -239,21 +229,9 @@ export class FormComponent implements OnInit {
     }
   }
 
-  convertMultistepForm(node: any, path: number[]) {
+  convertMultistepForm(node: any) {
     let selectedIndex: number;
     let expanded = 'false';
-
-    const children = node.getChildren();
-    for(let j = 0; j < children.length; j++) {
-      const foundRel = this.relations.find(x => x.src === children[j].getProperty('id') + '');
-      if(foundRel) {
-        this.rels.push({src: foundRel.dest, dest: foundRel.src, label: children[j].getProperty('text')});
-      }
-      const foundRelDest = this.relations.find(x => x.dest === children[j].getProperty('id') + '');
-      if(foundRelDest) {
-        this.rels.push({src: foundRelDest.src, dest: foundRelDest.dest, label: children[j].getProperty('text')});
-      }
-    }
 
     if(this.path.length > 1) {
       if(this.path[0] === node.getId()) {
@@ -283,9 +261,8 @@ export class FormComponent implements OnInit {
               bgColor: node.getProperty('backgroundColor'),
               color: node.getProperty('fontColor'),
               expanded: expanded,
-              path: path,
+              path: this.path,
               relations: this.relations,
-              rels: this.rels
             },
             fieldGroup: []
          }
@@ -300,30 +277,19 @@ export class FormComponent implements OnInit {
     eval(fg).push(
       {
         id: node.getProperty('id'),
+        wrappers: ['container-wrapper'],
         templateOptions: {
           label: node.getProperty('text'),
+          relations: this.relations,
         },
         fieldGroup: [],
       }
     );
   }
 
-  convertTabsForm(node: any, path: number[]) {
+  convertTabsForm(node: any) {
     let selectedIndex: number;
     let expanded = 'false';
-
-    const children = node.getChildren();
-    for(let j = 0; j < children.length; j++) {
-      const foundRel = this.relations.find(x => x.src === children[j].getProperty('id') + '');
-      if(foundRel) {
-        this.rels.push({src: foundRel.dest, dest: foundRel.src, label: children[j].getProperty('text')});
-      }
-      const foundRelDest = this.relations.find(x => x.dest === children[j].getProperty('id') + '');
-      if(foundRelDest) {
-        this.rels.push({src: foundRelDest.src, dest: foundRelDest.dest, label: children[j].getProperty('text')});
-      }
-    }
-
     if(this.path.length > 1) {
       if(this.path[0] === node.getId()) {
         expanded = 'true';
@@ -353,9 +319,8 @@ export class FormComponent implements OnInit {
           bgColor: node.getProperty('backgroundColor'),
           color: node.getProperty('fontColor'),
           expanded: expanded,
-          path: path,
+          path: this.path,
           relations: this.relations,
-          rels: this.rels
         },
         fieldGroup: []
       }
@@ -370,9 +335,9 @@ export class FormComponent implements OnInit {
     eval(fg).push(
       {
         id: node.getProperty('id'),
-        wrappers: ['container-wrapper'],
         templateOptions: {
           label: node.getProperty('text'),
+          relations: this.relations,
         },
         fieldGroup: [],
       }

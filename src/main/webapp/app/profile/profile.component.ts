@@ -277,7 +277,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     if(event.index === 1) {
       this.refs.forEach(r => {
         r.instance.cloneFields();
-        r.instance.reloadData();
+        //r.instance.reloadData();
       });
     }
   }
@@ -291,10 +291,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
           this.formulaData = res.body;
           const parser = new DOMParser();
           const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
-
+          this.designer = global.designer;
           const relations = xml.querySelectorAll('relationship');
           relations.forEach(el => {
-            this.relations.push({ src: el.getAttribute('srcTopicId'), dest: el.getAttribute('destTopicId')});
+            const t = this.designer.getMindmap().findNodeById(Number(el.getAttribute('srcTopicId')));
+            const h = this.designer.getMindmap().findNodeById(Number(el.getAttribute('destTopicId')))
+            this.relations.push({ src: el.getAttribute('srcTopicId'), dest: el.getAttribute('destTopicId'), srcLabel: t.getProperty('text').trim(), destLabel: h.getProperty('text').trim()});
           });
 
           this.pages = xml.querySelectorAll('[id="form"]');
@@ -304,7 +306,6 @@ export class ProfileComponent implements OnInit, AfterViewInit {
             this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
             index++;
           });
-          this.designer = global.designer;
           const root = this.designer.getMindmap().findNodeById(1);
           const children = root.getChildren();
           children.forEach(child => {

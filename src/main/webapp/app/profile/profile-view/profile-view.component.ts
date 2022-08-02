@@ -39,8 +39,9 @@ export class ProfileViewComponent{
   index = 0;
   _topics: Topic[];
   path: number[] = [];
+  rels: any[] = [];
 
-
+  @Input() relations: any[];
   @Input() userId: string;
   @Input() mapId: string;
   @Input() topic: string;
@@ -87,7 +88,7 @@ export class ProfileViewComponent{
 
   setPath(path: number[]) {
     this.path = path;
-    this.reloadData();
+    //this.reloadData();
   }
 
   cloneFields(): void {
@@ -115,6 +116,7 @@ export class ProfileViewComponent{
           this.domWalker(childNode);
         });
       }
+      this.rels = [];
   }
 
   parseJSON(node) {
@@ -125,11 +127,7 @@ export class ProfileViewComponent{
 
       const a = JSON.parse(this.visible);
       const b = a[Number(node.getProperty('id'))];
-      let m = '';
-      if(b === null || b === undefined || b === 'visible_visible') {
-        m = 'visible_visible';
-      } else {
-        m = 'visible_not-visible';
+      if(b === 'visible_not-visible') {
         const child: Topic = this.designer.getModel().findTopicById(Number(node.getProperty('id')));
         child.removeFromWorkspace(this.designer.getWorkSpace());
         child.setVisibility(false);
@@ -138,19 +136,29 @@ export class ProfileViewComponent{
           this.designer.deleteRelationship(element);
         });
         child.adjustShapes();
+        return;
+      }
+
+      let p: number[];
+      if(this.relations) {
+        this.relations.forEach(el => {
+          if(Number(el.src) === node.getProperty('id')) {
+            p = this.domWalkerParent(node);
+          }
+        });
       }
 
       if(f) {
         if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'form') {
-          this.addDynamicFormlyPage(n);
+          this.addDynamicFormlyPage(n, p);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'multi_step_form') {
-          this.convertMultistepForm(n, m);
+          this.convertMultistepForm(n, p);
         } else if (f.getType() === 'htmlForm' && f.getAttribute('id') === 'tabs_form') {
-          this.convertTabsForm(n, m);
+          this.convertTabsForm(n, p);
         } else if (f.getType() === 'htmlFormStep') {
-          this.convertStep(n, m);
+          this.convertStep(n);
         } else if (f.getType() === 'htmlFormTab') {
-          this.convertTab(n, m);
+          this.convertTab(n);
         }
       }
       else if(c) {
@@ -218,6 +226,15 @@ export class ProfileViewComponent{
       }
   }
 
+  domWalkerParent(node): number[] {
+    const path = [];
+    while(node) {
+      path.push(node.getProperty('id'));
+      node = node.getParent();
+    }
+    return path;
+  }
+
   getFieldGroup(node): string {
     const arr: string[] = [];
     const group = 'this.fields';
@@ -238,22 +255,19 @@ export class ProfileViewComponent{
   }
 
 
-  addDynamicFormlyPage(node: any): void {
+  addDynamicFormlyPage(node: any, path: number[]): void {
     eval(this.getFieldGroup(node)).push(
       {
         id: node.getProperty('id'),
-        fieldGroup: []
+        fieldGroup: [],
+        templateOptions: {
+          relations: this.relations
+        },
       }
     );
   }
 
-  convertMultistepForm(node: any, id: string) {
-    let visibleClass = 'multistep';
-    if(id === 'visible_visible') {
-      visibleClass = 'multistep';
-    } else {
-      visibleClass = 'multistep-off';
-    }
+  convertMultistepForm(node: any, path: number[]) {
     let selectedIndex: number;
     let expanded = 'false';
     if(this.path.length > 1) {
@@ -273,11 +287,22 @@ export class ProfileViewComponent{
         }
       }
     }
+
+    const children = node.getChildren();
+    for(let j = 0; j < children.length; j++) {
+      const foundRel = this.relations.find(x => x.src === children[j].getProperty('id') + '');
+      if(foundRel) {
+        this.rels.push({src: foundRel.dest, dest: foundRel.src, label: children[j].getProperty('text')});
+      }
+      const foundRelDest = this.relations.find(x => x.dest === children[j].getProperty('id') + '');
+      if(foundRelDest) {
+        this.rels.push({src: foundRelDest.src, dest: foundRelDest.dest, label: children[j].getProperty('text')});
+      }
+    }
+
     eval(this.getFieldGroup(node)).push(
           {
             type: 'stepper',
-            className: visibleClass,
-            fieldGroupClassName: visibleClass,
             id: node.getProperty('id'),
             wrappers: ['expansion'],
             selectedIndex: selectedIndex,
@@ -286,27 +311,22 @@ export class ProfileViewComponent{
               bgColor: node.getProperty('backgroundColor'),
               color: node.getProperty('fontColor'),
               expanded: expanded,
+              path: path,
+              relations: this.relations,
+              rels: this.rels
             },
             fieldGroup: []
          }
     );
   }
 
-  convertStep(node: any, id: string) {
-    let visibleClass = 'multistep';
-    if(id === 'visible_visible') {
-      visibleClass = 'multistep';
-    } else {
-      visibleClass = 'multistep-off';
-    }
+  convertStep(node: any) {
     if(this.path[0] === node.getParent().getId()) {
       this.path.splice(0, 2);
     }
     const fg = this.getFieldGroup(node);
     eval(fg).push(
       {
-        className: visibleClass,
-        fieldGroupClassName: visibleClass,
         id: node.getProperty('id'),
         templateOptions: { label: node.getProperty('text') },
         fieldGroup: [],
@@ -314,13 +334,7 @@ export class ProfileViewComponent{
     );
   }
 
-  convertTabsForm(node: any, id: string) {
-    let visibleClass = 'multistep';
-    if(id === 'visible_visible') {
-      visibleClass = 'multistep';
-    } else {
-      visibleClass = 'multistep-off';
-    }
+  convertTabsForm(node: any, path: number[]) {
     let selectedIndex: number;
     let expanded = 'false';
     if(this.path.length > 1) {
@@ -340,32 +354,40 @@ export class ProfileViewComponent{
         }
       }
     }
+
+    const children = node.getChildren();
+    for(let j = 0; j < children.length; j++) {
+      const foundRel = this.relations.find(x => x.src === children[j].getProperty('id') + '');
+      if(foundRel) {
+        this.rels.push({src: foundRel.dest, dest: foundRel.src, label: children[j].getProperty('text')});
+      }
+      const foundRelDest = this.relations.find(x => x.dest === children[j].getProperty('id') + '');
+      if(foundRelDest) {
+        this.rels.push({src: foundRelDest.src, dest: foundRelDest.dest, label: children[j].getProperty('text')});
+      }
+    }
+
     const fg = this.getFieldGroup(node);
     eval(fg).push(
       {
         type: 'tabs',
         selectedIndex: selectedIndex,
         wrappers: ['expansion'],
-        className: visibleClass,
-        fieldGroupClassName: visibleClass,
         templateOptions: {
           label: node.getProperty('text'),
           bgColor: node.getProperty('backgroundColor'),
           color: node.getProperty('fontColor'),
           expanded: expanded,
+          path: path,
+          relations: this.relations,
+          rels: this.rels
         },
         fieldGroup: []
       }
     );
   }
 
-  convertTab(node: any, id: string) {
-    let visibleClass = 'multistep';
-    if(id === 'visible_visible') {
-      visibleClass = 'multistep';
-    } else {
-      visibleClass = 'multistep-off';
-    }
+  convertTab(node: any) {
     if(this.path[0] === node.getParent().getId()) {
       this.path.splice(0, 2);
     }
@@ -373,8 +395,6 @@ export class ProfileViewComponent{
     eval(fg).push(
       {
         templateOptions: { label: node.getProperty('text') },
-        className: visibleClass,
-        fieldGroupClassName: visibleClass,
         fieldGroup: [],
       }
     );
