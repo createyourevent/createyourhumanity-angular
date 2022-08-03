@@ -9,12 +9,15 @@ import org.createyourhumanity.angular.domain.FormulaData;
 import org.createyourhumanity.angular.domain.Friends;
 import org.createyourhumanity.angular.domain.Group;
 import org.createyourhumanity.angular.domain.User;
+import org.createyourhumanity.angular.domain.UserDetails;
 import org.createyourhumanity.angular.repository.AuthorityRepository;
 import org.createyourhumanity.angular.repository.FormulaDataExtRepository;
 import org.createyourhumanity.angular.repository.FormulaDataRepository;
 import org.createyourhumanity.angular.repository.FriendsExtRepository;
 import org.createyourhumanity.angular.repository.GroupExtRepository;
 import org.createyourhumanity.angular.repository.GroupRepository;
+import org.createyourhumanity.angular.repository.UserDetailsExtRepository;
+import org.createyourhumanity.angular.repository.UserDetailsRepository;
 import org.createyourhumanity.angular.repository.UserExtRepository;
 import org.createyourhumanity.angular.repository.UserRepository;
 import org.createyourhumanity.angular.security.SecurityUtils;
@@ -54,7 +57,9 @@ public class UserExtService {
 
     private final GroupExtRepository groupExtRepository;
 
-    public UserExtService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, FormulaDataExtRepository formulaDataExtRepository, UserExtRepository userExtRepository, FriendsExtRepository friendsExtRepository, GroupExtRepository groupExtRepository) {
+    private final UserDetailsExtRepository userDetailsExtRepository;
+
+    public UserExtService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, FormulaDataExtRepository formulaDataExtRepository, UserExtRepository userExtRepository, FriendsExtRepository friendsExtRepository, GroupExtRepository groupExtRepository, UserDetailsExtRepository userDetailsExtRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
@@ -62,6 +67,7 @@ public class UserExtService {
         this.userExtRepository = userExtRepository;
         this.friendsExtRepository = friendsExtRepository;
         this.groupExtRepository = groupExtRepository;
+        this.userDetailsExtRepository = userDetailsExtRepository;
     }
 
     /**

@@ -65,6 +65,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Field("description")
     private String description;
 
+    private UserDetails userDetails;
+
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
 
@@ -179,6 +181,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UserDetails getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
     }
 
     @Override

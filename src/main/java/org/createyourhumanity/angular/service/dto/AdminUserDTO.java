@@ -8,6 +8,7 @@ import org.createyourhumanity.angular.config.Constants;
 import org.createyourhumanity.angular.domain.Authority;
 import org.createyourhumanity.angular.domain.Group;
 import org.createyourhumanity.angular.domain.User;
+import org.createyourhumanity.angular.domain.UserDetails;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -53,6 +54,8 @@ public class AdminUserDTO {
 
     private Set<Group> groups;
 
+    private UserDetails userDetails;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -73,6 +76,7 @@ public class AdminUserDTO {
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
         this.description = user.getDescription();
         this.groups = user.getGroups();
+        this.userDetails = user.getUserDetails();
     }
 
     public String getId() {
@@ -194,6 +198,15 @@ public class AdminUserDTO {
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
+        
+    public UserDetails getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
+    }
+    
     // prettier-ignore
     @Override
     public String toString() {

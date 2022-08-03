@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.createyourhumanity.angular.config.Constants;
 import org.createyourhumanity.angular.domain.Authority;
 import org.createyourhumanity.angular.domain.User;
+import org.createyourhumanity.angular.domain.UserDetails;
 import org.createyourhumanity.angular.repository.AuthorityRepository;
+import org.createyourhumanity.angular.repository.UserDetailsExtRepository;
 import org.createyourhumanity.angular.repository.UserRepository;
 import org.createyourhumanity.angular.security.SecurityUtils;
 import org.createyourhumanity.angular.service.dto.AdminUserDTO;
@@ -37,10 +39,13 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    private final UserDetailsExtRepository userDetailsExtRepository;
+
+    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserDetailsExtRepository userDetailsExtRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.userDetailsExtRepository = userDetailsExtRepository;
     }
 
     /**
@@ -151,6 +156,13 @@ public class UserService {
         User u = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().get()).get();
         String desc = u.getDescription();
         User user = getUser(attributes, desc);
+        UserDetails userDetails = this.userDetailsExtRepository.findOneByUser(user.getId());
+        if(userDetails != null) {
+            user.setUserDetails(userDetails);
+        } else {
+            userDetails = new UserDetails();
+            user.setUserDetails(userDetails);
+        }
         user.setAuthorities(
             authToken
                 .getAuthorities()
