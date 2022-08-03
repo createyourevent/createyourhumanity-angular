@@ -35,12 +35,12 @@
   </div>
 </div>
 
-<mat-tab-group #mainTabView   (selectedTabChange)="handleChange($event)">
+<mat-tab-group #mainTabView (selectedTabChange)="handleChange($event, 'main')">
   <mat-tab label="Mindmap">
     <jhi-createyourhumanity-mindmap></jhi-createyourhumanity-mindmap>
   </mat-tab>
   <mat-tab label="Profile">
-    <mat-tab-group #profileTabView>
+    <mat-tab-group #profileTabView (selectedTabChange)="handleChange($event, 'profile')">
       <mat-tab [label]="item.header" *ngFor="let item of items; let i = index">
         <div appProfileHost></div>
       </mat-tab>

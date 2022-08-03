@@ -82,7 +82,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
             if(!this.mindmap) {
               const mm = new Mindmap();
               mm.modified = dayjs();
-              mm.text = '<map name="6281b488c02b8d7b528278f3" version="tango"><topic central="true" text="Create Your Humanity" id="1" fontStyle="Perpetua;;#ffffff;;;"></topic></map>';
+              mm.text = '<map name="62bb05af4e6db14d6dc56357" version="tango"><topic central="true" text="Create Your Humanity" id="1" fontStyle="Perpetua;;#ffffff;;;"></topic></map>';
               this.mindmapService.create(mm).subscribe(res => {
                 this.formatedXml = format(this.mindmap.text);
                 this.xmlId = this.mindmap.id;
@@ -90,7 +90,7 @@ export class CreateyourhumanityMindmapComponent implements OnInit {
             } else {
               const url = document.location.href;
               if(url.includes('localhost:9000')) {
-                this.xmlId = '6281b488c02b8d7b528278f3';
+                this.xmlId = '62bb05af4e6db14d6dc56357';
               } else {
                 this.xmlId = '62bb05af4e6db14d6dc56357';
               }

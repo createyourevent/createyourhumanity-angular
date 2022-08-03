@@ -60,7 +60,6 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
   @ViewChild('mainTabView') mainTabView: MatTabGroup;
   @ViewChild('profileTabView') profileTabView: MatTabGroup;
-  @ViewChildren('matexpansionpanel', {read: ViewContainerRef}) matExpansionPanels: QueryList<MatExpansionPanel>;
   @ViewChild('accordion', {static: true}) accordion: MatAccordion;
 
 
@@ -273,13 +272,18 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     }
   }
 
-  handleChange(event): void {
-    if(event.index === 1) {
+  handleChange(event, tab: any): void {
       this.refs.forEach(r => {
         r.instance.cloneFields();
-        //r.instance.reloadData();
+        r.instance.reloadData();
       });
-    }
+      if(tab === 'main' && event === 0) {
+        this.repaintTopics(this.designer.getModel().findTopicById(1));
+      }
+  }
+
+  repaintTopics(node) {
+    this.domWalkerRepaint(node);
   }
 
   processData(): Promise<Item[]> {
@@ -330,6 +334,14 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     });
   }
 
+  domWalkerRepaint(node: Topic) {
+    node.adjustShapes();
+    if (node.getChildren().length > 0) {
+      node.getChildren().forEach(childNode => {
+          this.domWalker(childNode);
+      });
+    }
+  }
 
   domWalker(node: Topic, t?: string) {
     if(t) {
