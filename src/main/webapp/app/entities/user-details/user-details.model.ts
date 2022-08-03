@@ -3,6 +3,8 @@ import { IUser } from 'app/entities/user/user.model';
 
 export interface IUserDetails {
   id?: string;
+  points?: number | null;
+  address?: string | null;
   dob?: dayjs.Dayjs | null;
   created?: dayjs.Dayjs | null;
   modified?: dayjs.Dayjs | null;
@@ -12,6 +14,8 @@ export interface IUserDetails {
 export class UserDetails implements IUserDetails {
   constructor(
     public id?: string,
+    public points?: number | null,
+    public address?: string | null,
     public dob?: dayjs.Dayjs | null,
     public created?: dayjs.Dayjs | null,
     public modified?: dayjs.Dayjs | null,

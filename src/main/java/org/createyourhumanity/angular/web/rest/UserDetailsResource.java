@@ -121,6 +121,12 @@ public class UserDetailsResource {
         Optional<UserDetails> result = userDetailsRepository
             .findById(userDetails.getId())
             .map(existingUserDetails -> {
+                if (userDetails.getPoints() != null) {
+                    existingUserDetails.setPoints(userDetails.getPoints());
+                }
+                if (userDetails.getAddress() != null) {
+                    existingUserDetails.setAddress(userDetails.getAddress());
+                }
                 if (userDetails.getDob() != null) {
                     existingUserDetails.setDob(userDetails.getDob());
                 }

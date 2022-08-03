@@ -18,6 +18,8 @@
         "title": "User Details"
       },
       "id": "ID",
+      "points": "Points",
+      "address": "Address",
       "dob": "Dob",
       "created": "Created",
       "modified": "Modified",

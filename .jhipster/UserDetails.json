@@ -6,6 +6,14 @@
   "entityTableName": "user_details",
   "fields": [
     {
+      "fieldName": "points",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "dob",
       "fieldType": "ZonedDateTime"
     },

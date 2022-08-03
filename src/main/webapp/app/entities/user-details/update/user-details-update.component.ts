@@ -24,6 +24,8 @@ export class UserDetailsUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
+    points: [],
+    address: [],
     dob: [],
     created: [],
     modified: [],
@@ -92,6 +94,8 @@ export class UserDetailsUpdateComponent implements OnInit {
   protected updateForm(userDetails: IUserDetails): void {
     this.editForm.patchValue({
       id: userDetails.id,
+      points: userDetails.points,
+      address: userDetails.address,
       dob: userDetails.dob ? userDetails.dob.format(DATE_TIME_FORMAT) : null,
       created: userDetails.created ? userDetails.created.format(DATE_TIME_FORMAT) : null,
       modified: userDetails.modified ? userDetails.modified.format(DATE_TIME_FORMAT) : null,
@@ -113,6 +117,8 @@ export class UserDetailsUpdateComponent implements OnInit {
     return {
       ...new UserDetails(),
       id: this.editForm.get(['id'])!.value,
+      points: this.editForm.get(['points'])!.value,
+      address: this.editForm.get(['address'])!.value,
       dob: this.editForm.get(['dob'])!.value ? dayjs(this.editForm.get(['dob'])!.value, DATE_TIME_FORMAT) : undefined,
       created: this.editForm.get(['created'])!.value ? dayjs(this.editForm.get(['created'])!.value, DATE_TIME_FORMAT) : undefined,
       modified: this.editForm.get(['modified'])!.value ? dayjs(this.editForm.get(['modified'])!.value, DATE_TIME_FORMAT) : undefined,

@@ -25,6 +25,8 @@ describe('UserDetails Service', () => {
 
     elemDefault = {
       id: 'AAAAAAA',
+      points: 0,
+      address: 'AAAAAAA',
       dob: currentDate,
       created: currentDate,
       modified: currentDate,
@@ -80,6 +82,8 @@ describe('UserDetails Service', () => {
       const returnedFromService = Object.assign(
         {
           id: 'BBBBBB',
+          points: 1,
+          address: 'BBBBBB',
           dob: currentDate.format(DATE_TIME_FORMAT),
           created: currentDate.format(DATE_TIME_FORMAT),
           modified: currentDate.format(DATE_TIME_FORMAT),
@@ -128,6 +132,8 @@ describe('UserDetails Service', () => {
       const returnedFromService = Object.assign(
         {
           id: 'BBBBBB',
+          points: 1,
+          address: 'BBBBBB',
           dob: currentDate.format(DATE_TIME_FORMAT),
           created: currentDate.format(DATE_TIME_FORMAT),
           modified: currentDate.format(DATE_TIME_FORMAT),
@@ -189,7 +195,7 @@ describe('UserDetails Service', () => {
       });
 
       it('should add only unique UserDetails to an array', () => {
-        const userDetailsArray: IUserDetails[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '40080ae0-d41f-4e35-97a6-c656ec58c084' }];
+        const userDetailsArray: IUserDetails[] = [{ id: 'ABC' }, { id: 'CBA' }, { id: '080ae0d4-1fe3-4557-a6c6-56ec58c084d3' }];
         const userDetailsCollection: IUserDetails[] = [{ id: 'ABC' }];
         expectedResult = service.addUserDetailsToCollectionIfMissing(userDetailsCollection, ...userDetailsArray);
         expect(expectedResult).toHaveLength(3);

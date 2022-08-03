@@ -325,6 +325,12 @@
               </a>
             </li>
             <li *ngSwitchCase="true">
+              <a class="dropdown-item" routerLink="/settings" data-cy="groups">
+                <fa-icon icon="cogs" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="navbar.groups">Settings</span>
+              </a>
+            </li>
+            <li *ngSwitchCase="true">
               <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
                 <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="global.menu.account.logout">Sign out</span>

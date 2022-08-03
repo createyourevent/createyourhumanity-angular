@@ -32,6 +32,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser
 class UserDetailsResourceIT {
 
+    private static final Integer DEFAULT_POINTS = 1;
+    private static final Integer UPDATED_POINTS = 2;
+
+    private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
+    private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
+
     private static final ZonedDateTime DEFAULT_DOB = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_DOB = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
@@ -59,7 +65,12 @@ class UserDetailsResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static UserDetails createEntity() {
-        UserDetails userDetails = new UserDetails().dob(DEFAULT_DOB).created(DEFAULT_CREATED).modified(DEFAULT_MODIFIED);
+        UserDetails userDetails = new UserDetails()
+            .points(DEFAULT_POINTS)
+            .address(DEFAULT_ADDRESS)
+            .dob(DEFAULT_DOB)
+            .created(DEFAULT_CREATED)
+            .modified(DEFAULT_MODIFIED);
         return userDetails;
     }
 
@@ -70,7 +81,12 @@ class UserDetailsResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static UserDetails createUpdatedEntity() {
-        UserDetails userDetails = new UserDetails().dob(UPDATED_DOB).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        UserDetails userDetails = new UserDetails()
+            .points(UPDATED_POINTS)
+            .address(UPDATED_ADDRESS)
+            .dob(UPDATED_DOB)
+            .created(UPDATED_CREATED)
+            .modified(UPDATED_MODIFIED);
         return userDetails;
     }
 
@@ -97,6 +113,8 @@ class UserDetailsResourceIT {
         List<UserDetails> userDetailsList = userDetailsRepository.findAll();
         assertThat(userDetailsList).hasSize(databaseSizeBeforeCreate + 1);
         UserDetails testUserDetails = userDetailsList.get(userDetailsList.size() - 1);
+        assertThat(testUserDetails.getPoints()).isEqualTo(DEFAULT_POINTS);
+        assertThat(testUserDetails.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testUserDetails.getDob()).isEqualTo(DEFAULT_DOB);
         assertThat(testUserDetails.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testUserDetails.getModified()).isEqualTo(DEFAULT_MODIFIED);
@@ -135,6 +153,8 @@ class UserDetailsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userDetails.getId())))
+            .andExpect(jsonPath("$.[*].points").value(hasItem(DEFAULT_POINTS)))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].dob").value(hasItem(sameInstant(DEFAULT_DOB))))
             .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))))
             .andExpect(jsonPath("$.[*].modified").value(hasItem(sameInstant(DEFAULT_MODIFIED))));
@@ -151,6 +171,8 @@ class UserDetailsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(userDetails.getId()))
+            .andExpect(jsonPath("$.points").value(DEFAULT_POINTS))
+            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.dob").value(sameInstant(DEFAULT_DOB)))
             .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)))
             .andExpect(jsonPath("$.modified").value(sameInstant(DEFAULT_MODIFIED)));
@@ -171,7 +193,12 @@ class UserDetailsResourceIT {
 
         // Update the userDetails
         UserDetails updatedUserDetails = userDetailsRepository.findById(userDetails.getId()).get();
-        updatedUserDetails.dob(UPDATED_DOB).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        updatedUserDetails
+            .points(UPDATED_POINTS)
+            .address(UPDATED_ADDRESS)
+            .dob(UPDATED_DOB)
+            .created(UPDATED_CREATED)
+            .modified(UPDATED_MODIFIED);
 
         restUserDetailsMockMvc
             .perform(
@@ -186,6 +213,8 @@ class UserDetailsResourceIT {
         List<UserDetails> userDetailsList = userDetailsRepository.findAll();
         assertThat(userDetailsList).hasSize(databaseSizeBeforeUpdate);
         UserDetails testUserDetails = userDetailsList.get(userDetailsList.size() - 1);
+        assertThat(testUserDetails.getPoints()).isEqualTo(UPDATED_POINTS);
+        assertThat(testUserDetails.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testUserDetails.getDob()).isEqualTo(UPDATED_DOB);
         assertThat(testUserDetails.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testUserDetails.getModified()).isEqualTo(UPDATED_MODIFIED);
@@ -262,7 +291,7 @@ class UserDetailsResourceIT {
         UserDetails partialUpdatedUserDetails = new UserDetails();
         partialUpdatedUserDetails.setId(userDetails.getId());
 
-        partialUpdatedUserDetails.dob(UPDATED_DOB).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        partialUpdatedUserDetails.points(UPDATED_POINTS).address(UPDATED_ADDRESS).dob(UPDATED_DOB).modified(UPDATED_MODIFIED);
 
         restUserDetailsMockMvc
             .perform(
@@ -277,8 +306,10 @@ class UserDetailsResourceIT {
         List<UserDetails> userDetailsList = userDetailsRepository.findAll();
         assertThat(userDetailsList).hasSize(databaseSizeBeforeUpdate);
         UserDetails testUserDetails = userDetailsList.get(userDetailsList.size() - 1);
+        assertThat(testUserDetails.getPoints()).isEqualTo(UPDATED_POINTS);
+        assertThat(testUserDetails.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testUserDetails.getDob()).isEqualTo(UPDATED_DOB);
-        assertThat(testUserDetails.getCreated()).isEqualTo(UPDATED_CREATED);
+        assertThat(testUserDetails.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testUserDetails.getModified()).isEqualTo(UPDATED_MODIFIED);
     }
 
@@ -293,7 +324,12 @@ class UserDetailsResourceIT {
         UserDetails partialUpdatedUserDetails = new UserDetails();
         partialUpdatedUserDetails.setId(userDetails.getId());
 
-        partialUpdatedUserDetails.dob(UPDATED_DOB).created(UPDATED_CREATED).modified(UPDATED_MODIFIED);
+        partialUpdatedUserDetails
+            .points(UPDATED_POINTS)
+            .address(UPDATED_ADDRESS)
+            .dob(UPDATED_DOB)
+            .created(UPDATED_CREATED)
+            .modified(UPDATED_MODIFIED);
 
         restUserDetailsMockMvc
             .perform(
@@ -308,6 +344,8 @@ class UserDetailsResourceIT {
         List<UserDetails> userDetailsList = userDetailsRepository.findAll();
         assertThat(userDetailsList).hasSize(databaseSizeBeforeUpdate);
         UserDetails testUserDetails = userDetailsList.get(userDetailsList.size() - 1);
+        assertThat(testUserDetails.getPoints()).isEqualTo(UPDATED_POINTS);
+        assertThat(testUserDetails.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testUserDetails.getDob()).isEqualTo(UPDATED_DOB);
         assertThat(testUserDetails.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testUserDetails.getModified()).isEqualTo(UPDATED_MODIFIED);

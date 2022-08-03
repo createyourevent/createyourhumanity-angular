@@ -24,6 +24,8 @@ entity KeyTable {
 }
 
 entity UserDetails {
+    points Integer
+    address String
     dob ZonedDateTime
     created ZonedDateTime
     modified ZonedDateTime

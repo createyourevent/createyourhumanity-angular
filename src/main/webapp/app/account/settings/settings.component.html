@@ -1,0 +1,33 @@
+<h1 jhiTranslate="account-settings.title">Settings</h1>
+<div class="row box-aqua">
+  <div class="col-md-6">
+    <h2 jhiTranslate="account-settings.address"></h2>
+    <span jhiTranslate="account-settings.description">Please enter your home address on the right. You can then specify in the profile search in which radius you are looking for a particular profile.
+                                  For example, you can display all profiles that have football as a hobby to get all football fans in this radius. </span>
+  </div>
+  <div class="col-md-6">
+
+    <div class="form-group">
+      <label class="form-control-label" for="address" jhiTranslate="account-settings.address">Address</label>
+      <input ngx-google-places-autocomplete autocomplete="off" list="autocompleteOff"  type="text" class="form-control" id="address" name="address" placeholder="{{ 'account-settings.address' | translate }}"
+             formControlName="address" (onAddressChange)="addressChange($event)">
+
+      <small class="form-text"
+      jhiTranslate="fieldnames.address.info">
+      Please enter the address in the following format: '(street house-number, zip-code city, country)'. Example: (Musterstrasse 165, 8200 Schaffhausen, Switzerland)
+      </small>
+      <div *ngIf="settingsForm.get('address')!.invalid && (settingsForm.get('address')!.dirty || settingsForm.get('address')!.touched)">
+          <small class="form-text text-danger"
+                 *ngIf="settingsForm.get('address')?.errors?.required"
+                 jhiTranslate="settings.messages.validate.address.required">
+              Address1 is required.
+          </small>
+          <small class="form-text text-danger"
+              *ngIf="settingsForm.get('address')?.errors?.pattern"
+              jhiTranslate="settings.messages.validate.address.pattern">
+              Address-pattern wrong
+          </small>
+      </div>
+  </div>
+  </div>
+</div>

@@ -18,6 +18,12 @@ public class UserDetails implements Serializable {
     @Id
     private String id;
 
+    @Field("points")
+    private Integer points;
+
+    @Field("address")
+    private String address;
+
     @Field("dob")
     private ZonedDateTime dob;
 
@@ -44,6 +50,32 @@ public class UserDetails implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getPoints() {
+        return this.points;
+    }
+
+    public UserDetails points(Integer points) {
+        this.setPoints(points);
+        return this;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public UserDetails address(String address) {
+        this.setAddress(address);
+        return this;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public ZonedDateTime getDob() {
@@ -122,6 +154,8 @@ public class UserDetails implements Serializable {
     public String toString() {
         return "UserDetails{" +
             "id=" + getId() +
+            ", points=" + getPoints() +
+            ", address='" + getAddress() + "'" +
             ", dob='" + getDob() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +

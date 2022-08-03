@@ -60,6 +60,10 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'instructions',
           loadChildren: () => import('./instructions/instructions.module').then(m => m.InstructionsModule)
         },
+        {
+          path: 'settings',
+          loadChildren: () => import('./account/settings/settings.module').then(m => m.SettingsModule)
+        },
 
         /*
         {

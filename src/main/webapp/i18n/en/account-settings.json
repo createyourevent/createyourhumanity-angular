@@ -1,0 +1,7 @@
+{
+  "account-settings": {
+    "title": "Account settings",
+    "address": "Address",
+    "description": "Please enter your home address on the right. You can then specify in the profile search in which radius you are looking for a particular profile. For example, you can display all profiles that have football as a hobby to get all football fans in this radius. "
+  }
+}
