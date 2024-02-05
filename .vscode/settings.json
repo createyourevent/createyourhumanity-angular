@@ -18,5 +18,7 @@
         "textfield",
         "Textfield"
     ],
-    "java.configuration.updateBuildConfiguration": "disabled"
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
