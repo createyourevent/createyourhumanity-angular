@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "paths": {
-      "primeng/*": ["node_modules/primeng/*"]
-    },
     "baseUrl": "src/main/webapp/",
     "outDir": "./target/classes/static/",
     "forceConsistentCasingInFileNames": true,
@@ -28,6 +25,7 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
-    "preserveWhitespaces": true
+    "preserveWhitespaces": true,
+    "enableIvy": true
   }
 }

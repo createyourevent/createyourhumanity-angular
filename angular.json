@@ -106,13 +106,13 @@
       }
     }
   },
-  "defaultProject": "createyourhumanity-angular",
   "cli": {
     "cache": {
       "enabled": true,
       "path": "./target/angular/",
       "environment": "all"
     },
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "731456ea-a0c2-4958-b170-281da4668d90"
   }
 }
