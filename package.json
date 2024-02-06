@@ -4,7 +4,7 @@
   "description": "Description for createyourhumanity_angular",
   "license": "UNLICENSED",
   "publishConfig": {
-    "registry": "http://localhost:4873"
+    "registry": "http://localhost:4873/"
   },
   "scripts": {
     "app:start": "./mvnw",
