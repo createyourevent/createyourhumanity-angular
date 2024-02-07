@@ -13,6 +13,12 @@ const environment = require('./environment');
 const proxyConfig = require('./proxy.conf');
 
 module.exports = async (config, options, targetOptions) => {
+  performance: {
+    maxAssetSize: 100000;
+    maxEntrypointSize: 100000;
+    hints: "warning"
+  }
+
   const languagesHash = await hashElement(path.resolve(__dirname, '../src/main/webapp/i18n'), {
     algo: 'md5',
     encoding: 'hex',

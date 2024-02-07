@@ -27,7 +27,7 @@
         <maven.version>3.3.9</maven.version>
         <java.version>11</java.version>
         <node.version>v18.19.0</node.version>
-        <npm.version>10.4.0</npm.version>
+        <npm.version>8.19.4</npm.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -873,6 +873,7 @@
                     <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.15.0</version>
                         <executions>
                             <execution>
                                 <id>install-node-and-npm</id>
@@ -885,10 +886,14 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>npm install</id>
+                                <id>npm install --legacy-peer-deps</id>
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
+                                <configuration>
+                                    <arguments>install --legacy-peer-deps</arguments>
+                                    <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>webapp build dev</id>
@@ -960,6 +965,7 @@
                     <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.15.0</version>
                         <executions>
                             <execution>
                                 <id>install-node-and-npm</id>
@@ -976,6 +982,10 @@
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
+                                <configuration>
+                                    <arguments>install --legacy-peer-deps</arguments>
+                                    <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>webapp build test</id>

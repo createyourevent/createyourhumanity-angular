@@ -70,6 +70,29 @@ export class ProfileComponent implements OnInit, AfterViewInit{
                 this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
                 index++;
               });
+
+              const bar = new Promise((resolve, reject) => {
+                this.pages.forEach((page, index, array) => {
+                  this.forms.push(page.parentElement);
+                  this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+                  if (index === array.length -1) resolve(true);
+                });
+            });
+
+            bar.then(() => {
+              this.profileHosts.changes.subscribe(ph => {
+                let index = 0;
+                ph.forEach(p => {
+                  const component: typeof FormComponent = FormComponent;
+                  const r = p.viewContainerRef.createComponent(component);
+                  r.instance.xml = this.forms[index].outerHTML;
+                  r.instance.userId = this.userId;
+                  r.instance.mapId = this.mindmap.id;
+                  index++;
+                });
+              });
+            });
+
             });
           });
         }
@@ -77,17 +100,51 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(): any {
-    this.profileHosts.changes.subscribe(ph => {
-      let index = 0;
-      ph.forEach(p => {
-        const component: typeof FormComponent = FormComponent;
-        const r = p.viewContainerRef.createComponent(component);
-        r.instance.xml = this.forms[index].outerHTML;
-        r.instance.userId = this.userId;
-        r.instance.mapId = this.mindmap.id;
-        index++;
-      });
-    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account
+      if(this.account) {
+          this.mindmapService.query().subscribe(umm => {
+            const mindmaps = umm.body;
+            this.mindmap = mindmaps[0];
+            this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+              this.formulaData = res.body;
+              const parser = new DOMParser();
+              const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
+              this.pages = xml.querySelectorAll('[id="form"]');
+
+              let index = 0;
+              this.pages.forEach(page => {
+                this.forms.push(page.parentElement);
+                this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+                index++;
+              });
+
+              const bar = new Promise((resolve, reject) => {
+                this.pages.forEach((page, index, array) => {
+                  this.forms.push(page.parentElement);
+                  this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+                  if (index === array.length -1) resolve(true);
+                });
+            });
+
+            bar.then(() => {
+              this.profileHosts.changes.subscribe(ph => {
+                let index = 0;
+                ph.forEach(p => {
+                  const component: typeof FormComponent = FormComponent;
+                  const r = p.viewContainerRef.createComponent(component);
+                  r.instance.xml = this.forms[index].outerHTML;
+                  r.instance.userId = this.userId;
+                  r.instance.mapId = this.mindmap.id;
+                  index++;
+                });
+              });
+            });
+
+            });
+          });
+        }
+      })
   }
 }
 

@@ -19,7 +19,7 @@
     "module": "esnext",
     "lib": ["es2020", "dom"],
     "jsx": "react-jsx",
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
