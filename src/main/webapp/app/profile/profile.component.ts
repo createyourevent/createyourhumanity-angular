@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   forms: any[] = [];
   pages: any;
   xml: any;
+  @Input() allLoaded: boolean = false;
 
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @Input() userId: string;
@@ -64,35 +65,13 @@ export class ProfileComponent implements OnInit, AfterViewInit{
               const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
               this.pages = xml.querySelectorAll('[id="form"]');
 
-              let index = 0;
-              this.pages.forEach(page => {
+              this.pages.forEach((page: any, index: number) => {
                 this.forms.push(page.parentElement);
                 this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-                index++;
+                if(index === this.pages.length - 1){
+                  this.allLoaded = true;
+                }
               });
-
-              const bar = new Promise((resolve, reject) => {
-                this.pages.forEach((page, index, array) => {
-                  this.forms.push(page.parentElement);
-                  this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-                  if (index === array.length -1) resolve(true);
-                });
-            });
-
-            bar.then(() => {
-              this.profileHosts.changes.subscribe(ph => {
-                let index = 0;
-                ph.forEach(p => {
-                  const component: typeof FormComponent = FormComponent;
-                  const r = p.viewContainerRef.createComponent(component);
-                  r.instance.xml = this.forms[index].outerHTML;
-                  r.instance.userId = this.userId;
-                  r.instance.mapId = this.mindmap.id;
-                  index++;
-                });
-              });
-            });
-
             });
           });
         }
@@ -100,51 +79,17 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(): any {
-    this.accountService.identity().subscribe(account => {
-      this.account = account
-      if(this.account) {
-          this.mindmapService.query().subscribe(umm => {
-            const mindmaps = umm.body;
-            this.mindmap = mindmaps[0];
-            this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
-              this.formulaData = res.body;
-              const parser = new DOMParser();
-              const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
-              this.pages = xml.querySelectorAll('[id="form"]');
-
-              let index = 0;
-              this.pages.forEach(page => {
-                this.forms.push(page.parentElement);
-                this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-                index++;
-              });
-
-              const bar = new Promise((resolve, reject) => {
-                this.pages.forEach((page, index, array) => {
-                  this.forms.push(page.parentElement);
-                  this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-                  if (index === array.length -1) resolve(true);
-                });
-            });
-
-            bar.then(() => {
-              this.profileHosts.changes.subscribe(ph => {
-                let index = 0;
-                ph.forEach(p => {
-                  const component: typeof FormComponent = FormComponent;
-                  const r = p.viewContainerRef.createComponent(component);
-                  r.instance.xml = this.forms[index].outerHTML;
-                  r.instance.userId = this.userId;
-                  r.instance.mapId = this.mindmap.id;
-                  index++;
-                });
-              });
-            });
-
-            });
-          });
-        }
-      })
+      this.profileHosts.changes.subscribe((ph: QueryList<ProfileHostDirective>)  => {
+        ph.forEach((p: any, index: number)=> {
+          ph.first;
+          const component: typeof FormComponent = FormComponent;
+          const r = p.viewContainerRef.createComponent(component);
+          r.instance.xml = this.forms[index].outerHTML;
+          r.instance.userId = this.userId;
+          r.instance.mapId = this.mindmap.id;
+        });
+      });
+    }
   }
-}
+
 

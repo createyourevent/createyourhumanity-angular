@@ -1,5 +1,5 @@
-<p-tabView>
-  <p-tabPanel [header]="item.header" *ngFor="let item of items; let i = index" [selected]="i == 0">
+<p-tabView [hidden]="!allLoaded">
+  <p-tabPanel *ngFor="let item of items" [header]="item.header">
     <ng-container appProfileHost></ng-container>
   </p-tabPanel>
 </p-tabView>

@@ -110,7 +110,7 @@
     "ngx-webstorage": "9.0.0",
     "ngx-xml2json": "^1.0.2",
     "primeicons": "^5.0.0",
-    "primeng": "file:../primeng/dist/primeng-13.3.4-SNAPSHOT.tgz",
+    "primeng": "file:../primeng/dist/primeng-28.7.0.tgz",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-intl": "5.24.8",

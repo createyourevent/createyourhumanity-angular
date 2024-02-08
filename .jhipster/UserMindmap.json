@@ -18,7 +18,7 @@
   "jpaMetamodelFiltering": false,
   "name": "UserMindmap",
   "pagination": "no",
-  "readOnly": false,
+  "": false,
   "relationships": [
     {
       "otherEntityName": "user",

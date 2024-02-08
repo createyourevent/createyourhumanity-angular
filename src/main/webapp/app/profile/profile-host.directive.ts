@@ -4,4 +4,3 @@ import { Directive, ViewContainerRef } from '@angular/core';
 export class ProfileHostDirective {
   constructor(public viewContainerRef: ViewContainerRef) {}
 }
-export default ProfileHostDirective;

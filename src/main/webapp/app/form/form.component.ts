@@ -140,10 +140,13 @@ export class FormComponent implements OnInit, AfterViewInit{
   parseJSON(node) {
       const n = node;
       let req = false;
-      if(JSON.parse(node.firstChild.getAttribute('required')) !== null) {
+      if(node.firstChild) {
+        if(JSON.parse(node.firstChild.getAttribute('required')) !== null) {
+          req = JSON.parse(node.firstChild.getAttribute('required'));
+        }
         req = JSON.parse(node.firstChild.getAttribute('required'));
       }
-      req = JSON.parse(node.firstChild.getAttribute('required'));
+      let key: string = node.getAttribute('id') as string;
       /*
       let key: string = node.getAttribute('text').toLowerCase();
       this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
@@ -171,19 +174,19 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'htmlFormTab') {
             this.convertTab(n);
           } else if (n.firstElementChild.tagName === 'textfield') {
-            this.convertTextfield(n, req);
+            this.convertTextfield(n, req, key);
           } else if (n.firstElementChild.tagName === 'textarea') {
-            this.convertTextarea(n, req);
+            this.convertTextarea(n, req, key);
           } else if (n.firstElementChild.tagName === 'select') {
-            this.convertSelect(n, req);
+            this.convertSelect(n, req, key);
           } else if (n.firstElementChild.tagName === 'option') {
             console.log('option');
           } else if (n.firstElementChild.tagName === 'radiogroup') {
-            this.convertRadiogroup(n, req);
+            this.convertRadiogroup(n, req, key);
           } else if (n.firstElementChild.tagName === 'radio') {
             console.log('radio');
           } else if (n.firstElementChild.tagName === 'checkbox') {
-            this.convertCheckbox(n, req);
+            this.convertCheckbox(n, req, key);
           } else if (n.firstElementChild.tagName === 'hr') {
             this.convertHr(n);
           } else if (n.firstElementChild.tagName === 'title') {
@@ -302,15 +305,10 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTextfield(node: any, req: boolean, key?: string) {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
+
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
-          key: _key,
+          key: key,
           type: 'input',
           templateOptions: {
             placeholder: node.getAttribute('text'),
@@ -323,15 +321,9 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertTextarea(node: any, req: boolean, key?: string) {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: _key,
+        key: key,
         type: 'textarea',
         templateOptions: {
           placeholder: node.getAttribute('text'),
@@ -351,15 +343,10 @@ export class FormComponent implements OnInit, AfterViewInit{
       const o = {value: i, label: os[i].getAttribute('text')};
       options.push(o);
     }
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
+
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: _key,
+        key: key,
         type: 'select',
         templateOptions: {
           placeholder: node.getAttribute('text'),
@@ -381,7 +368,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     }
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: node.getAttribute('text'),
+        key:  node.getAttribute('id') as string,
         type: 'radio',
         className: '',
         templateOptions: {
@@ -394,15 +381,10 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   convertCheckbox(node: any, req: boolean,  key?: string) {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
+
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
-        key: _key,
+        key: key,
         type: 'checkbox',
         templateOptions: {
           placeholder: node.getAttribute('text'),

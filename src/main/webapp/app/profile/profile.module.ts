@@ -4,7 +4,7 @@ import { ProfileComponent } from './profile.component';
 import {TabViewModule} from 'primeng/tabview';
 import { FormModule } from 'app/form/form.module';
 import { ProfileRoutes } from './profile.routing';
-import ProfileHostDirective from './profile-host.directive';
+import { ProfileHostDirective } from './profile-host.directive';
 
 @NgModule({
   imports: [
@@ -13,6 +13,6 @@ import ProfileHostDirective from './profile-host.directive';
     FormModule,
     ProfileRoutes
   ],
-  declarations: [ProfileComponent, ProfileHostDirective]
+  declarations: [ProfileComponent, ProfileHostDirective],
 })
 export class ProfileModule { }
