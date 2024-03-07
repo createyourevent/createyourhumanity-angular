@@ -12,7 +12,7 @@ import { FormatMediumDatePipe } from './date/format-medium-date.pipe';
 import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { XmlPipe } from 'app/pipes/xmlpipe.pipe';
@@ -31,13 +31,18 @@ import { ColumnWrapperComponent } from 'app/formly/column-wrapper.component';
 import { RowWrapperComponent } from 'app/formly/row-wrapper.component';
 import { DateTimeInputComponent } from 'app/formly/date-time.component';
 import { DateInputComponent } from 'app/formly/date.component';
+import { FormlyGrantsComponent } from 'app/formly/grant_controller.component';
+import { CommonModule } from '@angular/common';
+
 
 @NgModule({
-  imports: [SharedLibsModule,
+  imports: [CommonModule,
+            SharedLibsModule,
             ReactiveFormsModule,
             MatSliderModule,
             MatStepperModule,
             MatIconModule,
+            FormsModule,
             MatTabsModule,
             FormlyBootstrapModule,
             FormlyModule.forRoot({
@@ -46,6 +51,8 @@ import { DateInputComponent } from 'app/formly/date.component';
                 { name: 'containerwrapper', component: ContainerWrapperComponent },
                 { name: 'rowwrapper', component: RowWrapperComponent },
                 { name: 'columnwrapper', component: ColumnWrapperComponent },
+                { name: 'grants', component: FormlyGrantsComponent  },
+
               ],
               types: [
                 { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
@@ -55,6 +62,18 @@ import { DateInputComponent } from 'app/formly/date.component';
                 { name: 'column', component: ColumnComponent },
                 { name: 'date', component: DateInputComponent, wrappers: ['form-field'] },
                 { name: 'datetime', component: DateTimeInputComponent, wrappers: ['form-field'] },
+              ],
+              presets: [
+                {
+                  name: 'firstName',
+                  config: {
+                    key: 'firstName',
+                    type: 'input',
+                    props: {
+                      label: 'First Name',
+                    },
+                  },
+                },
               ],
             }),
   ],
@@ -75,6 +94,7 @@ import { DateInputComponent } from 'app/formly/date.component';
     FormlyFieldTabsComponent,
     ContainerComponent,
     RowComponent,
+    FormlyGrantsComponent,
     ColumnComponent,
     DateInputComponent,
     DateTimeInputComponent
@@ -92,6 +112,7 @@ import { DateInputComponent } from 'app/formly/date.component';
     SortByDirective,
     SortDirective,
     ItemCountComponent,
+    FormlyGrantsComponent,
     ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,

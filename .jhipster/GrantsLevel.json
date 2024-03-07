@@ -1,0 +1,22 @@
+{
+  "changelogDate": "20240215220626",
+  "fields": [
+    {
+      "fieldName": "map",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "modified",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "name": "GrantsLevel",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

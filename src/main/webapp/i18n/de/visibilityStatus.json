@@ -1,0 +1,26 @@
+{
+  "createyourhumanityAngularApp": {
+    "visibilityStatus": {
+      "home": {
+        "title": "Visibility Statuses",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Visibility Status erstellen",
+        "createOrEditLabel": "Visibility Status erstellen oder bearbeiten",
+        "notFound": "Keine Visibility Statuses gefunden"
+      },
+      "created": "Visibility Status erstellt mit ID {{ param }}",
+      "updated": "Visibility Status aktualisiert mit ID {{ param }}",
+      "deleted": "Visibility Status gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Visibility Status {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Visibility Status"
+      },
+      "id": "ID",
+      "map": "Map",
+      "created": "Created",
+      "modified": "Modified"
+    }
+  }
+}

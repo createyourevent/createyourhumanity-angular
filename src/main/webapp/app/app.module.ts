@@ -1,4 +1,4 @@
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import locale from '@angular/common/locales/en';
@@ -27,6 +27,14 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/createyourhumanity-mindmap.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UserService } from './user.service';
+
+
+export function initSynchronousFactory(userService: UserService) {
+  return () => {
+    userService.initUser();
+  };
+}
 
 @NgModule({
   imports: [
@@ -48,6 +56,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     Title,
     { provide: LOCALE_ID, useValue: 'en' },
     { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initSynchronousFactory,
+      deps: [UserService],
+      multi: true,
+    },
     httpInterceptorProviders,
   ],
   declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],

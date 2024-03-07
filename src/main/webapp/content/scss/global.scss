@@ -7,6 +7,35 @@
 @import '../../../../../node_modules/primeng/resources/primeng.min.css';
 @import '../../../../../node_modules/material-design-icons/iconfont/material-icons.css';
 
+.grants{
+  display:flex;
+  flex-direction:column;
+}
+
+
+.form-field-label  {
+  font-weight: bold;
+}
+
+
+.form-label  {
+  font-weight: bold;
+}
+
+.form-field-content {
+  margin-bottom: 10px;
+}
+
+.form-field {
+  margin: 15px;
+  padding: 15px;
+  background: #659999;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f4791f, #659999);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f4791f, #659999); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  display: block;
+  border: 1px black solid;
+  border-radius: 10px;
+}
 
 /* ==============================================================
 Bootstrap tweaks

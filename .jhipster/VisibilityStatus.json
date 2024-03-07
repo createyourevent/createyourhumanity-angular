@@ -1,0 +1,22 @@
+{
+  "changelogDate": "20240215221026",
+  "fields": [
+    {
+      "fieldName": "map",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "modified",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "name": "VisibilityStatus",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

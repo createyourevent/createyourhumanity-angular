@@ -1,0 +1,82 @@
+<div>
+  <h2 id="page-heading" data-cy="VisibilityStatusHeading">
+    <span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.home.title">Visibility Statuses</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-visibility-status"
+        [routerLink]="['/visibility-status/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.home.createLabel"> Create a new Visibility Status </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="visibilityStatuses?.length === 0">
+    <span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.home.notFound">No visibilityStatuses found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="visibilityStatuses && visibilityStatuses.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.map">Map</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.created">Created</span></th>
+          <th scope="col"><span jhiTranslate="createyourhumanityAngularApp.visibilityStatus.modified">Modified</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let visibilityStatus of visibilityStatuses; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/visibility-status', visibilityStatus.id, 'view']">{{ visibilityStatus.id }}</a>
+          </td>
+          <td>{{ visibilityStatus.map }}</td>
+          <td>{{ visibilityStatus.created | formatMediumDatetime }}</td>
+          <td>{{ visibilityStatus.modified | formatMediumDatetime }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/visibility-status', visibilityStatus.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/visibility-status', visibilityStatus.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(visibilityStatus)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -16,6 +16,9 @@ import { Account } from 'app/core/auth/account.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import { OnInit } from '@angular/core';
+import { IUser } from 'app/entities/user/user.model';
+import { UserService } from 'app/user.service';
 
 
 @Component({
@@ -33,11 +36,13 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   private account: Account;
   _routerSub = Subscription.EMPTY;
 
+
   constructor(private translateService: TranslateService,
                       sessionStorageService: SessionStorageService,
               private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
-              private router: Router) {
+              private router: Router,
+              private userService: UserService) {
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
     this._routerSub = this.router.events
         .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
@@ -45,6 +50,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
             //this.reloadCurrentRoute();
          });
   }
+
 
   public ngOnChanges(changes: SimpleChanges) {
     if(changes['mapId'].currentValue !== undefined) {
@@ -126,8 +132,18 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
     }
 
 
+
     ReactDOM.render(
-      <Editor {...props} />,
+      <Editor
+        mapId={this.mapId}
+        options={options}
+        values={this.userService.formulaData.map}
+        grants={this.userService.grantsData.map}
+        visible={this.userService.visibilityData.map}
+        persistenceManager={persistence}
+        onAction={(action) => console.log('action called:', action)}
+        onLoad={initialization}
+      />,
       document.getElementById(this.rootId)
     );
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
+import { Grants } from 'app/core/enums/grants';
 
 @Component({
   selector: 'jhi-formly-wrapper-panel',
@@ -14,7 +15,6 @@ import { FieldWrapper } from '@ngx-formly/core';
       <div class="card-body" [style] = "style">
         <ng-container #fieldComponent></ng-container>
       </div>
-    </div>
   `,
 })
 export class PanelWrapperComponent extends FieldWrapper implements OnInit {
@@ -24,6 +24,7 @@ export class PanelWrapperComponent extends FieldWrapper implements OnInit {
   margin = "margin-top: 4px; margin-bottom: 4px;";
   bgColor: string;
   color: string;
+
   constructor() {
     super();
     // this.bgColor = this.field.templateOptions;

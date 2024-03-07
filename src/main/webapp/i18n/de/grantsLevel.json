@@ -1,0 +1,26 @@
+{
+  "createyourhumanityAngularApp": {
+    "grantsLevel": {
+      "home": {
+        "title": "Grants Levels",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Grants Level erstellen",
+        "createOrEditLabel": "Grants Level erstellen oder bearbeiten",
+        "notFound": "Keine Grants Levels gefunden"
+      },
+      "created": "Grants Level erstellt mit ID {{ param }}",
+      "updated": "Grants Level aktualisiert mit ID {{ param }}",
+      "deleted": "Grants Level gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Grants Level {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Grants Level"
+      },
+      "id": "ID",
+      "map": "Map",
+      "created": "Created",
+      "modified": "Modified"
+    }
+  }
+}

@@ -14,6 +14,9 @@ import { startWith } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { TabPanel, TabView } from 'primeng/tabview';
+import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model';
+import { GrantsLevel } from 'app/entities/grants-level/grants-level.model';
+import { IUser } from 'app/entities/user/user.model';
 
 
 interface Item {
@@ -31,10 +34,13 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   components: any[] = []
   mindmap: Mindmap;
   formulaData: FormulaData;
+  visibilityStatus: VisibilityStatus;
+  grantsLevel: GrantsLevel;
   forms: any[] = [];
   pages: any;
   xml: any;
   @Input() allLoaded: boolean = false;
+  user: IUser;
 
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @Input() userId: string;
@@ -53,6 +59,10 @@ export class ProfileComponent implements OnInit, AfterViewInit{
               private viewContainerRef: ViewContainerRef ) { }
 
   ngOnInit() {
+    this.maincontrollerService.findAuthenticatedUser().subscribe(res => {
+      this.user = res.body;
+      this.userId = this.user.id;
+    });
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -87,6 +97,15 @@ export class ProfileComponent implements OnInit, AfterViewInit{
           r.instance.xml = this.forms[index].outerHTML;
           r.instance.userId = this.userId;
           r.instance.mapId = this.mindmap.id;
+          this.maincontrollerService.findVisibilityStatusByUserId(this.userId).subscribe(res => {
+            this.visibilityStatus = res.body;
+            r.instance.visibility = this.visibilityStatus;
+          });
+          this.maincontrollerService.findGrantsLevelByUserId(this.userId).subscribe(res => {
+            this.grantsLevel = res.body;
+            r.instance.grantsLevel = this.grantsLevel;
+        });
+
         });
       });
     }

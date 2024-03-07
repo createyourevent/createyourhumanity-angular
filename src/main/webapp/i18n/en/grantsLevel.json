@@ -1,0 +1,26 @@
+{
+  "createyourhumanityAngularApp": {
+    "grantsLevel": {
+      "home": {
+        "title": "Grants Levels",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Grants Level",
+        "createOrEditLabel": "Create or edit a Grants Level",
+        "notFound": "No Grants Levels found"
+      },
+      "created": "A new Grants Level is created with identifier {{ param }}",
+      "updated": "A Grants Level is updated with identifier {{ param }}",
+      "deleted": "A Grants Level is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Grants Level {{ id }}?"
+      },
+      "detail": {
+        "title": "Grants Level"
+      },
+      "id": "ID",
+      "map": "Map",
+      "created": "Created",
+      "modified": "Modified"
+    }
+  }
+}

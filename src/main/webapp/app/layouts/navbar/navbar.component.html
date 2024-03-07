@@ -53,7 +53,7 @@
             </span>
           </a>
         </li>
-        <!--
+
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link" routerLink="/form-generator" (click)="collapseNavbar()">
             <span>
@@ -62,7 +62,7 @@
             </span>
           </a>
         </li>
-        -->
+
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link" routerLink="/profile" (click)="collapseNavbar()">
             <span>
@@ -163,6 +163,30 @@
               >
                 <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="global.menu.entities.friendrequest">Friendrequest</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="grants-level"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.grantsLevel">Grants Level</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="visibility-status"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.visibilityStatus">Visibility Status</span>
               </a>
             </li>
             <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->

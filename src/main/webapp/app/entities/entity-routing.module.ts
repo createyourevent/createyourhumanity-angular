@@ -39,6 +39,16 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'createyourhumanityAngularApp.friendrequest.home.title' },
         loadChildren: () => import('./friendrequest/friendrequest.module').then(m => m.FriendrequestModule),
       },
+      {
+        path: 'grants-level',
+        data: { pageTitle: 'createyourhumanityAngularApp.grantsLevel.home.title' },
+        loadChildren: () => import('./grants-level/grants-level.module').then(m => m.GrantsLevelModule),
+      },
+      {
+        path: 'visibility-status',
+        data: { pageTitle: 'createyourhumanityAngularApp.visibilityStatus.home.title' },
+        loadChildren: () => import('./visibility-status/visibility-status.module').then(m => m.VisibilityStatusModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

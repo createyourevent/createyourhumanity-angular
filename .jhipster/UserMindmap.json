@@ -1,4 +1,5 @@
 {
+  "": false,
   "applications": "*",
   "changelogDate": "20220419015100",
   "dto": "no",
@@ -18,7 +19,6 @@
   "jpaMetamodelFiltering": false,
   "name": "UserMindmap",
   "pagination": "no",
-  "": false,
   "relationships": [
     {
       "otherEntityName": "user",

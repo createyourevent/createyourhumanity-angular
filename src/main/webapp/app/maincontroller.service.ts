@@ -10,6 +10,8 @@ import { map } from 'rxjs';
 import { KeyTableService } from './entities/key-table/service/key-table.service';
 import { IFriends } from './entities/friends/friends.model';
 import { IFriendrequest } from './entities/friendrequest/friendrequest.model';
+import { IGrantsLevel } from './entities/grants-level/grants-level.model';
+import { IVisibilityStatus } from './entities/visibility-status/visibility-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +20,13 @@ export class MaincontrollerService {
 
   public resourceUrl_user_mindmaps = this.applicationConfigService.getEndpointFor('api/user-mindmaps');
   public resourceUrl_formula_datas = this.applicationConfigService.getEndpointFor('api/formula-data');
+  public resourceUrl_grants_level = this.applicationConfigService.getEndpointFor('api/grants-level');
   public resourceUrl_key_tables = this.applicationConfigService.getEndpointFor('api/key-tables');
   public resourceUrl_friends = this.applicationConfigService.getEndpointFor('api/friends');
   public resourceUrl_friendrequests = this.applicationConfigService.getEndpointFor('api/friendrequests');
+  public resourceUrl_visibility_status = this.applicationConfigService.getEndpointFor('api/visibility-status');
 
-  public resourceUrl = this.applicationConfigService.getEndpointFor('authenticatedUser');
+  public resourceUrl = this.applicationConfigService.getEndpointFor('api/authenticatedUser');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService, private keyTableService: KeyTableService) { }
 
@@ -56,6 +60,18 @@ export class MaincontrollerService {
     return this.http
     .get<IFormulaData>(`${this.resourceUrl_formula_datas}/${userId}/findByUserId`, { observe: 'response' })
     .pipe(map((res: HttpResponse<IFormulaData>) => this.convertDateFromServer(res)));
+  }
+
+  findGrantsLevelByUserId(userId: string): Observable<HttpResponse<IGrantsLevel>> {
+    return this.http
+    .get<IGrantsLevel>(`${this.resourceUrl_grants_level}/${userId}/findByUserId`, { observe: 'response' })
+    .pipe(map((res: HttpResponse<IGrantsLevel>) => this.convertDateFromServer(res)));
+  }
+
+  findVisibilityStatusByUserId(userId: string): Observable<HttpResponse<IVisibilityStatus>> {
+    return this.http
+    .get<IVisibilityStatus>(`${this.resourceUrl_visibility_status}/${userId}/findByUserId`, { observe: 'response' })
+    .pipe(map((res: HttpResponse<IVisibilityStatus>) => this.convertDateFromServer(res)));
   }
 
   findKeyTableByKey(key: string): Observable<HttpResponse<IFormulaData>> {

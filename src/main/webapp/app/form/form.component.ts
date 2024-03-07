@@ -14,6 +14,9 @@ import { MaincontrollerService } from 'app/maincontroller.service'
 import { LoginService } from 'app/login/login.service'
 import { KeyTableService } from 'app/entities/key-table/service/key-table.service'
 import { KeyTable } from 'app/entities/key-table/key-table.model'
+import { GrantsLevel } from 'app/entities/grants-level/grants-level.model'
+import { GrantsLevelService } from 'app/entities/grants-level/service/grants-level.service'
+import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model'
 
 @Component({
   selector: 'jhi-form',
@@ -43,9 +46,12 @@ export class FormComponent implements OnInit, AfterViewInit{
   @Input() mapId: string;
   @Input() xml: string;
   @Input() id: string;
+  @Input() visibility: string;
+  @Input() grants: string;
 
   constructor(private accountService: AccountService,
               private formulaDataService: FormulaDataService,
+              private grantsLevelService: GrantsLevelService,
               private maincontrollerService: MaincontrollerService,
               private userService: UserService,
               private loginService: LoginService,
@@ -67,6 +73,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit(): void {
+    /*
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -87,6 +94,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       }
     })
     this.maincontrollerService.deleteAllFromKeyTable();
+    */
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(this.xml,"text/xml");
     this.topics = xmlDoc.getElementsByTagName("topic");
@@ -227,6 +235,8 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: _key,
           type: 'date',
+          wrappers: ['form-field', 'grants'],
+          className: 'form-field',
           templateOptions: {
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
@@ -310,6 +320,8 @@ export class FormComponent implements OnInit, AfterViewInit{
         {
           key: key,
           type: 'input',
+          wrappers: ['form-field', 'grants'],
+          className: 'form-field',
           templateOptions: {
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
@@ -325,6 +337,8 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: key,
         type: 'textarea',
+        wrappers: ['form-field', 'grants'],
+        className: 'form-field',
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.getAttribute('descriptpion'),
@@ -348,6 +362,8 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: key,
         type: 'select',
+        wrappers: ['form-field', 'grants'],
+        className: 'form-field',
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
@@ -370,7 +386,8 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key:  node.getAttribute('id') as string,
         type: 'radio',
-        className: '',
+        wrappers: ['form-field', 'grants'],
+        className: 'form-field',
         templateOptions: {
           label: node.getAttribute('text'),
           required: true,
@@ -386,6 +403,8 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: key,
         type: 'checkbox',
+        wrappers: ['form-field', 'grants'],
+        className: 'form-field',
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
@@ -420,6 +439,42 @@ export class FormComponent implements OnInit, AfterViewInit{
               this.formulaDataService.update(fd).subscribe()
             }
           })
+
+          this.maincontrollerService.findGrantsLevelByUserId(this.account.id).subscribe(res => {
+            const gl = res.body
+            if(gl === null) {
+              const grantslevel: GrantsLevel = new GrantsLevel()
+              grantslevel.created = dayjs()
+              grantslevel.map = JSON.stringify(this.model),
+              grantslevel.modified = dayjs()
+              grantslevel.user = this.user
+              this.grantsLevelService.create(grantslevel).subscribe()
+            } else {
+              const a = {...JSON.parse(gl.map), ...this.model}
+              gl.map = JSON.stringify(a)
+              gl.modified = dayjs()
+              this.grantsLevelService.update(gl).subscribe()
+            }
+          })
+
+          this.maincontrollerService.findVisibilityStatusByUserId(this.account.id).subscribe(res => {
+            const vs = res.body
+            if(vs === null) {
+              const visibilitys: VisibilityStatus = new VisibilityStatus()
+              visibilitys.created = dayjs()
+              visibilitys.map = JSON.stringify(this.model),
+              visibilitys.modified = dayjs()
+              visibilitys.user = this.user
+              this.formulaDataService.create(visibilitys).subscribe()
+            } else {
+              const a = {...JSON.parse(vs.map), ...this.model}
+              vs.map = JSON.stringify(a)
+              vs.modified = dayjs()
+              vs.user = this.user
+              this.formulaDataService.update(vs).subscribe()
+            }
+          })
+
         })
       } else {
         this.loginService.login()
