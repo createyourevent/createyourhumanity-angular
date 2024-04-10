@@ -10,13 +10,14 @@ import { UserService } from 'app/entities/user/user.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { Account } from 'app/core/auth/account.model';
 import { startWith } from 'rxjs/operators';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { TabPanel, TabView } from 'primeng/tabview';
 import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model';
 import { GrantsLevel } from 'app/entities/grants-level/grants-level.model';
 import { IUser } from 'app/entities/user/user.model';
-import { ProfileHostDirective } from 'app/profile/profile-host.directive';
+import { ProfileViewHostDirective } from './profile-view-host.directive';
+import { IFriends } from '../entities/friends/friends.model';
 
 
 interface Item {
@@ -30,6 +31,7 @@ interface Item {
 })
 export class ProfileViewComponent implements OnInit, AfterViewInit{
 
+  friends: IFriends[];
   items: Item[] = [];
   components: any[] = []
   mindmap: Mindmap;
@@ -42,7 +44,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit{
   @Input() allLoaded: boolean = false;
   user: IUser;
 
-  @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
+  @ViewChildren(ProfileViewHostDirective) profileHosts: QueryList<ProfileViewHostDirective>;
   @Input() userId: string;
   @Input() mapId: string;
 
@@ -56,40 +58,41 @@ export class ProfileViewComponent implements OnInit, AfterViewInit{
               private mindmapService: MindmapService,
               private cd: ChangeDetectorRef,
               private router: Router,
-              private viewContainerRef: ViewContainerRef ) { }
+              private route: ActivatedRoute,
+              private viewContainerRef: ViewContainerRef) {
+                console.log("profile view component constructor");
+               }
 
-  ngOnInit() {
-    this.maincontrollerService.findAuthenticatedUser().subscribe(res => {
-      this.user = res.body;
-      this.userId = this.user.id;
-    });
-    this.accountService.identity().subscribe(account => {
-      this.account = account
-      if(this.account) {
-          this.mindmapService.query().subscribe(umm => {
-            const mindmaps = umm.body;
-            this.mindmap = mindmaps[0];
-            this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
-              this.formulaData = res.body;
-              const parser = new DOMParser();
-              const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
-              this.pages = xml.querySelectorAll('[id="form"]');
+  ngOnInit(): void {
+    console.log("userid: "  + this.userId);
 
-              this.pages.forEach((page: any, index: number) => {
-                this.forms.push(page.parentElement);
-                this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
-                if(index === this.pages.length - 1){
-                  this.allLoaded = true;
-                }
+      this.accountService.identity().subscribe(account => {
+        this.account = account
+        if(this.account) {
+            this.mindmapService.query().subscribe(umm => {
+              const mindmaps = umm.body;
+              this.mindmap = mindmaps[0];
+              this.maincontrollerService.findFormulaDataByUserId(this.userId).subscribe(res => {
+                this.formulaData = res.body;
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(this.mindmap.text, 'text/xml');
+                this.pages = xml.querySelectorAll('[id="form"]');
+
+                this.pages.forEach((page: any, index: number) => {
+                  this.forms.push(page.parentElement);
+                  this.items.push({id: `${index}`, header: page.parentElement.getAttribute('text')});
+                  if(index === this.pages.length - 1){
+                    this.allLoaded = true;
+                  }
+                });
               });
             });
-          });
-        }
-      })
+          }
+        })
   }
 
   ngAfterViewInit(): any {
-      this.profileHosts.changes.subscribe((ph: QueryList<ProfileHostDirective>)  => {
+      this.profileHosts.changes.subscribe((ph: QueryList<ProfileViewHostDirective>)  => {
         ph.forEach((p: any, index: number)=> {
           ph.first;
           const component: typeof FormComponent = FormComponent;
@@ -97,15 +100,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit{
           r.instance.xml = this.forms[index].outerHTML;
           r.instance.userId = this.userId;
           r.instance.mapId = this.mindmap.id;
-          this.maincontrollerService.findVisibilityStatusByUserId(this.userId).subscribe(res => {
-            this.visibilityStatus = res.body;
-            r.instance.visibility = this.visibilityStatus.map;
-          });
-          this.maincontrollerService.findGrantsLevelByUserId(this.userId).subscribe(res => {
-            this.grantsLevel = res.body;
-            r.instance.grantsLevel = this.grantsLevel.map;
-        });
-
         });
       });
     }

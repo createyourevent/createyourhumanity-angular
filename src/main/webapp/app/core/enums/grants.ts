@@ -1,6 +1,8 @@
 export enum Grants{
-  None = "None",
-  Own = "Own",
-  Friend = "Friend",
-  All = "All"
+  NONE = "NONE",
+  FRIENDS = "FRIENDS",
+  FAMILY = "FAMILY",
+  FRIENDS_AND_FAMILY = "FRIENDS_AND_FAMILY",
+  PUBLIC = "PUBLIC"
 }
+

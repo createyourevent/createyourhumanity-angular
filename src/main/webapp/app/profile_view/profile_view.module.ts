@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {TabViewModule} from 'primeng/tabview';
-import { FormModule } from 'app/form/form.module';
+import { CommonModule } from '@angular/common';
 import { ProfileViewHostDirective } from './profile-view-host.directive';
+import { ProfileViewRoutes } from './profile_view.routings';
 import { ProfileViewComponent } from './profile_view.component';
 
 @NgModule({
   imports: [
     CommonModule,
     TabViewModule,
-    FormModule
+    ProfileViewRoutes
   ],
   declarations: [ProfileViewComponent, ProfileViewHostDirective],
 })

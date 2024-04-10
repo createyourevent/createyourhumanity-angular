@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
-import { Grants } from 'app/core/enums/grants';
 
 @Component({
   selector: 'jhi-formly-wrapper-panel',

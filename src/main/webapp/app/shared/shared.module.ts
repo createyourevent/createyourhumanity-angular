@@ -33,14 +33,19 @@ import { DateTimeInputComponent } from 'app/formly/date-time.component';
 import { DateInputComponent } from 'app/formly/date.component';
 import { FormlyGrantsComponent } from 'app/formly/grant_controller.component';
 import { CommonModule } from '@angular/common';
+import { ExpansionPanelWrapperComponent } from 'app/formly/expansionpanel.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
   imports: [CommonModule,
             SharedLibsModule,
             ReactiveFormsModule,
+            DropdownModule,
             MatSliderModule,
             MatStepperModule,
+            MatSelectModule,
             MatIconModule,
             FormsModule,
             MatTabsModule,
@@ -52,7 +57,7 @@ import { CommonModule } from '@angular/common';
                 { name: 'rowwrapper', component: RowWrapperComponent },
                 { name: 'columnwrapper', component: ColumnWrapperComponent },
                 { name: 'grants', component: FormlyGrantsComponent  },
-
+                { name: 'expansion', component: ExpansionPanelWrapperComponent  },
               ],
               types: [
                 { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
@@ -100,6 +105,7 @@ import { CommonModule } from '@angular/common';
     DateTimeInputComponent
   ],
   exports: [
+    CommonModule,
     SharedLibsModule,
     FindLanguageFromKeyPipe,
     TranslateDirective,

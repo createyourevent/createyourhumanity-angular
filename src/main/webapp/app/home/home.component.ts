@@ -12,7 +12,7 @@ import { UserService } from 'app/user.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent  {
   account: Account | null = null;
   user: IUser;
 
@@ -21,11 +21,6 @@ export class HomeComponent implements OnInit {
               private maincontrollerService: MaincontrollerService,
               private userService: UserService) {}
 
-  ngOnInit(): void {
-    this.accountService.identity().subscribe(account => {
-        this.account = account
-    });
-  }
 
   login(): void {
     this.loginService.login();

@@ -15,6 +15,7 @@ import { IMindmap, Mindmap } from './entities/mindmap/mindmap.model';
 import { MindmapService } from './entities/mindmap/service/mindmap.service';
 import { UserMindmap } from './entities/user-mindmap/user-mindmap.model';
 import { UserMindmapService } from './entities/user-mindmap/service/user-mindmap.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,11 @@ export class UserService {
               private visibilityStatusService: VisibilityStatusService,
               private mindmapService: MindmapService) { }
 
-  initUser(){
+  initUser(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+      this.maincontrollerService.findAuthenticatedUser().subscribe(user => {
+        this.user = user.body;
         this.maincontrollerService.findFormulaDataByUserId(this.user.id).subscribe(fd => {
           if(fd.body === null) {
             this.formulaData = new FormulaData();
@@ -74,5 +79,19 @@ export class UserService {
             this.visibilityData = vs.body;
           }
         });
+      });
+      });
+
+
+  }
+
+
+
+  updateGrantsFromUser(key: string, value: any) {
+    let gd = JSON.parse(this.grantsData.map);
+    gd = {...gd, [key]: value};
+    this.grantsData.map = JSON.stringify(gd);
+    this.grantsData.modified = dayjs();
+    this.grantsLevelService.update(this.grantsData).subscribe();
   }
 }

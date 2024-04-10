@@ -99,6 +99,10 @@ export class MaincontrollerService {
     return res;
   }
 
+  setPath(nodes: number[]) {
+
+  }
+
   convertDateArrayFromServer(res: HttpResponse<IFormulaData[]>): HttpResponse<IFormulaData[]> {
     if (res.body) {
       res.body.forEach((formulaData: IFormulaData) => {

@@ -20,10 +20,18 @@
             <div class="friend-description">{{friend.description}}</div>
         </div>
         <div class="friend-grid-item-bottom">
-            <p-button (click)="deleteFriend(friend.id)">
-              <fa-icon icon="times"></fa-icon>
-              <span class="d-none d-md-inline" jhiTranslate="friendlist.deleteFriend">Delete friend</span>
-            </p-button>
+          <div class="container-fluid">
+            <div class="container_control">
+                <p-button (click)="deleteFriend(friend.id)">
+                  <fa-icon icon="times"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="friendlist.deleteFriend">Delete friend</span>
+                </p-button>
+                <p-button (click)="showProfile(friend.id)">
+                  <fa-icon icon="times"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="friendlist.showProfile">Show profile</span>
+                </p-button>
+            </div>
+          </div>
         </div>
     </div>
 </div>

@@ -16,9 +16,15 @@ import { Account } from 'app/core/auth/account.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { OnInit } from '@angular/core';
-import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/user.service';
+import { MainComponent } from '../layouts/main/main.component';
+
+interface LinkDataEvent extends Event {
+  detail: {
+    path: number[];
+  }
+}
+
 
 
 @Component({
@@ -37,12 +43,19 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   _routerSub = Subscription.EMPTY;
 
 
+
+
   constructor(private translateService: TranslateService,
                       sessionStorageService: SessionStorageService,
               private accountService: AccountService,
               private maincontrollerService: MaincontrollerService,
               private router: Router,
               private userService: UserService) {
+                window.addEventListener('LinkData', function(event) {
+                  const linkDataEvent = event as LinkDataEvent;
+                  const linkDataPath = linkDataEvent.detail.path;
+                  this.maincontrollerService.setPath(linkDataPath);
+                });
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
     this._routerSub = this.router.events
         .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
@@ -50,7 +63,6 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
             //this.reloadCurrentRoute();
          });
   }
-
 
   public ngOnChanges(changes: SimpleChanges) {
     if(changes['mapId'].currentValue !== undefined) {

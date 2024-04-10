@@ -7,6 +7,7 @@ import { UserService } from 'app/entities/user/user.service';
 import { LoginService } from 'app/login/login.service';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { SelectItem } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'jhi-friendlist',
@@ -26,7 +27,8 @@ export class FriendlistComponent implements OnInit {
   constructor(private accountService: AccountService,
               private userService: UserService,
               private loginService: LoginService,
-              private maincontrollerService: MaincontrollerService) { }
+              private maincontrollerService: MaincontrollerService,
+              private router: Router) { }
 
   ngOnInit() {
     this.sortOptions = [
@@ -69,6 +71,10 @@ export class FriendlistComponent implements OnInit {
   getSearch(e: Event) {
     return (e.target as HTMLInputElement).value;
   }
+
+  showProfile(id: string) {
+    this.router.navigate(['/', 'profile_view', id]);
+   }
 
   deleteFriend(id: string) {
     this.maincontrollerService.deleteFriendsByFriendId(id).subscribe(res => {

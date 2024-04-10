@@ -17,6 +17,8 @@ import { KeyTable } from 'app/entities/key-table/key-table.model'
 import { GrantsLevel } from 'app/entities/grants-level/grants-level.model'
 import { GrantsLevelService } from 'app/entities/grants-level/service/grants-level.service'
 import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model'
+import { isNumber } from '@ng-bootstrap/ng-bootstrap/util/util'
+import { Grants } from 'app/core/enums/grants'
 
 @Component({
   selector: 'jhi-form',
@@ -46,9 +48,8 @@ export class FormComponent implements OnInit, AfterViewInit{
   @Input() mapId: string;
   @Input() xml: string;
   @Input() id: string;
-  @Input() visibility: string;
-  @Input() grants: string;
-
+  @Input() visibilities: string = "{}";
+  @Input() grants: string = "{}";
   constructor(private accountService: AccountService,
               private formulaDataService: FormulaDataService,
               private grantsLevelService: GrantsLevelService,
@@ -73,7 +74,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit(): void {
-    /*
+
     this.accountService.identity().subscribe(account => {
       this.account = account
       if(this.account) {
@@ -93,8 +94,8 @@ export class FormComponent implements OnInit, AfterViewInit{
         this.loginService.login()
       }
     })
-    this.maincontrollerService.deleteAllFromKeyTable();
-    */
+    // this.maincontrollerService.deleteAllFromKeyTable();
+
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(this.xml,"text/xml");
     this.topics = xmlDoc.getElementsByTagName("topic");
@@ -148,13 +149,19 @@ export class FormComponent implements OnInit, AfterViewInit{
   parseJSON(node) {
       const n = node;
       let req = false;
+      /*
       if(node.firstChild) {
         if(JSON.parse(node.firstChild.getAttribute('required')) !== null) {
           req = JSON.parse(node.firstChild.getAttribute('required'));
         }
         req = JSON.parse(node.firstChild.getAttribute('required'));
       }
-      let key: string = node.getAttribute('id') as string;
+      */
+      let key: number = node.getAttribute('id') as number;
+      let grant = this.grants[key];
+      console.log(grant);
+      let visibility = this.visibilities[key];
+
       /*
       let key: string = node.getAttribute('text').toLowerCase();
       this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
@@ -182,6 +189,11 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'htmlFormTab') {
             this.convertTab(n);
           } else if (n.firstElementChild.tagName === 'textfield') {
+            if(grant === "FRIENDS" || grant === "FAMILY" || grant === "FRIENDS_AND_FAMILY" || grant === "PUBLIC") {
+              this.convertTextfield(n, req, key);
+            } else {
+              this.convertTextfield(n, false, key);
+            }
             this.convertTextfield(n, req, key);
           } else if (n.firstElementChild.tagName === 'textarea') {
             this.convertTextarea(n, req, key);
@@ -202,7 +214,7 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'desc') {
             this.convertDescription(n);
           } else if (n.firstElementChild.tagName === 'calendar') {
-            this.convertCalendar(n, req);
+            this.convertCalendar(n, req, key);
           }
         }
         /*
@@ -224,19 +236,14 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertCalendar(node: any, req: boolean, key?: string): void {
-    let _key = '';
-    if(key) {
-      _key = key;
-    } else {
-      _key = node.firstChild.getAttribute('key');
-    }
+  convertCalendar(node: any, req: boolean, key?: number): void {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
-          key: _key,
+          key: key,
           type: 'date',
-          wrappers: ['form-field', 'grants'],
+          wrappers: ['grants'],
           className: 'form-field',
+          id: node.getAttribute('id'),
           templateOptions: {
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
@@ -270,7 +277,8 @@ export class FormComponent implements OnInit, AfterViewInit{
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
           {
             type: 'stepper',
-            wrappers: ['panel'],
+            wrappers: ['expansion'],
+            id: node.getAttribute('id'),
             templateOptions: {
               label: node.getAttribute('text'),
               bgColor: node.getAttribute('bgColor')
@@ -294,7 +302,8 @@ export class FormComponent implements OnInit, AfterViewInit{
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         type: 'tabs',
-        wrappers: ['panel'],
+        wrappers: ['expansion'],
+        id: node.getAttribute('id'),
         templateOptions: {
           label: node.getAttribute('text'),
           bgColor: node.getAttribute('bgColor'),
@@ -314,14 +323,15 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertTextfield(node: any, req: boolean, key?: string) {
+  convertTextfield(node: any, req: boolean, key?: number) {
 
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
           key: key,
           type: 'input',
-          wrappers: ['form-field', 'grants'],
-          className: 'form-field',
+          wrappers: ['grants'],
+            className: 'form-field',
+          id: node.getAttribute('id'),
           templateOptions: {
             placeholder: node.getAttribute('text'),
             description: node.getAttribute('descriptpion'),
@@ -332,13 +342,14 @@ export class FormComponent implements OnInit, AfterViewInit{
       );
   }
 
-  convertTextarea(node: any, req: boolean, key?: string) {
+  convertTextarea(node: any, req: boolean, key?: number) {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         key: key,
         type: 'textarea',
-        wrappers: ['form-field', 'grants'],
+        wrappers: ['grants'],
         className: 'form-field',
+        id: node.getAttribute('id'),
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.getAttribute('descriptpion'),
@@ -350,7 +361,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertSelect(node: any, req: boolean, key?: string) {
+  convertSelect(node: any, req: boolean, key?: number) {
     const os = node.children;
     const options = [];
     for(let i = 1; i < os.length; i++) {
@@ -362,8 +373,9 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key: key,
         type: 'select',
-        wrappers: ['form-field', 'grants'],
+        wrappers: ['grants'],
         className: 'form-field',
+        id: node.getAttribute('id'),
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),
@@ -375,7 +387,7 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertRadiogroup(node: any, req: boolean, key?: string) {
+  convertRadiogroup(node: any, req: boolean, key?: number) {
     const os = node.children;
     const options: { label: string; value: string; }[] = [];
     for(let i = 1; i < os.length; i++) {
@@ -386,8 +398,9 @@ export class FormComponent implements OnInit, AfterViewInit{
       {
         key:  node.getAttribute('id') as string,
         type: 'radio',
-        wrappers: ['form-field', 'grants'],
+        wrappers: ['grants'],
         className: 'form-field',
+        id: node.getAttribute('id'),
         templateOptions: {
           label: node.getAttribute('text'),
           required: true,
@@ -397,14 +410,15 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
-  convertCheckbox(node: any, req: boolean,  key?: string) {
+  convertCheckbox(node: any, req: boolean,  key?: number) {
 
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         key: key,
         type: 'checkbox',
-        wrappers: ['form-field', 'grants'],
+        wrappers: ['grants'],
         className: 'form-field',
+        id: node.getAttribute('id'),
         templateOptions: {
           placeholder: node.getAttribute('text'),
           description: node.firstChild.getAttribute('descriptpion'),

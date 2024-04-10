@@ -5,7 +5,9 @@ import { FieldWrapper } from '@ngx-formly/core';
   selector: 'jhi-formly-column-wrapper',
   template: `
   <div class="col">
+  <div class="col">
     <ng-template #fieldComponent></ng-template>
+  </div>
   </div>
 `,
 })

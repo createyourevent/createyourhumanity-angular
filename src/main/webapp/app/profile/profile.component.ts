@@ -34,8 +34,8 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   components: any[] = []
   mindmap: Mindmap;
   formulaData: FormulaData;
-  visibilityStatus: VisibilityStatus;
-  grantsLevel: GrantsLevel;
+  visibilities: VisibilityStatus;
+  grants: GrantsLevel;
   forms: any[] = [];
   pages: any;
   xml: any;
@@ -97,13 +97,9 @@ export class ProfileComponent implements OnInit, AfterViewInit{
           r.instance.xml = this.forms[index].outerHTML;
           r.instance.userId = this.userId;
           r.instance.mapId = this.mindmap.id;
-          this.maincontrollerService.findVisibilityStatusByUserId(this.userId).subscribe(res => {
-            this.visibilityStatus = res.body;
-            r.instance.visibility = this.visibilityStatus;
-          });
           this.maincontrollerService.findGrantsLevelByUserId(this.userId).subscribe(res => {
-            this.grantsLevel = res.body;
-            r.instance.grantsLevel = this.grantsLevel;
+            this.grants = res.body;
+            r.instance.grants = this.grants;
         });
 
         });
