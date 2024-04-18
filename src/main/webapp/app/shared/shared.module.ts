@@ -17,11 +17,11 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { XmlPipe } from 'app/pipes/xmlpipe.pipe';
 import { PanelWrapperComponent } from 'app/formly/panel-wrapper.component';
 import { FormlyFieldStepperComponent } from 'app/formly/stepper.component';
-import { MatSliderModule } from '@angular/material/slider';
+import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { FormlyFieldTabsComponent } from 'app/formly/tabs.component';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { ColumnComponent } from 'app/formly/column.component';
 import { RowComponent } from 'app/formly/row.component';
 import { ContainerWrapperComponent } from 'app/formly/container-wrapper.component';
@@ -34,7 +34,7 @@ import { FormlyGrantsComponent } from 'app/formly/grant_controller.component';
 import { CommonModule } from '@angular/common';
 import { ExpansionPanelWrapperComponent } from 'app/formly/expansionpanel.component';
 import { DropdownModule } from 'primeng/dropdown';
-import { MatSelectModule } from '@angular/material/select';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 
 @Component({
   selector: 'jhi-formly-wrapper-expansion',
