@@ -2,7 +2,7 @@ import { NgModule, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import locale from '@angular/common/locales/en';
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -26,8 +26,9 @@ import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/createyourhumanity-mindmap.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from './user.service';
+import { SharedLibsModule } from './shared/shared-libs.module';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 export function initSynchronousFactory(userService: UserService) {
@@ -38,9 +39,9 @@ export function initSynchronousFactory(userService: UserService) {
 
 @NgModule({
   imports: [
-    CreateyourhumanityMindmapModule,
     BrowserModule,
-    BrowserAnimationsModule,
+    SharedLibsModule,
+    CreateyourhumanityMindmapModule,
     SharedModule,
     HomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here

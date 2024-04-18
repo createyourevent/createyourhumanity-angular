@@ -12,12 +12,12 @@ import { Account } from 'app/core/auth/account.model';
 import { ProfileHostDirective } from './profile-host.directive';
 import { startWith } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { TabPanel, TabView } from 'primeng/tabview';
 import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model';
 import { GrantsLevel } from 'app/entities/grants-level/grants-level.model';
 import { IUser } from 'app/entities/user/user.model';
-
+import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
 
 interface Item {
   id: string,
@@ -42,6 +42,8 @@ export class ProfileComponent implements OnInit, AfterViewInit{
   @Input() allLoaded: boolean = false;
   user: IUser;
 
+  private eventSubscriber?: Subscription;
+
   @ViewChildren(ProfileHostDirective) profileHosts: QueryList<ProfileHostDirective>;
   @Input() userId: string;
   @Input() mapId: string;
@@ -56,7 +58,17 @@ export class ProfileComponent implements OnInit, AfterViewInit{
               private mindmapService: MindmapService,
               private cd: ChangeDetectorRef,
               private router: Router,
-              private viewContainerRef: ViewContainerRef ) { }
+              private viewContainerRef: ViewContainerRef,
+              private eventManager: EventManager ) {
+                this.eventSubscriber = this.eventManager.subscribe('LinkData', (event: EventWithContent<unknown> | string) => {
+                  if (typeof event !== 'string' && event.name === 'LinkData') {
+                    const linkDataEvent = event as EventWithContent<{ path: number[] }>;
+                    const linkDataPath = linkDataEvent.content.path;
+                    this.maincontrollerService.setPath(linkDataPath);
+                  }
+                });
+              }
+
 
   ngOnInit() {
     this.maincontrollerService.findAuthenticatedUser().subscribe(res => {

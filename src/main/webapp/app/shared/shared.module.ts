@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-
 import { SharedLibsModule } from './shared-libs.module';
 import { FindLanguageFromKeyPipe } from './language/find-language-from-key.pipe';
 import { TranslateDirective } from './language/translate.directive';
@@ -36,20 +35,11 @@ import { CommonModule } from '@angular/common';
 import { ExpansionPanelWrapperComponent } from 'app/formly/expansionpanel.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { MatSelectModule } from '@angular/material/select';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
-  imports: [CommonModule,
-            SharedLibsModule,
+  imports: [FormsModule,
             ReactiveFormsModule,
-            DropdownModule,
-            MatSliderModule,
-            MatStepperModule,
-            MatSelectModule,
-            MatIconModule,
-            FormsModule,
-            MatTabsModule,
-            FormlyBootstrapModule,
             FormlyModule.forRoot({
               wrappers: [
                 { name: 'panel', component: PanelWrapperComponent },
@@ -68,19 +58,18 @@ import { MatSelectModule } from '@angular/material/select';
                 { name: 'date', component: DateInputComponent, wrappers: ['form-field'] },
                 { name: 'datetime', component: DateTimeInputComponent, wrappers: ['form-field'] },
               ],
-              presets: [
-                {
-                  name: 'firstName',
-                  config: {
-                    key: 'firstName',
-                    type: 'input',
-                    props: {
-                      label: 'First Name',
-                    },
-                  },
-                },
-              ],
             }),
+            FormlyBootstrapModule,
+            CommonModule,
+            DropdownModule,
+            MatSliderModule,
+            MatStepperModule,
+            MatSelectModule,
+            MatIconModule,
+            FormsModule,
+            MatTabsModule,
+            FormlyBootstrapModule,
+            NgbModule
   ],
   declarations: [
     FindLanguageFromKeyPipe,

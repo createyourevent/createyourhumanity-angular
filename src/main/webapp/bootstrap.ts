@@ -11,6 +11,5 @@ if (!DEBUG_INFO_ENABLED) {
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule, { preserveWhitespaces: true })
-  // eslint-disable-next-line no-console
   .then(() => console.log('Application started'))
   .catch(err => console.error(err));

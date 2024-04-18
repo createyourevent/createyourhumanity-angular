@@ -1,13 +1,19 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { SharedModule } from '../shared/shared.module';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormControl} from "@angular/forms";
 import { FormComponent } from './form.component';
-import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
-    SharedModule
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    FormlyBootstrapModule
   ],
-  declarations: [FormComponent]
+  declarations: [
+    FormComponent
+  ],
 })
-export class FormModule { }
+export class FormModule {}

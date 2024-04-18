@@ -1,4 +1,3 @@
-/* eslint-disable no-eval */
 import { UserService } from 'app/entities/user/user.service'
 import { IUser } from 'app/entities/user/user.model'
 import { FormulaDataService } from './../entities/formula-data/service/formula-data.service'
@@ -17,13 +16,12 @@ import { KeyTable } from 'app/entities/key-table/key-table.model'
 import { GrantsLevel } from 'app/entities/grants-level/grants-level.model'
 import { GrantsLevelService } from 'app/entities/grants-level/service/grants-level.service'
 import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model'
-import { isNumber } from '@ng-bootstrap/ng-bootstrap/util/util'
-import { Grants } from 'app/core/enums/grants'
+import PersistenceManager from '@wisemapping/mindplot';
 
 @Component({
   selector: 'jhi-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit, AfterViewInit{
 
@@ -48,8 +46,7 @@ export class FormComponent implements OnInit, AfterViewInit{
   @Input() mapId: string;
   @Input() xml: string;
   @Input() id: string;
-  @Input() visibilities: string = "{}";
-  @Input() grants: string = "{}";
+
   constructor(private accountService: AccountService,
               private formulaDataService: FormulaDataService,
               private grantsLevelService: GrantsLevelService,
@@ -158,10 +155,6 @@ export class FormComponent implements OnInit, AfterViewInit{
       }
       */
       let key: number = node.getAttribute('id') as number;
-      let grant = this.grants[key];
-      console.log(grant);
-      let visibility = this.visibilities[key];
-
       /*
       let key: string = node.getAttribute('text').toLowerCase();
       this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
@@ -189,11 +182,9 @@ export class FormComponent implements OnInit, AfterViewInit{
           } else if (n.firstElementChild.tagName === 'htmlFormTab') {
             this.convertTab(n);
           } else if (n.firstElementChild.tagName === 'textfield') {
-            if(grant === "FRIENDS" || grant === "FAMILY" || grant === "FRIENDS_AND_FAMILY" || grant === "PUBLIC") {
+           // if(grant === "FRIENDS" || grant === "FAMILY" || grant === "FRIENDS_AND_FAMILY" || grant === "PUBLIC") {
               this.convertTextfield(n, req, key);
-            } else {
-              this.convertTextfield(n, false, key);
-            }
+           // }
             this.convertTextfield(n, req, key);
           } else if (n.firstElementChild.tagName === 'textarea') {
             this.convertTextarea(n, req, key);
@@ -501,4 +492,9 @@ export class FormComponent implements OnInit, AfterViewInit{
     })
   }
 
+}
+
+declare global {
+  // used in mindplot
+  var pm: PersistenceManager;
 }

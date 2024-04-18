@@ -13,9 +13,7 @@ import { IFriendrequest } from './entities/friendrequest/friendrequest.model';
 import { IGrantsLevel } from './entities/grants-level/grants-level.model';
 import { IVisibilityStatus } from './entities/visibility-status/visibility-status.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class MaincontrollerService {
 
   public resourceUrl_user_mindmaps = this.applicationConfigService.getEndpointFor('api/user-mindmaps');

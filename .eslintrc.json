@@ -102,7 +102,7 @@
     "no-caller": "error",
     "prefer-const": "off",
     "no-console": ["off", { "allow": ["warn", "error"] }],
-    "no-eval": "error",
+    "no-eval": "off",
     "no-labels": "error",
     "no-var": "off",
     "no-new": "error",

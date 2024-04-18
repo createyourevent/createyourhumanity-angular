@@ -6,7 +6,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom/client';
 import { Designer, PersistenceManager, CreateYourHumanityPersistenceManager } from '@wisemapping/mindplot';
 import {Editor, EditorOptions, EditorProps } from '@wisemapping/editor';
 import { SessionStorageService } from 'ngx-webstorage';
@@ -18,6 +18,7 @@ import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { UserService } from 'app/user.service';
 import { MainComponent } from '../layouts/main/main.component';
+import ErrorBoundary from './ErrorBoundary';
 
 interface LinkDataEvent extends Event {
   detail: {
@@ -42,7 +43,9 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
   private account: Account;
   _routerSub = Subscription.EMPTY;
 
-
+  formula_data: string;
+  grants_data: string;
+  visibility_data: string;
 
 
   constructor(private translateService: TranslateService,
@@ -57,11 +60,16 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
                   this.maincontrollerService.setPath(linkDataPath);
                 });
     this.location = sessionStorageService.retrieve('locale') ?? 'en';
+    this.formula_data = this.userService.formulaData.map;
+    this.grants_data = this.userService.grantsData.map;
+    this.visibility_data = this.userService.visibilityData.map;
+    /*
     this._routerSub = this.router.events
         .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
         .subscribe(() => {
-            //this.reloadCurrentRoute();
+            this.reloadCurrentRoute();
          });
+         */
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -145,18 +153,22 @@ export class MindmapComponent implements OnChanges, AfterViewInit{
 
 
 
-    ReactDOM.render(
-      <Editor
-        mapId={this.mapId}
-        options={options}
-        values={this.userService.formulaData.map}
-        grants={this.userService.grantsData.map}
-        visible={this.userService.visibilityData.map}
-        persistenceManager={persistence}
-        onAction={(action) => console.log('action called:', action)}
-        onLoad={initialization}
-      />,
-      document.getElementById(this.rootId)
+    const root = ReactDOM.createRoot(document.getElementById(this.rootId));
+    root.render(
+      <React.StrictMode>
+        <ErrorBoundary fallback={<p>Something went wrong</p>}>
+          <Editor
+            mapId={this.mapId}
+            options={options}
+            values={this.formula_data}
+            grants={this.grants_data}
+            visible={this.visibility_data}
+            persistenceManager={persistence}
+            onAction={(action) => console.log('action called:', action)}
+            onLoad={initialization}
+          />
+        </ErrorBoundary>
+      </React.StrictMode>
     );
   }
 }
