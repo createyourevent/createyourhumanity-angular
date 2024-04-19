@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import { IFriendrequest, Friendrequest } from '../friendrequest.model';
 import { FriendrequestService } from '../service/friendrequest.service';
 
 @Injectable({ providedIn: 'root' })
-export class FriendrequestRoutingResolveService implements Resolve<IFriendrequest> {
+export class FriendrequestRoutingResolveService  {
   constructor(protected service: FriendrequestService, protected router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<IFriendrequest> | Observable<never> {

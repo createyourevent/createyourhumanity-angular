@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import { IFormulaData, FormulaData } from '../formula-data.model';
 import { FormulaDataService } from '../service/formula-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class FormulaDataRoutingResolveService implements Resolve<IFormulaData> {
+export class FormulaDataRoutingResolveService  {
   constructor(protected service: FormulaDataService, protected router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<IFormulaData> | Observable<never> {

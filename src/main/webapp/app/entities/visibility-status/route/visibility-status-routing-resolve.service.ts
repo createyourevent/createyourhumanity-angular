@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import { IVisibilityStatus, VisibilityStatus } from '../visibility-status.model'
 import { VisibilityStatusService } from '../service/visibility-status.service';
 
 @Injectable({ providedIn: 'root' })
-export class VisibilityStatusRoutingResolveService implements Resolve<IVisibilityStatus> {
+export class VisibilityStatusRoutingResolveService  {
   constructor(protected service: VisibilityStatusService, protected router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<IVisibilityStatus> | Observable<never> {
