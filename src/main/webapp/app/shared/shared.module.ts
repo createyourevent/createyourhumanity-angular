@@ -21,7 +21,7 @@ import { MatLegacySliderModule as MatSliderModule } from '@angular/material/lega
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { FormlyFieldTabsComponent } from 'app/formly/tabs.component';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ColumnComponent } from 'app/formly/column.component';
 import { RowComponent } from 'app/formly/row.component';
 import { ContainerWrapperComponent } from 'app/formly/container-wrapper.component';
