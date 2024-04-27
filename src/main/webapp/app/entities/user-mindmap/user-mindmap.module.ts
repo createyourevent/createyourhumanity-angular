@@ -9,6 +9,5 @@ import { UserMindmapRoutingModule } from './route/user-mindmap-routing.module';
 @NgModule({
   imports: [SharedModule, UserMindmapRoutingModule],
   declarations: [UserMindmapComponent, UserMindmapDetailComponent, UserMindmapUpdateComponent, UserMindmapDeleteDialogComponent],
-  entryComponents: [UserMindmapDeleteDialogComponent],
 })
 export class UserMindmapModule {}

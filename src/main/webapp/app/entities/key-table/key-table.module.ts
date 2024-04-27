@@ -9,6 +9,5 @@ import { KeyTableRoutingModule } from './route/key-table-routing.module';
 @NgModule({
   imports: [SharedModule, KeyTableRoutingModule],
   declarations: [KeyTableComponent, KeyTableDetailComponent, KeyTableUpdateComponent, KeyTableDeleteDialogComponent],
-  entryComponents: [KeyTableDeleteDialogComponent],
 })
 export class KeyTableModule {}

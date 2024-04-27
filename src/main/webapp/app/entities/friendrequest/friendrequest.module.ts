@@ -9,6 +9,5 @@ import { FriendrequestRoutingModule } from './route/friendrequest-routing.module
 @NgModule({
   imports: [SharedModule, FriendrequestRoutingModule],
   declarations: [FriendrequestComponent, FriendrequestDetailComponent, FriendrequestUpdateComponent, FriendrequestDeleteDialogComponent],
-  entryComponents: [FriendrequestDeleteDialogComponent],
 })
 export class FriendrequestModule {}

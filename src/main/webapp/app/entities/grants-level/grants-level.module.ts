@@ -9,6 +9,5 @@ import { GrantsLevelRoutingModule } from './route/grants-level-routing.module';
 @NgModule({
   imports: [SharedModule, GrantsLevelRoutingModule],
   declarations: [GrantsLevelComponent, GrantsLevelDetailComponent, GrantsLevelUpdateComponent, GrantsLevelDeleteDialogComponent],
-  entryComponents: [GrantsLevelDeleteDialogComponent],
 })
 export class GrantsLevelModule {}

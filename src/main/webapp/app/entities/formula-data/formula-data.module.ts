@@ -9,6 +9,5 @@ import { FormulaDataRoutingModule } from './route/formula-data-routing.module';
 @NgModule({
   imports: [SharedModule, FormulaDataRoutingModule],
   declarations: [FormulaDataComponent, FormulaDataDetailComponent, FormulaDataUpdateComponent, FormulaDataDeleteDialogComponent],
-  entryComponents: [FormulaDataDeleteDialogComponent],
 })
 export class FormulaDataModule {}

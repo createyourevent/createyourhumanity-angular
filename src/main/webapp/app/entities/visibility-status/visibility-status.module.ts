@@ -14,6 +14,5 @@ import { VisibilityStatusRoutingModule } from './route/visibility-status-routing
     VisibilityStatusUpdateComponent,
     VisibilityStatusDeleteDialogComponent,
   ],
-  entryComponents: [VisibilityStatusDeleteDialogComponent],
 })
 export class VisibilityStatusModule {}

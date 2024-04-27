@@ -9,6 +9,5 @@ import { FriendsRoutingModule } from './route/friends-routing.module';
 @NgModule({
   imports: [SharedModule, FriendsRoutingModule],
   declarations: [FriendsComponent, FriendsDetailComponent, FriendsUpdateComponent, FriendsDeleteDialogComponent],
-  entryComponents: [FriendsDeleteDialogComponent],
 })
 export class FriendsModule {}

@@ -9,6 +9,5 @@ import { UserDetailsRoutingModule } from './route/user-details-routing.module';
 @NgModule({
   imports: [SharedModule, UserDetailsRoutingModule],
   declarations: [UserDetailsComponent, UserDetailsDetailComponent, UserDetailsUpdateComponent, UserDetailsDeleteDialogComponent],
-  entryComponents: [UserDetailsDeleteDialogComponent],
 })
 export class UserDetailsModule {}
