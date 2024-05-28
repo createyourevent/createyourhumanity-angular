@@ -1,33 +1,35 @@
-import { UserService } from 'app/entities/user/user.service'
-import { IUser } from 'app/entities/user/user.model'
-import { FormulaDataService } from './../entities/formula-data/service/formula-data.service'
-import { FormulaData } from './../entities/formula-data/formula-data.model'
-import dayjs from 'dayjs/esm'
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core'
-import { FormGroup } from '@angular/forms'
-import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core'
-import { Account } from 'app/core/auth/account.model'
-import { AccountService } from 'app/core/auth/account.service'
-import { MindmapService } from 'app/entities/mindmap/service/mindmap.service'
-import { MaincontrollerService } from 'app/maincontroller.service'
-import { LoginService } from 'app/login/login.service'
-import { KeyTableService } from 'app/entities/key-table/service/key-table.service'
-import { KeyTable } from 'app/entities/key-table/key-table.model'
-import { GrantsLevel } from 'app/entities/grants-level/grants-level.model'
-import { GrantsLevelService } from 'app/entities/grants-level/service/grants-level.service'
-import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model'
+import { UserService } from 'app/entities/user/user.service';
+import { IUser } from 'app/entities/user/user.model';
+import { FormulaDataService } from './../entities/formula-data/service/formula-data.service';
+import { FormulaData } from './../entities/formula-data/formula-data.model';
+import dayjs from 'dayjs/esm';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import { MindmapService } from 'app/entities/mindmap/service/mindmap.service';
+import { MaincontrollerService } from 'app/maincontroller.service';
+import { LoginService } from 'app/login/login.service';
+import { KeyTableService } from 'app/entities/key-table/service/key-table.service';
+import { KeyTable } from 'app/entities/key-table/key-table.model';
+import { GrantsLevel } from 'app/entities/grants-level/grants-level.model';
+import { GrantsLevelService } from 'app/entities/grants-level/service/grants-level.service';
+import { VisibilityStatus } from 'app/entities/visibility-status/visibility-status.model';
 import PersistenceManager from '@wisemapping/mindplot';
+import { EMPTY, map, switchMap, take } from 'rxjs';
+import { FieldGroup, createFieldGroup } from 'app/field-group.utils';
 
 @Component({
   selector: 'jhi-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FormComponent implements OnInit, AfterViewInit{
-
-  form = new FormGroup({})
-  model: any = {}
-  options: FormlyFormOptions = {}
+export class FormComponent implements OnInit {
+  form = new FormGroup({});
+  model: any = {};
+  options: FormlyFormOptions = {};
   json: {};
   account: Account | null = null;
   user: IUser;
@@ -47,172 +49,136 @@ export class FormComponent implements OnInit, AfterViewInit{
   @Input() xml: string;
   @Input() id: string;
 
-  constructor(private accountService: AccountService,
-              private formulaDataService: FormulaDataService,
-              private grantsLevelService: GrantsLevelService,
-              private maincontrollerService: MaincontrollerService,
-              private userService: UserService,
-              private loginService: LoginService,
-              private mindmapService: MindmapService,
-              private keyTableService: KeyTableService) {}
+  constructor(
+    private accountService: AccountService,
+    private formulaDataService: FormulaDataService,
+    private grantsLevelService: GrantsLevelService,
+    private maincontrollerService: MaincontrollerService,
+    private userService: UserService,
+    private loginService: LoginService,
+    private mindmapService: MindmapService,
+    private keyTableService: KeyTableService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   getFieldGroup(level: number): string {
     const arr: string[] = [];
     const group = 'this.fields';
     arr[0] = group;
-    for(let i = 0; i < level; i++) {
-      arr[i + 1] = arr[i] + '[' + arr[i] + '.length - 1].fieldGroup'
+    for (let i = 0; i < level; i++) {
+      arr[i + 1] = arr[i] + '[' + arr[i] + '.length - 1].fieldGroup';
     }
     return arr[arr.length - 1];
   }
 
-  ngAfterViewInit(): void {
-    this.convert();
-  }
-
   ngOnInit(): void {
-
-    this.accountService.identity().subscribe(account => {
-      this.account = account
-      if(this.account) {
-        this.userService.query().subscribe(users => {
-          this.user = users.body.find(x => x.id === this.account.id)
-          this.maincontrollerService.findFormulaDataByUserId(this.account.id).subscribe(res => {
-            const fd = res.body;
-            this.model = JSON.parse(fd.map);
-          })
-        })
-      } else {
-        this.loginService.login()
+    this.accountService.identity().subscribe(
+      (account) => {
+        this.account = account;
+        if (this.account) {
+          this.userService.query().subscribe((users) => {
+            this.user = users.body.find((x) => x.id === this.account.id);
+            this.maincontrollerService.findFormulaDataByUserId(account.id).subscribe(res => {
+              const fd = res.body;
+              if (fd && fd.map) {
+                this.model = JSON.parse(JSON.stringify(fd.map));
+                if (this.xml) {
+                  this.generateFormlyFields();
+                  this.cd.markForCheck();
+                }
+              }
+            });
+          });
+        } else {
+          this.loginService.login();
+        }
+      },
+      (error) => {
+        // Handle error
+        console.error('Error fetching account:', error);
       }
-    },
-    error => {
-      if(error.status === 401) {
-        this.loginService.login()
-      }
-    })
-    // this.maincontrollerService.deleteAllFromKeyTable();
+    );
+  }
+  generateFormlyFields() {
+    if (this.xml) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(this.xml, 'text/xml');
+      this.topics = xmlDoc.getElementsByTagName('topic');
 
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(this.xml,"text/xml");
-    this.topics = xmlDoc.getElementsByTagName("topic");
-    for(let i = 0; i < this.topics.length; i++) {
-      if (this.topics[i].hasChildNodes()) {
-        this.topics[i].childNodes.forEach(child => {
-          if(child.tagName !== 'topic') {
-            this.topics[i].removeChild(child)
-          }
-        });
+      if (this.topics && this.topics.length > 0) {
+        const rootFieldGroup = createFieldGroup(this.topics[0], true);
+        this.fields = [rootFieldGroup];
+        this.fieldIds = [rootFieldGroup.id];
+        this.breadth = 1;
+        this.levels.set(rootFieldGroup.id, 0);
+        this.level = 0;
       }
     }
   }
 
-  convert() {
-    this.walkTheDOM(this.topics[0]);
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(this.xml,"text/xml");
-    this.topics = xmlDoc.getElementsByTagName("topic");
-    this.domWalker(this.topics[0]);
-    this.fields = this.fields.splice(0);
-    }
 
-    domWalker (node) {
-      const walker = document.createTreeWalker(node, NodeFilter.SHOW_ELEMENT);
-      do {
-        const e: HTMLElement = walker.currentNode as HTMLElement;
-        if(e.tagName !== 'topic') {
-          continue;
-        } else {
-          this.parseJSON(e);
+
+  convertTextfield(node: any, req: boolean, key?: number, parentFieldGroup?: FieldGroup): void {
+    const fieldConfig: FieldGroup = {
+      key: key,
+      type: 'input',
+      wrappers: ['grants'],
+      className: 'form-field',
+      id: node.getAttribute('id'),
+      templateOptions: {
+        placeholder: node.getAttribute('text'),
+        description: node.getAttribute('descriptpion'),
+        label: node.getAttribute('text'),
+        required: req,
+      },
+      fieldGroup: [],
+    };
+
+    const newFieldGroup: FieldGroup = {
+      templateOptions: {
+        label: node.getAttribute('text'),
+        placeholder: node.getAttribute('text'),
+        description: node.getAttribute('descriptpion'),
+        required: req,
+      },
+      fieldGroup: [fieldConfig],
+    };
+
+    if (parentFieldGroup) {
+      parentFieldGroup.fieldGroup.push(newFieldGroup);
+    } else {
+      this.fields.push(newFieldGroup);
+    }
+  }
+
+  convertTopLevelNodes(rootNode: any): void {
+    const topLevelNodes = rootNode.children;
+
+    topLevelNodes.forEach(node => {
+      const topLevelFieldGroup: FieldGroup = {
+        templateOptions: { label: node.getAttribute('text') },
+        fieldGroup: [],
+      };
+
+      // Iterieren über die untergeordneten Knoten und konvertieren
+      node.children.forEach(childNode => {
+        if (childNode.tagName === 'textfield') {
+          this.convertTextfield(childNode, false, childNode.getAttribute('id') as number, topLevelFieldGroup);
+        } else if (childNode.tagName === 'textarea') {
+          this.convertTextarea(childNode, false, childNode.getAttribute('id') as number, topLevelFieldGroup);
+        } else if (childNode.tagName === 'editor') {
+          this.convertEditor(childNode, false, childNode.getAttribute('id') as number, topLevelFieldGroup);
         }
-      } while (walker.nextNode());
-    }
+      });
 
-    walkTheDOM(node) {
-      const found = this.fieldIds.findIndex(x => x === node.id);
-      if(found < 0 ) {
-          this.levels.set(node.id, this.level);
-          this.fieldIds.push(node.id);
-          this.level++;
-      }
-      node = node.firstChild;
-      while (node) {
-          this.walkTheDOM(node);
-          this.level = this.levels.get(node.id);
-          node = node.nextSibling;
-      }
+      this.fields.push(topLevelFieldGroup);
+    });
   }
 
   parseJSON(node) {
-      const n = node;
-      let req = false;
-      /*
-      if(node.firstChild) {
-        if(JSON.parse(node.firstChild.getAttribute('required')) !== null) {
-          req = JSON.parse(node.firstChild.getAttribute('required'));
-        }
-        req = JSON.parse(node.firstChild.getAttribute('required'));
-      }
-      */
-      let key: number = node.getAttribute('id') as number;
-      /*
-      let key: string = node.getAttribute('text').toLowerCase();
-      this.maincontrollerService.findKeyTableByKey(key).subscribe(res => {
-        const kt = res.body;
-        if(!kt) {
-          const keyTable = new KeyTable();
-          keyTable.key = node.getAttribute('text').toLowerCase();
-          keyTable.created = dayjs();
-          keyTable.modified = dayjs();
-          this.keyTableService.create(keyTable).subscribe();
-        } else {
-          key = key + '_' + node.getAttribute('id') as string;
-        }
-        */
-        if(n.firstElementChild) {
-          if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'form') {
-            this.addDynamicFormlyPage(n);
-          } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'multi_step_form') {
-            this.convertMultistepForm(n);
-          } else if (n.firstElementChild.tagName === 'htmlForm' && n.firstElementChild.id === 'tabs_form') {
-            this.convertTabsForm(n);
-          } else if (n.firstElementChild.tagName === 'htmlFormStep') {
-            this.convertStep(n);
-            this.index = 0;
-          } else if (n.firstElementChild.tagName === 'htmlFormTab') {
-            this.convertTab(n);
-          } else if (n.firstElementChild.tagName === 'textfield') {
-           // if(grant === "FRIENDS" || grant === "FAMILY" || grant === "FRIENDS_AND_FAMILY" || grant === "PUBLIC") {
-              this.convertTextfield(n, req, key);
-           // }
-            this.convertTextfield(n, req, key);
-          } else if (n.firstElementChild.tagName === 'textarea') {
-            this.convertTextarea(n, req, key);
-          } else if (n.firstElementChild.tagName === 'select') {
-            this.convertSelect(n, req, key);
-          } else if (n.firstElementChild.tagName === 'option') {
-            console.log('option');
-          } else if (n.firstElementChild.tagName === 'radiogroup') {
-            this.convertRadiogroup(n, req, key);
-          } else if (n.firstElementChild.tagName === 'radio') {
-            console.log('radio');
-          } else if (n.firstElementChild.tagName === 'checkbox') {
-            this.convertCheckbox(n, req, key);
-          } else if (n.firstElementChild.tagName === 'hr') {
-            this.convertHr(n);
-          } else if (n.firstElementChild.tagName === 'title') {
-            this.convertTitle(n);
-          } else if (n.firstElementChild.tagName === 'desc') {
-            this.convertDescription(n);
-          } else if (n.firstElementChild.tagName === 'calendar') {
-            this.convertCalendar(n, req, key);
-          }
-        }
-        /*
-    });
-    */
+    // ...
+    this.convertTopLevelNodes(node);
   }
-
 
   addDynamicFormlyPage(node: any): void {
     console.log('add_formly');
@@ -226,7 +192,32 @@ export class FormComponent implements OnInit, AfterViewInit{
      }
     );
   }
+  convertCalendar(node: any, req: boolean, key?: number, parentFieldGroup?: FieldGroup): void {
+    const newFieldGroup: FieldGroup = {
+      key: key,
+      type: 'date',
+      wrappers: ['grants'],
+      className: 'form-field',
+      id: node.getAttribute('id'),
+      templateOptions: {
+        placeholder: node.getAttribute('text'),
+        description: node.getAttribute('descriptpion'),
+        label: node.getAttribute('text'),
+        required: req,
+        type: 'date',
+      },
+      fieldGroup: [],
+    };
 
+    if (parentFieldGroup) {
+      parentFieldGroup.fieldGroup.push(newFieldGroup);
+    } else {
+      this.fields.push(newFieldGroup);
+    }
+  }
+
+
+  /*
   convertCalendar(node: any, req: boolean, key?: number): void {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
         {
@@ -244,6 +235,7 @@ export class FormComponent implements OnInit, AfterViewInit{
         }
       );
   }
+*/
 
   convertHr(node: any): void {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
@@ -313,7 +305,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       }
     );
   }
-
+/*
   convertTextfield(node: any, req: boolean, key?: number) {
 
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
@@ -332,12 +324,32 @@ export class FormComponent implements OnInit, AfterViewInit{
         }
       );
   }
+*/
 
-  convertTextarea(node: any, req: boolean, key?: number) {
+  convertTextarea(node: any, req: boolean, key?: number, topLevelFieldGroup?: FieldGroup) {
     eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
       {
         key: key,
         type: 'textarea',
+        wrappers: ['grants'],
+        className: 'form-field',
+        id: node.getAttribute('id'),
+        templateOptions: {
+          placeholder: node.getAttribute('text'),
+          description: node.getAttribute('descriptpion'),
+          rows: 10,
+          label: node.getAttribute('text'),
+          required: req,
+        },
+      }
+    );
+  }
+
+  convertEditor(node: any, req: boolean, key?: number, topLevelFieldGroup?: FieldGroup) {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        key: key,
+        type: 'quill',
         wrappers: ['grants'],
         className: 'form-field',
         id: node.getAttribute('id'),
@@ -420,8 +432,44 @@ export class FormComponent implements OnInit, AfterViewInit{
     );
   }
 
+  convertRating(node: any, req: boolean, key?: number) {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        key: key,
+        type: 'ratings',
+        wrappers: ['grants'],
+        className: 'form-field',
+        id: node.getAttribute('id'),
+        templateOptions: {
+          placeholder: node.getAttribute('text'),
+          description: node.firstChild.getAttribute('descriptpion'),
+          label: node.getAttribute('text'),
+          required: req,
+        },
+      }
+    );
+  }
+
+  convertKeywords(node: any, req: boolean, key?: number) {
+    eval(this.getFieldGroup(this.levels.get(node.id) - 1)).push(
+      {
+        key: key,
+        type: 'keywords',
+        wrappers: ['grants'],
+        className: 'form-field',
+        id: node.getAttribute('id'),
+        templateOptions: {
+          placeholder: node.getAttribute('text'),
+          description: node.firstChild.getAttribute('descriptpion'),
+          label: node.getAttribute('text'),
+          required: req,
+        },
+      }
+    );
+  }
 
 
+/*
   submit() {
     this.accountService.identity().subscribe(account => {
       this.account = account
@@ -491,7 +539,7 @@ export class FormComponent implements OnInit, AfterViewInit{
       }
     })
   }
-
+*/
 }
 
 declare global {

@@ -62,14 +62,14 @@ export class MaincontrollerService {
 
   findGrantsLevelByUserId(userId: string): Observable<HttpResponse<IGrantsLevel>> {
     return this.http
-    .get<IGrantsLevel>(`${this.resourceUrl_grants_level}/${userId}/findByUserId`, { observe: 'response' })
-    .pipe(map((res: HttpResponse<IGrantsLevel>) => this.convertDateFromServer(res)));
+      .get<IGrantsLevel>(`${this.resourceUrl_grants_level}/${userId}/findByUserId`, { observe: 'response' })
+      .pipe(map((res: HttpResponse<IGrantsLevel>) => this.convertDateFromServerForGrantsLevel(res)));
   }
 
   findVisibilityStatusByUserId(userId: string): Observable<HttpResponse<IVisibilityStatus>> {
     return this.http
-    .get<IVisibilityStatus>(`${this.resourceUrl_visibility_status}/${userId}/findByUserId`, { observe: 'response' })
-    .pipe(map((res: HttpResponse<IVisibilityStatus>) => this.convertDateFromServer(res)));
+      .get<IVisibilityStatus>(`${this.resourceUrl_visibility_status}/${userId}/findByUserId`, { observe: 'response' })
+      .pipe(map((res: HttpResponse<IVisibilityStatus>) => this.convertDateFromServerForVisibilityStatus(res)));
   }
 
   findKeyTableByKey(key: string): Observable<HttpResponse<IFormulaData>> {
@@ -107,6 +107,22 @@ export class MaincontrollerService {
         formulaData.created = formulaData.created ? dayjs(formulaData.created) : undefined;
         formulaData.modified = formulaData.modified ? dayjs(formulaData.modified) : undefined;
       });
+    }
+    return res;
+  }
+
+  convertDateFromServerForGrantsLevel(res: HttpResponse<IGrantsLevel>): HttpResponse<IGrantsLevel> {
+    if (res.body) {
+      res.body.created = res.body.created ? dayjs(res.body.created) : undefined;
+      res.body.modified = res.body.modified ? dayjs(res.body.modified) : undefined;
+    }
+    return res;
+  }
+
+  convertDateFromServerForVisibilityStatus(res: HttpResponse<IVisibilityStatus>): HttpResponse<IVisibilityStatus> {
+    if (res.body) {
+      res.body.created = res.body.created ? dayjs(res.body.created) : undefined;
+      res.body.modified = res.body.modified ? dayjs(res.body.modified) : undefined;
     }
     return res;
   }

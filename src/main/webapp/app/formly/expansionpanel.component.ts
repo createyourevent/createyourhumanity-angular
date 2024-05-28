@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FieldWrapper } from '@ngx-formly/core';
+import { FieldType, FieldTypeConfig, FieldWrapper } from '@ngx-formly/core';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,7 +21,7 @@ import { MatInputModule } from '@angular/material/input';
     standalone: true,
     imports: [MatExpansionModule, MatFormFieldModule, MatInputModule],
 })
-export class ExpansionPanelWrapperComponent extends FieldWrapper implements OnInit {
+export class ExpansionPanelWrapperComponent extends FieldType<FieldTypeConfig> implements OnInit {
   expanded = true;
   style = 'display: none';
   margin = 'margin-top: 4px; margin-bottom: 4px;';

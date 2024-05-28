@@ -14,7 +14,7 @@ require('react-dom');
 window.React2 = require('react');
 console.log(window.React1 === window.React2);
 
-import { Component, OnChanges, AfterViewInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, AfterViewInit, Input, SimpleChanges, OnInit } from '@angular/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { Designer, PersistenceManager, CreateYourHumanityPersistenceManager } from '@wisemapping/mindplot';
@@ -29,6 +29,8 @@ import { filter, Subscription } from 'rxjs';
 import { UserService } from 'app/user.service';
 import { MainComponent } from '../layouts/main/main.component';
 import ErrorBoundary from './ErrorBoundary';
+import { MongoDBPersistenceManager } from 'app/persistence/mongodb.persistence';
+import { MindmapService } from '../entities/mindmap/service/mindmap.service';
 
 interface LinkDataEvent extends Event {
   detail: {
@@ -40,27 +42,24 @@ interface LinkDataEvent extends Event {
   selector: 'jhi-mindmap',
   template: '<div [id]="rootId"></div>',
 })
-export class MindmapComponent implements OnChanges, AfterViewInit {
+export class MindmapComponent implements AfterViewInit {
   @Input() mapId: any;
   public rootId = 'rootId';
   private hasViewLoaded = false;
   private hasDataLoaded = false;
   private location = 'en';
-  private pm: PersistenceManager;
-  private account: Account;
   _routerSub = Subscription.EMPTY;
+  persistence: MongoDBPersistenceManager;
 
-  formula_data: string;
+  formula_data: { [key: string]: string };
   grants_data: string;
   visibility_data: string;
 
   constructor(
-    private translateService: TranslateService,
     sessionStorageService: SessionStorageService,
-    private accountService: AccountService,
-    private maincontrollerService: MaincontrollerService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private mindmapService: MindmapService
   ) {
     window.addEventListener('LinkData', function (event) {
       const linkDataEvent = event as LinkDataEvent;
@@ -71,6 +70,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
     this.formula_data = this.userService.formulaData.map;
     this.grants_data = this.userService.grantsData.map;
     this.visibility_data = this.userService.visibilityData.map;
+
     /*
     this._routerSub = this.router.events
         .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
@@ -80,6 +80,14 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
          */
   }
 
+  /*
+  ngOnInit(): void {
+        this.persistence = new MongoDBPersistenceManager(this.mindmapService);
+        PersistenceManager.init(this.persistence);
+        this.renderComponent();
+  }
+  */
+/*
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['mapId'].currentValue !== undefined) {
       this.hasDataLoaded = true;
@@ -87,7 +95,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
       this.renderComponent();
     }
   }
-
+*/
   public ngAfterViewInit() {
     this.hasViewLoaded = true;
     this.renderComponent();
@@ -103,9 +111,9 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
   }
 
   private renderComponent() {
-    if (!this.hasViewLoaded || !this.hasDataLoaded) {
-      return;
-    }
+
+    this.persistence = new MongoDBPersistenceManager(this.mindmapService);
+    this.persistence = PersistenceManager.init(this.persistence);
 
     const initialization = (designer: Designer) => {
       designer.addEvent('loadSuccess', () => {
@@ -116,28 +124,7 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
       });
     };
 
-    let persistence = null;
-    if (this.account) {
-      persistence = new CreateYourHumanityPersistenceManager({
-        documentUrl: 'http://localhost:9000/api/mindmaps/{id}/false',
-        revertUrl: '/c/restful/maps/{id}/history/latest',
-        lockUrl: '/c/restful/maps/{id}/lock',
-      });
-    } else {
-      persistence = new CreateYourHumanityPersistenceManager({
-        documentUrl: 'http://localhost:9000/api/mindmaps/{id}/true',
-        revertUrl: '/c/restful/maps/{id}/history/latest',
-        lockUrl: '/c/restful/maps/{id}/lock',
-      });
-    }
 
-    if (global.PersistenceManager) {
-      this.pm = global.PersistenceManager;
-    } else {
-      const pm: any = global;
-      pm.PersistenceManager = persistence;
-      this.pm = persistence;
-    }
 
     const options: EditorOptions = {
       zoom: 0.8,
@@ -146,13 +133,22 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
       mode: 'edition-owner',
       locale: this.location,
       enableKeyboardEvents: true,
+      isProfile: true,
     };
 
     const props: EditorProps = {
       mapId: this.mapId,
       options: options,
-      persistenceManager: this.pm,
-      onAction: (action: any) => console.log('action called:', action),
+      persistenceManager: this.persistence,
+      onAction: (action: any) => {
+        if (action.type === 'save') {
+          // Hier können Sie den Code zum Speichern der Mindmap implementieren
+          const mapXml = action.data.mapXml; // Das XML-Dokument der Mindmap
+          const mapId = this.mapId;
+          // Rufen Sie hier Ihre Methode zum Speichern der Mindmap auf
+          this.persistence.saveMapXml(mapId, mapXml);
+        }
+      },
       onLoad: initialization,
     };
 
@@ -167,6 +163,8 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
      */
     const root = ReactDOM.createRoot(document.getElementById(this.rootId)!);
     root.render(
+      <React.StrictMode>
+      <ErrorBoundary fallback={<p>Something went wrong</p>}>
       <Editor
         mapId={this.mapId}
         options={options}
@@ -174,10 +172,20 @@ export class MindmapComponent implements OnChanges, AfterViewInit {
         grants={this.grants_data}
         visible={this.visibility_data}
         isFriend={isFriend}
-        persistenceManager={persistence}
-        onAction={action => console.log('action called:', action)}
+        persistenceManager={this.persistence}
+        onAction={(action: any) => {
+          if (action.type === 'save') {
+            // Hier können Sie den Code zum Speichern der Mindmap implementieren
+            const mapXml = action.data.mapXml; // Das XML-Dokument der Mindmap
+            const mapId = this.mapId;
+            // Rufen Sie hier Ihre Methode zum Speichern der Mindmap auf
+            this.persistence.saveMapXml(mapId, mapXml);
+          }
+        }}
         onLoad={initialization}
       />
+    </ErrorBoundary>
+    </React.StrictMode>
     );
   }
 }

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
 import { SharedLibsModule } from './shared-libs.module';
 import { FindLanguageFromKeyPipe } from './language/find-language-from-key.pipe';
 import { TranslateDirective } from './language/translate.directive';
@@ -34,44 +35,57 @@ import { FormlyGrantsComponent } from 'app/formly/grant_controller.component';
 import { CommonModule } from '@angular/common';
 import { ExpansionPanelWrapperComponent } from 'app/formly/expansionpanel.component';
 import { DropdownModule } from 'primeng/dropdown';
+import { RatingModule } from 'primeng/rating';
 import { MatSelectModule } from '@angular/material/select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RatingComponent } from 'app/formly/rating.component';
+import { ChipsComponent } from 'app/formly/chips.component';
+import { EditorModule } from 'primeng/editor';
+import { FieldQuillTypeComponent } from 'app/formly/quill.type';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-  imports: [FormsModule,
-            ReactiveFormsModule,
-            FormlyModule.forRoot({
-              wrappers: [
-                { name: 'panel', component: PanelWrapperComponent },
-                { name: 'containerwrapper', component: ContainerWrapperComponent },
-                { name: 'rowwrapper', component: RowWrapperComponent },
-                { name: 'columnwrapper', component: ColumnWrapperComponent },
-                { name: 'grants', component: FormlyGrantsComponent  },
-                { name: 'expansion', component: ExpansionPanelWrapperComponent  },
-              ],
-              types: [
-                { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
-                { name: 'tabs', component: FormlyFieldTabsComponent, wrappers: [] },
-                { name: 'container', component: ContainerComponent },
-                { name: 'row', component: RowComponent },
-                { name: 'column', component: ColumnComponent },
-                { name: 'date', component: DateInputComponent, wrappers: ['form-field'] },
-                { name: 'datetime', component: DateTimeInputComponent, wrappers: ['form-field'] },
-              ],
-            }),
-            FormlyBootstrapModule,
-            CommonModule,
-            DropdownModule,
-            MatSliderModule,
-            MatStepperModule,
-            MatSelectModule,
-            MatIconModule,
-            FormsModule,
-            MatTabsModule,
-            FormlyBootstrapModule,
-            NgbModule
+  imports: [
+    CommonModule,
+    QuillModule.forRoot(),
+    EditorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatChipsModule,
+    RatingModule,
+    FormlyModule.forRoot({
+      wrappers: [
+        { name: 'panel', component: PanelWrapperComponent },
+        { name: 'containerwrapper', component: ContainerWrapperComponent },
+        { name: 'rowwrapper', component: RowWrapperComponent },
+        { name: 'columnwrapper', component: ColumnWrapperComponent },
+      ],
+      types: [
+        { name: 'grants', component: FormlyGrantsComponent },
+        { name: 'editor', component: FieldQuillTypeComponent, wrappers: ['form-field'],},
+        { name: 'expansion', component: ExpansionPanelWrapperComponent },
+        { name: 'ratings', component: RatingComponent, wrappers: ['form-field'] },
+        { name: 'keywords', component: ChipsComponent, wrappers: ['form-field'] },
+        { name: 'stepper', component: FormlyFieldStepperComponent, wrappers: [] },
+        { name: 'tabs', component: FormlyFieldTabsComponent, wrappers: [] },
+        { name: 'container', component: ContainerComponent },
+        { name: 'row', component: RowComponent },
+        { name: 'column', component: ColumnComponent },
+        { name: 'date', component: DateInputComponent, wrappers: ['form-field'] },
+        { name: 'datetime', component: DateTimeInputComponent, wrappers: ['form-field'] },
+      ],
+    }),
+    FormlyBootstrapModule,
+    DropdownModule,
+    MatSliderModule,
+    MatStepperModule,
+    MatSelectModule,
+    MatIconModule,
+    MatTabsModule,
+    NgbModule,
   ],
   declarations: [
+    FieldQuillTypeComponent,
     FindLanguageFromKeyPipe,
     TranslateDirective,
     AlertComponent,
@@ -91,7 +105,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormlyGrantsComponent,
     ColumnComponent,
     DateInputComponent,
-    DateTimeInputComponent
+    DateTimeInputComponent,
   ],
   exports: [
     CommonModule,
@@ -115,7 +129,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MatSliderModule,
     MatStepperModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatChipsModule,
+    RatingModule,
+    EditorModule,
   ],
 })
 export class SharedModule {}

@@ -8,7 +8,8 @@ import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import dayjs from 'dayjs/esm';
 import { NgbDateAdapter, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import './config/dayjs';
 import { SharedModule } from 'app/shared/shared.module';
@@ -28,7 +29,7 @@ import { ErrorComponent } from './layouts/error/error.component';
 import { CreateyourhumanityMindmapModule } from './createyourhumanity-mindmap/createyourhumanity-mindmap.module';
 import { UserService } from './user.service';
 import { SharedLibsModule } from './shared/shared-libs.module';
-import { BrowserModule } from '@angular/platform-browser';
+
 
 
 export function initSynchronousFactory(userService: UserService) {
@@ -40,9 +41,10 @@ export function initSynchronousFactory(userService: UserService) {
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     SharedLibsModule,
-    CreateyourhumanityMindmapModule,
     SharedModule,
+    CreateyourhumanityMindmapModule,
     HomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
@@ -51,7 +53,6 @@ export function initSynchronousFactory(userService: UserService) {
     HttpClientModule,
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
     TranslationModule,
-    CreateyourhumanityMindmapModule,
   ],
   providers: [
     Title,

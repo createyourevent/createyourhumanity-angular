@@ -1,74 +1,76 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { FieldWrapper } from '@ngx-formly/core';
+import { FieldType, FieldTypeConfig, FieldWrapper } from '@ngx-formly/core';
 import { Grants } from 'app/core/enums/grants';
-import { FormControl } from '@angular/forms';
 import { GrantsLevel } from 'app/entities/grants-level/grants-level.model';
 import { UserService } from '../user.service';
-import { KeyTable } from '../entities/key-table/key-table.model';
 import { MaincontrollerService } from 'app/maincontroller.service';
 import { AccountService } from 'app/core/auth/account.service';
-import { Account } from 'app/core/auth/account.model';
-import { IUser, User } from 'app/entities/user/user.model';
-import { DropdownModule } from 'primeng/dropdown';
+import { IUser } from 'app/entities/user/user.model';
+import { GrantsLevelService } from 'app/entities/grants-level/service/grants-level.service';
 
 @Component({
   selector: 'jhi-formly-wrapper-expansion',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template:`
-      <h3 class="card-label-header">{{ to.label }}</h3>
-      <div class="card-body">
-        <ng-container #fieldComponent></ng-container>
-      </div>
-  <hr/>
-  <div class="form-field-label">Viewing permissions:</div>
-  <mat-form-field>
-  <mat-label>Permission</mat-label>
-  <mat-select [(value)]="selectedGrant" (selectionChange)="selectOption($event)">
-    <mat-option *ngFor="let option of grantOptions | keyvalue;" [value]="option.key">
-      {{ option.value }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-`,
+  template: `
+    <h3 class="card-label-header">{{ to.label }}</h3>
+    <div class="card-body">
+      <ng-container #fieldComponent></ng-container>
+    </div>
+    <hr/>
+    <div class="form-field-label">Viewing permissions:</div>
+    <mat-form-field>
+      <mat-label>Permission</mat-label>
+      <mat-select [(value)]="selectedGrant" (selectionChange)="onGrantSelectionChange(field.id, selectedGrant)">
+        <mat-option *ngFor="let grant of grantOptions" [value]="grant">
+          {{ grant }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  `,
 })
-export class FormlyGrantsComponent extends FieldWrapper implements OnInit {
+export class FormlyGrantsComponent extends FieldType<FieldTypeConfig> implements OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   grantOptions = Object.values(Grants);
   selectedGrant: Grants;
-  account: Account | null = null;
-  grants_level: GrantsLevel;
-  user: IUser;
-  userId: string;
+  account: IUser;
+  grantsLevel: GrantsLevel;
 
-  constructor(private userService: UserService,private accountService: AccountService,
-              private maincontrollerService: MaincontrollerService, private cdr: ChangeDetectorRef) {
+  constructor(
+    private userService: UserService,
+    private accountService: AccountService,
+    private maincontrollerService: MaincontrollerService,
+    private cdr: ChangeDetectorRef,
+    private grantsLevelService: GrantsLevelService
+  ) {
     super();
   }
+
   ngOnInit(): void {
     this.maincontrollerService.findAuthenticatedUser().subscribe(res => {
-      this.user = res.body;
-      this.userId = this.user.id;
-      this.maincontrollerService.findGrantsLevelByUserId(this.userId).subscribe(data => {
-        this.grants_level = data.body;
-        let data_grants = JSON.parse(this.grants_level.map);
-        this.selectedGrant = data_grants[Number(this.field.id)];
+      this.account = res.body;
+      this.maincontrollerService.findGrantsLevelByUserId(this.account.id).subscribe(data => {
+        this.grantsLevel = data.body;
+        const grantsMap = JSON.parse(this.grantsLevel.map);
+        this.selectedGrant = grantsMap[Number(this.field.id)] || Grants.NONE;
         this.cdr.markForCheck();
       });
     });
   }
 
-    selectOption(event) {
-      let idx = this.field.id;
+  onGrantSelectionChange(fieldId: string, grant: Grants) {
+    const grantsMap = JSON.parse(this.grantsLevel.map);
+    grantsMap[fieldId] = grant;
+    this.grantsLevel.map = JSON.stringify(grantsMap);
 
-      this.maincontrollerService.findGrantsLevelByUserId(this.userId).subscribe(data => {
-        this.grants_level = data.body;
-        let data_grants = JSON.parse(this.grants_level.map);
-        this.selectedGrant = data_grants[Number(this.field.id)];
-
+    this.grantsLevelService.update(this.grantsLevel).subscribe(
+      data => {
+        this.grantsLevel = data.body;
         this.cdr.markForCheck();
-      });
-
-
-    }
+      },
+      error => {
+        console.error('Error updating grants level:', error);
+      }
+    );
+  }
 }

@@ -45,7 +45,7 @@ export class UserService {
           if(fd.body === null) {
             this.formulaData = new FormulaData();
             this.formulaData.user = this.user;
-            this.formulaData.map = "{}";
+            this.formulaData.map = {};
             this.formulaData.created = dayjs();
             this.formulaData.modified = dayjs();
             this.formulaDataService.create(this.formulaData).subscribe();
