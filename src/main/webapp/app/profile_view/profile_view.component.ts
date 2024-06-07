@@ -49,7 +49,14 @@ export class ProfileViewComponent implements OnInit, AfterViewInit{
   @Input() mapId: string;
 
   account: Account | null = null;
-
+  ngAfterViewInit(): void {
+    this.profileHosts.changes.pipe(
+      startWith(null),
+      filter(Boolean)
+    ).subscribe(() => {
+      this.cd.detectChanges();
+    });
+  }
   constructor(private formService: FormService,
               private accountService: AccountService,
               private formulaDataService: FormulaDataService,
@@ -90,19 +97,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit{
           }
         })
   }
-
-  ngAfterViewInit(): any {
-      this.profileHosts.changes.subscribe((ph: QueryList<ProfileViewHostDirective>)  => {
-        ph.forEach((p: any, index: number)=> {
-          ph.first;
-          const component: typeof FormComponent = FormComponent;
-          const r = p.viewContainerRef.createComponent(component);
-          r.instance.xml = this.forms[index].outerHTML;
-          r.instance.userId = this.userId;
-          r.instance.mapId = this.mindmap.id;
-        });
-      });
-    }
   }
 
 
